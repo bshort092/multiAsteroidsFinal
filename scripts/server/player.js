@@ -29,6 +29,24 @@ function createPlayer() {
     let rotateRate = Math.PI / 1000;    // radians per millisecond
     let speed = 0.0002;                  // unit distance per millisecond
     let reportUpdate = false;    // Indicates if this model was updated during the last update
+    let velocityVector = {
+        x: 0,
+        y: 0
+    }
+    let acceleration = 0;
+    let maxSpeed = 10;
+
+    Object.defineProperty(that, 'velocityVector', {
+        get: () => velocityVector
+    });
+
+    Object.defineProperty(that, 'acceleration', {
+        get: () => acceleration
+    });
+
+    Object.defineProperty(that, 'maxSpeed', {
+        get: () => maxSpeed
+    });
 
     Object.defineProperty(that, 'direction', {
         get: () => direction
@@ -57,47 +75,54 @@ function createPlayer() {
 
     //------------------------------------------------------------------
     //
-    // Moves the player forward based on how long it has been since the
-    // last move took place.
+    // Public function that moves the player in the current direction.
     //
     //------------------------------------------------------------------
     that.move = function(elapsedTime) {
-        reportUpdate = true;
+
         let vectorX = Math.cos(direction);
         let vectorY = Math.sin(direction);
 
-        position.x += (vectorX * elapsedTime * speed);
-        position.y += (vectorY * elapsedTime * speed);
+        velocityVector.x += vectorX * acceleration;
+        velocityVector.y += vectorY * acceleration;
     };
 
     //------------------------------------------------------------------
     //
-    // Rotates the player right based on how long it has been since the
-    // last rotate took place.
+    // Public function that rotates the player right.
     //
     //------------------------------------------------------------------
     that.rotateRight = function(elapsedTime) {
-        reportUpdate = true;
         direction += (rotateRate * elapsedTime);
     };
 
     //------------------------------------------------------------------
     //
-    // Rotates the player left based on how long it has been since the
-    // last rotate took place.
+    // Public function that rotates the player left.
     //
     //------------------------------------------------------------------
     that.rotateLeft = function(elapsedTime) {
-        reportUpdate = true;
         direction -= (rotateRate * elapsedTime);
     };
 
-    //------------------------------------------------------------------
-    //
-    // Function used to update the player during the game loop.
-    //
-    //------------------------------------------------------------------
-    that.update = function(when) {
+    that.update = function(elapsedTime) {
+
+        if (velocityVector.x > maxSpeed) {
+            velocityVector.x = maxSpeed;
+        }
+        if (velocityVector.x < 0 - maxSpeed) {
+            velocityVector.x = 0 - maxSpeed;
+        }
+
+        if (velocityVector.y > maxSpeed) {
+            velocityVector.y = maxSpeed;
+        }
+        if (velocityVector.y < 0 - maxSpeed) {
+            velocityVector.y = 0 - maxSpeed;
+        }
+
+        position.x += velocityVector.x;
+        position.y += velocityVector.y;
     };
 
     return that;

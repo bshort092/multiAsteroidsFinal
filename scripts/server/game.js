@@ -135,7 +135,10 @@ function initializeSocketIO(httpServer) {
                     position: newPlayer.position,
                     rotateRate: newPlayer.rotateRate,
                     speed: newPlayer.speed,
-                    size: newPlayer.size
+                    size: newPlayer.size,
+                    acceleration: newPlayer.acceleration,
+                    maxSpeed: newPlayer.maxSpeed,
+                    velocityVector: newPlayer.velocityVector,
                 });
 
                 //
@@ -146,7 +149,10 @@ function initializeSocketIO(httpServer) {
                     position: client.player.position,
                     rotateRate: client.player.rotateRate,
                     speed: client.player.speed,
-                    size: client.player.size
+                    size: client.player.size,
+                    maxSpeed: client.player.maxSpeed,
+                    acceleration: client.player.acceleration,
+                    velocityVector: client.player.velocityVector
                 });
             }
         }
@@ -184,7 +190,10 @@ function initializeSocketIO(httpServer) {
             position: newPlayer.position,
             size: newPlayer.size,
             rotateRate: newPlayer.rotateRate,
-            speed: newPlayer.speed
+            speed: newPlayer.speed,
+            velocityVector: newPlayer.velocityVector,
+            maxSpeed: newPlayer.maxSpeed,
+            acceleration: newPlayer.acceleration
         });
 
         socket.on('input', data => {

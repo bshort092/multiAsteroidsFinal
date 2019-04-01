@@ -10,6 +10,10 @@ MyGame.components.Player = function() {
         x: 0,
         y: 0
     };
+    let velocityVector = {
+        x: 0,
+        y: 0
+    };
     let size = {
         width: 0.05,
         height: 0.05
@@ -17,10 +21,27 @@ MyGame.components.Player = function() {
     let direction = 0;
     let rotateRate = 0;
     let speed = 0;
+    let acceleration = 100;
+    let maxSpeed = 10;
 
     Object.defineProperty(that, 'direction', {
         get: () => direction,
         set: (value) => { direction = value }
+    });
+
+    Object.defineProperty(that, 'velocityVector', {
+        get: () => velocityVector,
+        set: (value) => { velocityVector = value }
+    });
+
+    Object.defineProperty(that, 'acceleration', {
+        get: () => acceleration,
+        set: (value) => { acceleration = value }
+    });
+
+    Object.defineProperty(that, 'maxSpeed', {
+        get: () => maxSpeed,
+        set: (value) => { maxSpeed = value }
     });
 
     Object.defineProperty(that, 'speed', {
@@ -47,11 +68,12 @@ MyGame.components.Player = function() {
     //
     //------------------------------------------------------------------
     that.move = function(elapsedTime) {
+
         let vectorX = Math.cos(direction);
         let vectorY = Math.sin(direction);
 
-        position.x += (vectorX * elapsedTime * speed);
-        position.y += (vectorY * elapsedTime * speed);
+        velocityVector.x += vectorX * acceleration;
+        velocityVector.y += vectorY * acceleration;
     };
 
     //------------------------------------------------------------------
@@ -73,6 +95,23 @@ MyGame.components.Player = function() {
     };
 
     that.update = function(elapsedTime) {
+
+        if (velocityVector.x > maxSpeed) {
+            velocityVector.x = maxSpeed;
+        }
+        if (velocityVector.x < 0 - maxSpeed) {
+            velocityVector.x = 0 - maxSpeed;
+        }
+
+        if (velocityVector.y > maxSpeed) {
+            velocityVector.y = maxSpeed;
+        }
+        if (velocityVector.y < 0 - maxSpeed) {
+            velocityVector.y = 0 - maxSpeed;
+        }
+
+        position.x += velocityVector.x;
+        position.y += velocityVector.y;
     };
 
     return that;
