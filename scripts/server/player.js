@@ -87,8 +87,8 @@ function createPlayer() {
         let vectorX = Math.cos(direction);
         let vectorY = Math.sin(direction);
 
-        velocityVector.x += vectorX * acceleration;
-        velocityVector.y += vectorY * acceleration;
+        velocityVector.x += vectorX * speed;
+        velocityVector.y += vectorY * speed;
     };
 
     //------------------------------------------------------------------
@@ -115,6 +115,7 @@ function createPlayer() {
         console.log("acceleration: " + acceleration)
         console.log("velocityVector.x: " + velocityVector.x)
         console.log("position.x: " + position.x)
+        console.log("position.y: " + position.y)
         console.log("direction: " + direction)
 
 
@@ -135,10 +136,10 @@ function createPlayer() {
         position.x += velocityVector.x;
         position.y += velocityVector.y;
 
-        if (position.x > 500) position.x = 0;
-        if (position.x < 0) position.x = 500;
-        if (position.y > 500) position.y = 0;
-        if (position.y < 0) position.y = 500;
+        if (position.x > 500/1000) position.x = 0;
+        if (position.x < 0) position.x = 500/1000;
+        if (position.y > 500/1000) position.y = 0;
+        if (position.y < 0) position.y = 500/1000;
 
         //console.log(position.x);
 

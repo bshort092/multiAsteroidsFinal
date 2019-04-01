@@ -75,8 +75,8 @@ MyGame.components.Player = function() {
         let vectorX = Math.cos(direction);
         let vectorY = Math.sin(direction);
 
-        velocityVector.x += vectorX * acceleration;
-        velocityVector.y += vectorY * acceleration;
+        velocityVector.x += vectorX * speed;
+        velocityVector.y += vectorY * speed;
     };
 
     //------------------------------------------------------------------
