@@ -10,19 +10,22 @@ MyGame.components.Player = function() {
         x: 0,
         y: 0
     };
+
     let velocityVector = {
         x: 0,
         y: 0
     };
+
     let size = {
         width: 0.05,
         height: 0.05
     };
+
     let direction = 0;
     let rotateRate = 0;
     let speed = 0;
-    let acceleration = 100;
-    let maxSpeed = 10;
+    let acceleration = 0;
+    let maxSpeed = 0;
 
     Object.defineProperty(that, 'direction', {
         get: () => direction,
@@ -112,7 +115,12 @@ MyGame.components.Player = function() {
 
         position.x += velocityVector.x;
         position.y += velocityVector.y;
-    };
+
+        if (position.x > 500) position.x = 0;
+        if (position.x < 0) position.x = 500;
+        if (position.y > 500) position.y = 0;
+        if (position.y < 0) position.y = 500;
+    }
 
     return that;
 };

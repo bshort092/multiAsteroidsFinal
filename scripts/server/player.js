@@ -25,15 +25,18 @@ function createPlayer() {
         width: 0.01,
         height: 0.01
     };
+
     let direction = random.nextDouble() * 2 * Math.PI;    // Angle in radians
     let rotateRate = Math.PI / 1000;    // radians per millisecond
     let speed = 0.0002;                  // unit distance per millisecond
     let reportUpdate = false;    // Indicates if this model was updated during the last update
+
     let velocityVector = {
         x: 0,
         y: 0
     }
-    let acceleration = 0;
+
+    let acceleration = .1;
     let maxSpeed = 10;
 
     Object.defineProperty(that, 'velocityVector', {
@@ -79,6 +82,7 @@ function createPlayer() {
     //
     //------------------------------------------------------------------
     that.move = function(elapsedTime) {
+        //console.log("Moved");
 
         let vectorX = Math.cos(direction);
         let vectorY = Math.sin(direction);
@@ -106,6 +110,13 @@ function createPlayer() {
     };
 
     that.update = function(elapsedTime) {
+        console.log("Update");
+        console.log(elapsedTime);
+        console.log("acceleration: " + acceleration)
+        console.log("velocityVector.x: " + velocityVector.x)
+        console.log("position.x: " + position.x)
+        console.log("direction: " + direction)
+
 
         if (velocityVector.x > maxSpeed) {
             velocityVector.x = maxSpeed;
@@ -123,6 +134,15 @@ function createPlayer() {
 
         position.x += velocityVector.x;
         position.y += velocityVector.y;
+
+        if (position.x > 500) position.x = 0;
+        if (position.x < 0) position.x = 500;
+        if (position.y > 500) position.y = 0;
+        if (position.y < 0) position.y = 500;
+
+        //console.log(position.x);
+
+
     };
 
     return that;
