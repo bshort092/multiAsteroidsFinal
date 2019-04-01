@@ -6,15 +6,19 @@
 MyGame.main = (function (graphics, renderer, input, components) {
     'use strict';
 
-    let lastTimeStamp = performance.now()
-    let myKeyboard = input.Keyboard()
+    let lastTimeStamp = performance.now();
+    let myKeyboard = input.Keyboard();
     let playerSelf = {
         model: components.Player(),
         texture: MyGame.assets['player-self']
-    }
+    };
+    let asteroids = {
+        model: components.Asteroid(),
+        texture: MyGame.assets['asteroid']
+    };
     let playerOthers = {};
-    let messageHistory = MyGame.utilities.Queue()
-    let messageId = 1
+    let messageHistory = MyGame.utilities.Queue();
+    let messageId = 1;
     let socket = io();
 
     //------------------------------------------------------------------
@@ -126,7 +130,7 @@ MyGame.main = (function (graphics, renderer, input, components) {
             model.goal.updateWindow = data.updateWindow;
 
             model.goal.position.x = data.position.x;
-            model.goal.position.y = data.position.y
+            model.goal.position.y = data.position.y;
             model.goal.direction = data.direction;
         }
     });

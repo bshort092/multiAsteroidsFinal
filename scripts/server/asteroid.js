@@ -13,7 +13,7 @@ let random = require ('./random');
 // at some random location.
 //
 //------------------------------------------------------------------
-function createPlayer() {
+function createAsteroid() {
     let that = {};
 
     let position = {
@@ -103,4 +103,4 @@ function createPlayer() {
     return that;
 }
 
-module.exports.create = () => createPlayer();
+module.exports.create = () => createAsteroid();
