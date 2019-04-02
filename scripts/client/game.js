@@ -12,10 +12,10 @@ MyGame.main = (function (graphics, renderer, input, components) {
         model: components.Player(),
         texture: MyGame.assets['player-self']
     };
-    let asteroids = {
-        model: components.Asteroid(),
-        texture: MyGame.assets['asteroid']
-    };
+    // let asteroids = {
+    //     model: components.Asteroid(),
+    //     texture: MyGame.assets['asteroid']
+    // };
     let playerOthers = {};
     let messageHistory = MyGame.utilities.Queue();
     let messageId = 1;
@@ -151,6 +151,7 @@ MyGame.main = (function (graphics, renderer, input, components) {
     //------------------------------------------------------------------
     function update(elapsedTime) {
         playerSelf.model.update(elapsedTime);
+        // asteroids.model.update(elapsedTime);
         for (let id in playerOthers) {
             playerOthers[id].model.update(elapsedTime);
         }
@@ -164,6 +165,7 @@ MyGame.main = (function (graphics, renderer, input, components) {
     function render() {
         graphics.clear();
         renderer.Player.render(playerSelf.model, playerSelf.texture);
+        // renderer.Asteroid.render(asteroids.model, asteroids.texture);
         for (let id in playerOthers) {
             let player = playerOthers[id];
             renderer.PlayerRemote.render(player.model, player.texture);
@@ -184,7 +186,7 @@ MyGame.main = (function (graphics, renderer, input, components) {
         render();
 
         requestAnimationFrame(gameLoop);
-    };
+    }
 
     //------------------------------------------------------------------
     //
