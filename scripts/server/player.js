@@ -112,6 +112,7 @@ function createPlayer() {
     };
 
     that.update = function(elapsedTime) {
+        reportUpdate = true;
 
         if (velocityVector.x > maxSpeed) {
             velocityVector.x = maxSpeed;
