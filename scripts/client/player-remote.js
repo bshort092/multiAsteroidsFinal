@@ -7,8 +7,8 @@ MyGame.components.PlayerRemote = function() {
     'use strict';
     let that = {};
     let size = {
-        width: 0.05,
-        height: 0.05
+        width: 50,
+        height: 50
     };
     let state = {
         direction: 0,

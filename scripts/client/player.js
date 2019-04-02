@@ -17,8 +17,8 @@ MyGame.components.Player = function() {
     };
 
     let size = {
-        width: 0.05,
-        height: 0.05
+        width: 50,
+        height: 50
     };
 
     let direction = 0;
@@ -75,8 +75,8 @@ MyGame.components.Player = function() {
         let vectorX = Math.cos(direction);
         let vectorY = Math.sin(direction);
 
-        velocityVector.x += vectorX * speed;
-        velocityVector.y += vectorY * speed;
+        velocityVector.x += vectorX * acceleration;
+        velocityVector.y += vectorY * acceleration;
     };
 
     //------------------------------------------------------------------
@@ -116,10 +116,10 @@ MyGame.components.Player = function() {
         position.x += velocityVector.x;
         position.y += velocityVector.y;
 
-        if (position.x > 500) position.x = 0;
-        if (position.x < 0) position.x = 500;
-        if (position.y > 500) position.y = 0;
-        if (position.y < 0) position.y = 500;
+        if (position.x > 600) position.x = 0;
+        if (position.x < 0) position.x = 600;
+        if (position.y > 600) position.y = 0;
+        if (position.y < 0) position.y = 600;
     }
 
     return that;

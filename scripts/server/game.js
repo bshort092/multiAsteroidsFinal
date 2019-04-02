@@ -180,6 +180,7 @@ function initializeSocketIO(httpServer) {
         //
         // Create an entry in our list of connected clients
         let newPlayer = Player.create()
+
         newPlayer.clientId = socket.id;
         activeClients[socket.id] = {
             socket: socket,

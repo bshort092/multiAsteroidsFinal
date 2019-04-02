@@ -17,18 +17,18 @@ function createPlayer() {
     let that = {};
 
     let position = {
-        x: random.nextDouble(),
-        y: random.nextDouble()
+        x: Math.floor( random.nextDouble() * 600),
+        y: Math.floor( random.nextDouble() * 600)
     };
 
     let size = {
-        width: 0.01,
-        height: 0.01
+        width: 50,
+        height: 50
     };
 
     let direction = random.nextDouble() * 2 * Math.PI;    // Angle in radians
     let rotateRate = Math.PI / 1000;    // radians per millisecond
-    let speed = 0.0002;                  // unit distance per millisecond
+    let speed = 0;                  // unit distance per millisecond
     let reportUpdate = false;    // Indicates if this model was updated during the last update
 
     let velocityVector = {
@@ -82,13 +82,13 @@ function createPlayer() {
     //
     //------------------------------------------------------------------
     that.move = function(elapsedTime) {
-        //console.log("Moved");
+        reportUpdate = true;
 
         let vectorX = Math.cos(direction);
         let vectorY = Math.sin(direction);
 
-        velocityVector.x += vectorX * speed;
-        velocityVector.y += vectorY * speed;
+        velocityVector.x += vectorX * acceleration;
+        velocityVector.y += vectorY * acceleration;
     };
 
     //------------------------------------------------------------------
@@ -97,6 +97,7 @@ function createPlayer() {
     //
     //------------------------------------------------------------------
     that.rotateRight = function(elapsedTime) {
+        reportUpdate = true;
         direction += (rotateRate * elapsedTime);
     };
 
@@ -106,18 +107,11 @@ function createPlayer() {
     //
     //------------------------------------------------------------------
     that.rotateLeft = function(elapsedTime) {
+        reportUpdate = true;
         direction -= (rotateRate * elapsedTime);
     };
 
     that.update = function(elapsedTime) {
-        console.log("Update");
-        console.log(elapsedTime);
-        console.log("acceleration: " + acceleration)
-        console.log("velocityVector.x: " + velocityVector.x)
-        console.log("position.x: " + position.x)
-        console.log("position.y: " + position.y)
-        console.log("direction: " + direction)
-
 
         if (velocityVector.x > maxSpeed) {
             velocityVector.x = maxSpeed;
@@ -136,14 +130,10 @@ function createPlayer() {
         position.x += velocityVector.x;
         position.y += velocityVector.y;
 
-        if (position.x > 500/1000) position.x = 0;
-        if (position.x < 0) position.x = 500/1000;
-        if (position.y > 500/1000) position.y = 0;
-        if (position.y < 0) position.y = 500/1000;
-
-        //console.log(position.x);
-
-
+        if (position.x > 600) position.x = 0;
+        if (position.x < 0) position.x = 600;
+        if (position.y > 600) position.y = 0;
+        if (position.y < 0) position.y = 600;
     };
 
     return that;
