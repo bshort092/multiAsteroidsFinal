@@ -1,21 +1,23 @@
 'use strict';
 
 let random = require ('./random');
-let canvas = document.getElementById('canvas-main');
+// let canvas = document.getElementById('canvas-main');
 
 
-function checkXpos(){
-    let x = Math.random() * canvas.width;
-    while(x > valid[0] && x < valid[1]){
-        x = Math.random() * canvas.width;
-    }
+function checkXpos(canvas){
+    let x = Math.random() * 600;
+    // let x = Math.random() * canvas.width;
+    // while(x > valid[0] && x < valid[1]){
+    //     x = Math.random() * canvas.width;
+    // }
     return x;
 }
-function checkYpos(){
-    let y = Math.random() * canvas.height;
-    while(y > valid[2] && y < valid[3]) {
-        y = Math.random() * canvas.height;
-    }
+function checkYpos(canvas){
+    let y = Math.random() * 600;
+    // let y = Math.random() * canvas.height;
+    // while(y > valid[2] && y < valid[3]) {
+    //     y = Math.random() * canvas.height;
+    // }
     return y;
 }
 function getNewSpeed(){
@@ -29,9 +31,9 @@ function difRotations(){
     return randomRotate * plusOrMinus;
 }
 
-function createAsteroid(shipWidth, shipHeight) {
+function createAsteroid() {
     let that = {};
-    let valid = [canvas.width/2 - shipWidth*2, canvas.width/2 + shipWidth*2, canvas.height/2 - shipHeight*2, canvas.height/2 + shipHeight*2];
+    // let valid = [canvas.width/2 - shipWidth*2, canvas.width/2 + shipWidth*2, canvas.height/2 - shipHeight*2, canvas.height/2 + shipHeight*2];
 
     let position = {
         x: checkXpos(),
@@ -87,10 +89,15 @@ function createAsteroid(shipWidth, shipHeight) {
 
         rotation += rotateRate;
 
-        if (position.x - (size.width/2) > canvas.width)  { position.x = 0 - (size.width/2); }
-        if (position.x + (size.width/2)  < 0)      { position.x = width + (size.width/2); }
-        if (position.y - (size.height/2) > canvas.height) { position.y = 0 - (size.height/2); }
-        if (position.y + (size.height/2) < 0)      { position.y = height + (size.height/2); }
+        // if (position.x - (size.width/2) > canvas.width)  { position.x = 0 - (size.width/2); }
+        // if (position.x + (size.width/2)  < 0)      { position.x = canvas.width + (size.width/2); }
+        // if (position.y - (size.height/2) > canvas.height) { position.y = 0 - (size.height/2); }
+        // if (position.y + (size.height/2) < 0)      { position.y = canvas.height + (size.height/2); }
+
+        if (position.x - (size.width/2) > 600)  { position.x = 0 - (size.width/2); }
+        if (position.x + (size.width/2)  < 0)      { position.x = 600 + (size.width/2); }
+        if (position.y - (size.height/2) > 600) { position.y = 0 - (size.height/2); }
+        if (position.y + (size.height/2) < 0)      { position.y = 600 + (size.height/2); }
 
     };
 

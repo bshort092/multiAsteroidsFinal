@@ -7,10 +7,12 @@
 
 let present = require('present');
 let Player = require('./player');
+let Asteroid = require('./asteroid');
 
 const UPDATE_RATE_MS = 250;
 let quit = false;
 let activeClients = {};
+let activeAsteroids = {};
 let inputQueue = [];
 
 //------------------------------------------------------------------
@@ -53,6 +55,10 @@ function update(elapsedTime, currentTime) {
     for (let clientId in activeClients) {
         activeClients[clientId].player.update(currentTime);
     }
+    // ASTEROID
+    for (let clientId in activeAsteroids) {
+        activeAsteroids[clientId].asteroid.update(currentTime);
+    }
 }
 
 //------------------------------------------------------------------
@@ -84,8 +90,38 @@ function updateClients(elapsedTime) {
         }
     }
 
+    // ASTEROID
+    for (let clientId in activeAsteroids) {
+        let client = activeAsteroids[clientId];
+        let update = {
+            clientId: clientId,
+            lastMessageId: client.lastMessageId,
+            direction: client.asteroid.direction,
+            position: client.asteroid.position,
+            updateWindow: elapsedTime
+        };
+        if (client.asteroid.reportUpdate) {
+            client.socket.emit('update-self-asteroid', update);
+
+            //
+            // Notify all other connected clients about every
+            // other connected client status...but only if they are updated.
+
+            // for (let otherId in activeAsteroids) {
+            //     if (otherId !== clientId) {
+            //         activeAsteroids[otherId].socket.emit('update-other-asteroid', update);
+            //     }
+            // }
+        }
+    }
+
     for (let clientId in activeClients) {
         activeClients[clientId].player.reportUpdate = false;
+    }
+
+    // ASTEROID
+    for (let clientId in activeAsteroids) {
+        activeAsteroids[clientId].asteroid.reportUpdate = false;
     }
 }
 
@@ -123,7 +159,7 @@ function initializeSocketIO(httpServer) {
     // other players already connected.
     //
     //------------------------------------------------------------------
-    function notifyConnect(socket, newPlayer) {
+    function notifyConnect(socket, newPlayer, newAsteroid) {
         for (let clientId in activeClients) {
             let client = activeClients[clientId];
             if (newPlayer.clientId !== clientId) {
@@ -150,6 +186,36 @@ function initializeSocketIO(httpServer) {
                 });
             }
         }
+
+        // ASTEROID
+        // for (let clientId in activeAsteroids) {
+        //     let client = activeAsteroids[clientId];
+        //     if (newAsteroid.clientId !== clientId) {
+        //         //
+        //         // Tell existing about the newly connected player
+        //         client.socket.emit('connect-other-asteroid', {
+        //             clientId: newAsteroid.clientId,
+        //             direction: newAsteroid.direction,
+        //             position: newAsteroid.position,
+        //             rotateRate: newAsteroid.rotateRate,
+        //             rotation: newAsteroid.rotation,
+        //             speed: newAsteroid.speed,
+        //             size: newAsteroid.size
+        //         });
+        //
+        //         //
+        //         // Tell the new player about the already connected player
+        //         socket.emit('connect-other-asteroid', {
+        //             clientId: client.asteroid.clientId,
+        //             direction: client.asteroid.direction,
+        //             position: client.asteroid.position,
+        //             rotateRate: client.asteroid.rotateRate,
+        //             rotation: client.asteroid.rotation,
+        //             speed: client.asteroid.speed,
+        //             size: client.asteroid.size
+        //         });
+        //     }
+        // }
     }
 
     //------------------------------------------------------------------
@@ -168,6 +234,18 @@ function initializeSocketIO(httpServer) {
             }
         }
     }
+
+    // ASTEROID
+    function notifyDisconnectAsteroid(asteroidId) {
+        for (let clientId in activeAsteroids) {
+            let client = activeAsteroids[clientId];
+            if (asteroidId !== clientId) {
+                client.socket.emit('disconnect-other-asteroid', {
+                    clientId: asteroidId
+                });
+            }
+        }
+    }
     
     io.on('connection', function(socket) {
         console.log('Connection established: ', socket.id);
@@ -179,12 +257,39 @@ function initializeSocketIO(httpServer) {
             socket: socket,
             player: newPlayer
         };
+
+        // ASTEROID
+        let newAsteroid = Asteroid.create();
+        console.log('newAsteroid:');
+        console.log('direction: ' + newAsteroid.direction);
+        console.log('position: ' + newAsteroid.position.x + ', ' + newAsteroid.position.y);
+        console.log('rotation: ' + newAsteroid.rotation);
+        console.log('rotateRate: ' + newAsteroid.rotateRate);
+        console.log('size: ' + newAsteroid.size.width + ', ' + newAsteroid.size.height);
+        console.log('speed: ' + newAsteroid.speed);
+        newAsteroid.clientId = socket.id;
+        activeAsteroids[socket.id] = {
+            socket: socket,
+            asteroid: newAsteroid
+        };
+
+
         socket.emit('connect-ack', {
             direction: newPlayer.direction,
             position: newPlayer.position,
             size: newPlayer.size,
             rotateRate: newPlayer.rotateRate,
             speed: newPlayer.speed
+        });
+
+        // ASTEROID
+        socket.emit('connect-ack-asteroid', {
+            direction: newAsteroid.direction,
+            position: newAsteroid.position,
+            size: newAsteroid.size,
+            rotateRate: newAsteroid.rotateRate,
+            rotation: newAsteroid.rotation,
+            speed: newAsteroid.speed
         });
 
         socket.on('input', data => {
@@ -199,7 +304,13 @@ function initializeSocketIO(httpServer) {
             notifyDisconnect(socket.id);
         });
 
-        notifyConnect(socket, newPlayer);
+        // ASTEROID
+        socket.on('disconnect-asteroid', function() {
+            delete activeAsteroids[socket.id];
+            // notifyDisconnectAsteroid(socket.id);
+        });
+
+        notifyConnect(socket, newPlayer, newAsteroid);
     });
 }
 

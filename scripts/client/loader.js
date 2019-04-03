@@ -26,15 +26,15 @@ MyGame.loader = (function() {
             message: 'Input loaded',
             onComplete: null
         }, {
-            scripts: ['player', 'player-remote'],
-            message: 'Player models loaded',
+            scripts: ['player', 'player-remote', 'asteroid'],
+            message: 'Player and Asteroid models loaded',
             onComplete: null
         }, {
             scripts: ['rendering/graphics'],
             message: 'Graphics loaded',
             onComplete: null
         }, {
-            scripts: ['rendering/player', 'rendering/player-remote'],
+            scripts: ['rendering/player', 'rendering/player-remote', 'rendering/asteroid'],
             message: 'Renderers loaded',
             onComplete: null
         }, {

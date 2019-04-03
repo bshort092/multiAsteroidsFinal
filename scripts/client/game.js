@@ -12,10 +12,11 @@ MyGame.main = (function (graphics, renderer, input, components) {
         model: components.Player(),
         texture: MyGame.assets['player-self']
     };
-    // let asteroids = {
-    //     model: components.Asteroid(),
-    //     texture: MyGame.assets['asteroid']
-    // };
+    let asteroids = {
+        model: components.Asteroid(),
+        texture: MyGame.assets['asteroid']
+    };
+    // let asteroids = {};
     let playerOthers = {};
     let messageHistory = MyGame.utilities.Queue();
     let messageId = 1;
@@ -37,6 +38,20 @@ MyGame.main = (function (graphics, renderer, input, components) {
         playerSelf.model.direction = data.direction;
         playerSelf.model.speed = data.speed;
         playerSelf.model.rotateRate = data.rotateRate;
+    });
+
+    // ASTEROID
+    socket.on('connect-ack-asteroid', function (data) {
+        asteroids.model.position.x = data.position.x;
+        asteroids.model.position.y = data.position.y;
+
+        asteroids.model.size.x = data.size.x;
+        asteroids.model.size.y = data.size.y;
+
+        asteroids.model.direction = data.direction;
+        asteroids.model.speed = data.speed;
+        asteroids.model.rotateRate = data.rotateRate;
+        asteroids.model.rotation = data.rotation;
     });
 
     //------------------------------------------------------------------
@@ -66,6 +81,28 @@ MyGame.main = (function (graphics, renderer, input, components) {
         };
     });
 
+    // ASTEROID
+    // socket.on('connect-other-asteroid', function (data) {
+    //     let model = components.Asteroid();
+    //     model.state.position.x = data.position.x;
+    //     model.state.position.y = data.position.y;
+    //     model.state.direction = data.direction;
+    //     model.state.lastUpdate = performance.now();
+    //
+    //     model.goal.position.x = data.position.x;
+    //     model.goal.position.y = data.position.y;
+    //     model.goal.direction = data.direction;
+    //     model.goal.updateWindow = 0;
+    //
+    //     model.size.x = data.size.x;
+    //     model.size.y = data.size.y;
+    //
+    //     asteroids[data.clientId] = {
+    //         model: model,
+    //         texture: MyGame.assets['asteroid']
+    //     };
+    // });
+
     //------------------------------------------------------------------
     //
     // Handler for when another player disconnects from the game.
@@ -74,6 +111,11 @@ MyGame.main = (function (graphics, renderer, input, components) {
     socket.on('disconnect-other', function (data) {
         delete playerOthers[data.clientId];
     });
+
+    // ASTEROID
+    // socket.on('disconnect-other-asteroid', function (data) {
+    //     delete asteroids[data.clientId];
+    // });
 
     //------------------------------------------------------------------
     //
@@ -119,6 +161,26 @@ MyGame.main = (function (graphics, renderer, input, components) {
         messageHistory = memory;
     });
 
+
+    // ASTEROID
+    socket.on('update-self-asteroid', function (data) {
+        asteroids.model.position.x = data.position.x;
+        asteroids.model.position.y = data.position.y;
+        asteroids.model.direction = data.direction;
+
+        //
+        // Remove messages from the queue up through the last one identified
+        // by the server as having been processed.
+        let done = false;
+        while (!done && !messageHistory.empty) {
+            if (messageHistory.front.id === data.lastMessageId) {
+                done = true;
+            }
+            //console.log('dumping: ', messageHistory.front.id);
+            messageHistory.dequeue();
+        }
+    });
+
     //------------------------------------------------------------------
     //
     // Handler for receiving state updates about other players.
@@ -150,8 +212,8 @@ MyGame.main = (function (graphics, renderer, input, components) {
     //
     //------------------------------------------------------------------
     function update(elapsedTime) {
+        asteroids.model.update(elapsedTime);
         playerSelf.model.update(elapsedTime);
-        // asteroids.model.update(elapsedTime);
         for (let id in playerOthers) {
             playerOthers[id].model.update(elapsedTime);
         }
@@ -164,8 +226,8 @@ MyGame.main = (function (graphics, renderer, input, components) {
     //------------------------------------------------------------------
     function render() {
         graphics.clear();
+        renderer.Asteroid.render(asteroids.model, asteroids.texture);
         renderer.Player.render(playerSelf.model, playerSelf.texture);
-        // renderer.Asteroid.render(asteroids.model, asteroids.texture);
         for (let id in playerOthers) {
             let player = playerOthers[id];
             renderer.PlayerRemote.render(player.model, player.texture);
