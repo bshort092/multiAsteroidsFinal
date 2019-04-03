@@ -78,8 +78,8 @@ function createPlayer() {
 
     //------------------------------------------------------------------
     //
-    // Public function that moves the player in the current direction.
-    //
+    // Moves the player forward based on how long it has been since the
+    // last move took place.
     //------------------------------------------------------------------
     that.move = function(elapsedTime) {
         reportUpdate = true;
@@ -93,8 +93,8 @@ function createPlayer() {
 
     //------------------------------------------------------------------
     //
-    // Public function that rotates the player right.
-    //
+    // Rotates the player right based on how long it has been since the
+    // last rotate took place.
     //------------------------------------------------------------------
     that.rotateRight = function(elapsedTime) {
         reportUpdate = true;
@@ -103,13 +103,19 @@ function createPlayer() {
 
     //------------------------------------------------------------------
     //
-    // Public function that rotates the player left.
-    //
+    // Rotates the player left based on how long it has been since the
+    // last rotate took place.
     //------------------------------------------------------------------
     that.rotateLeft = function(elapsedTime) {
         reportUpdate = true;
         direction -= (rotateRate * elapsedTime);
     };
+
+    //------------------------------------------------------------------
+    //
+    // Function used to update the player during the game loop.
+    //
+    //------------------------------------------------------------------
 
     that.update = function(elapsedTime) {
         reportUpdate = true;
