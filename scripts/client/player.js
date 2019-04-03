@@ -17,8 +17,8 @@ MyGame.components.Player = function() {
     };
 
     let size = {
-        width: 50,
-        height: 50
+        width: 35,
+        height: 35
     };
 
     let direction = 0;
@@ -69,8 +69,23 @@ MyGame.components.Player = function() {
         let vectorX = Math.cos(direction);
         let vectorY = Math.sin(direction);
 
-        velocityVector.x += vectorX * acceleration;
-        velocityVector.y += vectorY * acceleration;
+        velocityVector.x += vectorX * acceleration * elapsedTime/100;
+        velocityVector.y += vectorY * acceleration * elapsedTime/100;
+
+        if (velocityVector.x > maxSpeed) {
+            velocityVector.x = maxSpeed;
+        }
+        if (velocityVector.x < 0 - maxSpeed) {
+            velocityVector.x = 0 - maxSpeed;
+        }
+
+        if (velocityVector.y > maxSpeed) {
+            velocityVector.y = maxSpeed;
+        }
+        if (velocityVector.y < 0 - maxSpeed) {
+            velocityVector.y = 0 - maxSpeed;
+        }
+
     };
 
     //------------------------------------------------------------------
@@ -93,27 +108,25 @@ MyGame.components.Player = function() {
 
     that.update = function(elapsedTime) {
 
-        if (velocityVector.x > maxSpeed) {
-            velocityVector.x = maxSpeed;
-        }
-        if (velocityVector.x < 0 - maxSpeed) {
-            velocityVector.x = 0 - maxSpeed;
-        }
-
-        if (velocityVector.y > maxSpeed) {
-            velocityVector.y = maxSpeed;
-        }
-        if (velocityVector.y < 0 - maxSpeed) {
-            velocityVector.y = 0 - maxSpeed;
-        }
-
         position.x += velocityVector.x;
         position.y += velocityVector.y;
 
-        if (position.x > 600) position.x = 0;
-        if (position.x < 0) position.x = 600;
-        if (position.y > 600) position.y = 0;
-        if (position.y < 0) position.y = 600;
+        if (position.x > 590) {
+            position.x = 590;
+            velocityVector.x = 0;
+        }
+        if (position.x < 10) {
+            position.x = 10;
+            velocityVector.x = 0;
+        }
+        if (position.y > 590) {
+            position.y = 590;
+            velocityVector.y = 0;
+        }
+        if (position.y < 10) {
+            position.y = 10;
+            velocityVector.y = 0;
+        }
     }
 
     return that;

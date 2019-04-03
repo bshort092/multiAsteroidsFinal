@@ -8,7 +8,7 @@
 let present = require('present');
 let Player = require('./player');
 
-const UPDATE_RATE_MS = 9;
+const UPDATE_RATE_MS = 10;
 let quit = false;
 let activeClients = {};
 let inputQueue = [];
@@ -51,7 +51,7 @@ function processInput() {
 //------------------------------------------------------------------
 function update(elapsedTime, currentTime) {
     for (let clientId in activeClients) {
-        activeClients[clientId].player.update(currentTime);
+        activeClients[clientId].player.update(elapsedTime);
     }
 }
 
