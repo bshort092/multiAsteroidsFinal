@@ -8,7 +8,7 @@
 let present = require('present');
 let Player = require('./player');
 
-const UPDATE_RATE_MS = 250;
+const UPDATE_RATE_MS = 9;
 let quit = false;
 let activeClients = {};
 let inputQueue = [];
@@ -134,7 +134,6 @@ function initializeSocketIO(httpServer) {
                     direction: newPlayer.direction,
                     position: newPlayer.position,
                     rotateRate: newPlayer.rotateRate,
-                    speed: newPlayer.speed,
                     size: newPlayer.size,
                     acceleration: newPlayer.acceleration,
                     maxSpeed: newPlayer.maxSpeed,
@@ -148,7 +147,6 @@ function initializeSocketIO(httpServer) {
                     direction: client.player.direction,
                     position: client.player.position,
                     rotateRate: client.player.rotateRate,
-                    speed: client.player.speed,
                     size: client.player.size,
                     maxSpeed: client.player.maxSpeed,
                     acceleration: client.player.acceleration,
@@ -191,7 +189,6 @@ function initializeSocketIO(httpServer) {
             position: newPlayer.position,
             size: newPlayer.size,
             rotateRate: newPlayer.rotateRate,
-            speed: newPlayer.speed,
             velocityVector: newPlayer.velocityVector,
             maxSpeed: newPlayer.maxSpeed,
             acceleration: newPlayer.acceleration

@@ -31,7 +31,6 @@ MyGame.main = (function (graphics, renderer, input, components) {
         playerSelf.model.size.y = data.size.y;
 
         playerSelf.model.direction = data.direction;
-        playerSelf.model.speed = data.speed;
         playerSelf.model.rotateRate = data.rotateRate;
         playerSelf.model.acceleration = data.acceleration;
         playerSelf.model.velocityVector = data.velocityVector;

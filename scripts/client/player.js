@@ -23,7 +23,6 @@ MyGame.components.Player = function() {
 
     let direction = 0;
     let rotateRate = 0;
-    let speed = 0;
     let acceleration = 0;
     let maxSpeed = 0;
 
@@ -45,11 +44,6 @@ MyGame.components.Player = function() {
     Object.defineProperty(that, 'maxSpeed', {
         get: () => maxSpeed,
         set: (value) => { maxSpeed = value }
-    });
-
-    Object.defineProperty(that, 'speed', {
-        get: () => speed,
-        set: value => { speed = value; }
     });
 
     Object.defineProperty(that, 'rotateRate', {

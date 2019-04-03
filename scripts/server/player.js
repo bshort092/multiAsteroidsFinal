@@ -21,6 +21,11 @@ function createPlayer() {
         y: Math.floor( random.nextDouble() * 600)
     };
 
+    let velocityVector = {
+        x: 0,
+        y: 0
+    }
+
     let size = {
         width: 50,
         height: 50
@@ -28,13 +33,7 @@ function createPlayer() {
 
     let direction = random.nextDouble() * 2 * Math.PI;    // Angle in radians
     let rotateRate = Math.PI / 1000;    // radians per millisecond
-    let speed = 0;                  // unit distance per millisecond
     let reportUpdate = false;    // Indicates if this model was updated during the last update
-
-    let velocityVector = {
-        x: 0,
-        y: 0
-    }
 
     let acceleration = .1;
     let maxSpeed = 10;
@@ -62,10 +61,6 @@ function createPlayer() {
     Object.defineProperty(that, 'size', {
         get: () => size
     });
-
-    Object.defineProperty(that, 'speed', {
-        get: () => speed
-    })
 
     Object.defineProperty(that, 'rotateRate', {
         get: () => rotateRate
