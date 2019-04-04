@@ -169,6 +169,7 @@ MyGame.main = (function (graphics, renderer, input, components) {
         asteroids.model.position.x = data.position.x;
         asteroids.model.position.y = data.position.y;
         asteroids.model.direction = data.direction;
+        asteroids.model.rotation = data.rotation;
 
         //
         // Remove messages from the queue up through the last one identified

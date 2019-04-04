@@ -98,6 +98,7 @@ function updateClients(elapsedTime) {
             lastMessageId: client.lastMessageId,
             direction: client.asteroid.direction,
             position: client.asteroid.position,
+            rotation: client.asteroid.rotation,
             updateWindow: elapsedTime
         };
         if (client.asteroid.reportUpdate) {
@@ -240,23 +241,22 @@ function initializeSocketIO(httpServer) {
     }
 
     // ASTEROID
-    function notifyDisconnectAsteroid(asteroidId) {
-        for (let clientId in activeAsteroids) {
-            let client = activeAsteroids[clientId];
-            if (asteroidId !== clientId) {
-                client.socket.emit('disconnect-other-asteroid', {
-                    clientId: asteroidId
-                });
-            }
-        }
-    }
+    // function notifyDisconnectAsteroid(asteroidId) {
+    //     for (let clientId in activeAsteroids) {
+    //         let client = activeAsteroids[clientId];
+    //         if (asteroidId !== clientId) {
+    //             client.socket.emit('disconnect-other-asteroid', {
+    //                 clientId: asteroidId
+    //             });
+    //         }
+    //     }
+    // }
     
     io.on('connection', function(socket) {
         console.log('Connection established: ', socket.id);
         //
         // Create an entry in our list of connected clients
-        let newPlayer = Player.create()
-
+        let newPlayer = Player.create();
         newPlayer.clientId = socket.id;
         activeClients[socket.id] = {
             socket: socket,
@@ -265,13 +265,6 @@ function initializeSocketIO(httpServer) {
 
         // ASTEROID
         let newAsteroid = Asteroid.create();
-        console.log('newAsteroid:');
-        console.log('direction: ' + newAsteroid.direction);
-        console.log('position: ' + newAsteroid.position.x + ', ' + newAsteroid.position.y);
-        console.log('rotation: ' + newAsteroid.rotation);
-        console.log('rotateRate: ' + newAsteroid.rotateRate);
-        console.log('size: ' + newAsteroid.size.width + ', ' + newAsteroid.size.height);
-        console.log('speed: ' + newAsteroid.speed);
         newAsteroid.clientId = socket.id;
         activeAsteroids[socket.id] = {
             socket: socket,
