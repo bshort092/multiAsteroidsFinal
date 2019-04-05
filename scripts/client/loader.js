@@ -47,7 +47,7 @@ MyGame.loader = (function() {
             source: 'assets/blueShip.png'
         }, {
             key: 'player-other',
-            source: 'assets/playerShip1_red.png'
+            source: 'assets/greenShip.png'
         }, {
             key: 'asteroid',
             source: 'assets/asteroid.png'
