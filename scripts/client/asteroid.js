@@ -54,10 +54,10 @@ MyGame.components.Asteroid = function() {
 
         rotation += rotateRate;
 
-        if (position.x - (size.width/2) > canvas.width)  { position.x = 0 - (size.width/2); }
-        if (position.x + (size.width/2)  < 0)      { position.x = width + (size.width/2); }
-        if (position.y - (size.height/2) > canvas.height) { position.y = 0 - (size.height/2); }
-        if (position.y + (size.height/2) < 0)      { position.y = height + (size.height/2); }
+        if (position.x - (size.width/2) > 600)  { position.x = 0 - (size.width/2); }
+        if (position.x + (size.width/2)  < 0)      { position.x = 600 + (size.width/2); }
+        if (position.y - (size.height/2) > 600) { position.y = 0 - (size.height/2); }
+        if (position.y + (size.height/2) < 0)      { position.y = 600 + (size.height/2); }
 
     };
 

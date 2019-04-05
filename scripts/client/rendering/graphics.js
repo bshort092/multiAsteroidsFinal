@@ -66,7 +66,7 @@ MyGame.graphics = (function () {
     // Draw an image into the local canvas coordinate system.
     //
     //------------------------------------------------------------------
-    function drawImage(texture, center, size) {
+    function drawImage(texture, center, size, rotation) {
         // let localCenter = {
         //     x: center.x,
         //     y: center.y
@@ -75,6 +75,10 @@ MyGame.graphics = (function () {
         //     width: size.width,
         //     height: size.height
         // };
+
+        context.translate(center.x, center.y);
+        context.rotate(rotation);
+        context.translate(-center.x, -center.y);
 
         context.drawImage(
             texture,

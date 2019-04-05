@@ -16,7 +16,6 @@ MyGame.main = (function (graphics, renderer, input, components) {
         model: components.Asteroid(),
         texture: MyGame.assets['asteroid']
     };
-    // let asteroids = {};
     let playerOthers = {};
     let messageHistory = MyGame.utilities.Queue();
     let messageId = 1;
@@ -83,28 +82,6 @@ MyGame.main = (function (graphics, renderer, input, components) {
         };
     });
 
-    // ASTEROID
-    // socket.on('connect-other-asteroid', function (data) {
-    //     let model = components.Asteroid();
-    //     model.state.position.x = data.position.x;
-    //     model.state.position.y = data.position.y;
-    //     model.state.direction = data.direction;
-    //     model.state.lastUpdate = performance.now();
-    //
-    //     model.goal.position.x = data.position.x;
-    //     model.goal.position.y = data.position.y;
-    //     model.goal.direction = data.direction;
-    //     model.goal.updateWindow = 0;
-    //
-    //     model.size.x = data.size.x;
-    //     model.size.y = data.size.y;
-    //
-    //     asteroids[data.clientId] = {
-    //         model: model,
-    //         texture: MyGame.assets['asteroid']
-    //     };
-    // });
-
     //------------------------------------------------------------------
     //
     // Handler for when another player disconnects from the game.
@@ -169,18 +146,7 @@ MyGame.main = (function (graphics, renderer, input, components) {
         asteroids.model.position.x = data.position.x;
         asteroids.model.position.y = data.position.y;
         asteroids.model.direction = data.direction;
-
-        //
-        // Remove messages from the queue up through the last one identified
-        // by the server as having been processed.
-        let done = false;
-        while (!done && !messageHistory.empty) {
-            if (messageHistory.front.id === data.lastMessageId) {
-                done = true;
-            }
-            //console.log('dumping: ', messageHistory.front.id);
-            messageHistory.dequeue();
-        }
+        asteroids.model.rotation = data.rotation;
     });
 
     //------------------------------------------------------------------
