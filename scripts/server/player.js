@@ -31,6 +31,8 @@ function createPlayer() {
         height: 35
     };
 
+    let laserArray = [];
+
     let direction = random.nextDouble() * 2 * Math.PI;    // Angle in radians
     let rotateRate = Math.PI / 1000;    // radians per millisecond
     let reportUpdate = false;    // Indicates if this model was updated during the last update
@@ -82,8 +84,8 @@ function createPlayer() {
         let vectorX = Math.cos(direction);
         let vectorY = Math.sin(direction);
 
-        velocityVector.x += vectorX * acceleration * elapsedTime/100;
-        velocityVector.y += vectorY * acceleration * elapsedTime/100;
+        velocityVector.x += vectorX * acceleration * elapsedTime / 100;
+        velocityVector.y += vectorY * acceleration * elapsedTime / 100;
 
         if (velocityVector.x > maxSpeed) {
             velocityVector.x = maxSpeed;
@@ -100,6 +102,27 @@ function createPlayer() {
         }
     };
 
+    that.fireLaser = function () {
+        if (canFire) {
+            canFire = false;
+            fireTime = 0;
+            let myLaser = MyGame.components.Laser({
+                imageSrc: 'assets/laser.png',
+                position: { x: position.x, y: position.y },
+                size: { width: 25, height: 3 },
+                speed: 3,
+                direction: { x: Math.cos(rotation), y: Math.sin(rotation) },
+                rotation: rotation
+            });
+
+            laserArray.push(myLaser);
+
+            if (laserArray.length > 10) {
+                laserArray.shift();
+            }
+
+        }
+    }
     //------------------------------------------------------------------
     //
     // Rotates the player right based on how long it has been since the

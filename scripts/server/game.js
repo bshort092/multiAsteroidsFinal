@@ -8,14 +8,15 @@
 let present = require('present');
 let Player = require('./player');
 let Asteroid = require('./asteroid');
+let Laser = require('./laser');
 
 let newAsteroid = Asteroid.create();
-console.log('newAsteroid created');
+//console.log('newAsteroid created');
 
-let SetOfAsteroids = []
+let SetOfAsteroids = [];
 
 // for(let i = 0; i < 2; i++){
-    // SetOfAsteroids.push(Asteroid.create());
+// SetOfAsteroids.push(Asteroid.create());
 // }
 
 const UPDATE_RATE_MS = 10;
@@ -50,6 +51,9 @@ function processInput() {
                 break;
             case 'rotate-right':
                 client.player.rotateRight(input.message.elapsedTime);
+                break;
+            case 'fire-laser':
+                client.player.fireLaser(input.message.elapsedTime);
                 break;
         }
     }
@@ -231,8 +235,8 @@ function initializeSocketIO(httpServer) {
     //         }
     //     }
     // }
-    
-    io.on('connection', function(socket) {
+
+    io.on('connection', function (socket) {
         console.log('Connection established: ', socket.id);
         //
         // Create an entry in our list of connected clients
@@ -249,7 +253,7 @@ function initializeSocketIO(httpServer) {
             socket: socket,
             asteroid: newAsteroid
         };
-        
+
 
 
         socket.emit('connect-ack', {
@@ -279,15 +283,15 @@ function initializeSocketIO(httpServer) {
             });
         });
 
-        socket.on('disconnect', function() {
+        socket.on('disconnect', function () {
             delete activeClients[socket.id];
             notifyDisconnect(socket.id);
         });
 
         // ASTEROID
         // socket.on('disconnect-asteroid', function() {
-            // delete activeAsteroids[socket.id];
-            //// notifyDisconnectAsteroid(socket.id);
+        // delete activeAsteroids[socket.id];
+        //// notifyDisconnectAsteroid(socket.id);
         // });
 
         notifyConnect(socket, newPlayer);
