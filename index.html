@@ -4,10 +4,66 @@
     <meta charset = "UTF-8">
     <title>Multiplayer - Entity Interpolation</title>
     <script src = "/node_modules/socket.io-client/dist/socket.io.slim.js"></script>
+    <link rel = "stylesheet" type = "text/css" href = "game.css">
+
 </head>
 <body>
-    <canvas id = "canvas-main" width = "600" height = "600" style = "background-image: url('https://thumbs.gfycat.com/RingedSpicyKodiakbear-size_restricted.gif');"></canvas>
-
+    <div id = "game">
+        <div id = "main-menu" class = "screen">
+            <h2 class="MainTitle">Multiplayer Asteroids</h2>
+            <ul class = "menu">
+                <li><button id = "id-new-game">New Game</button></li>
+                <li><button id = "id-high-scores">High Scores</button></li>
+                <li><button id = "id-help">Controls</button></li>
+                <li><button id = "id-about">Credits</button></li>
+            </ul>
+        </div>
+        <div id = "game-play" class = "screen">
+            <canvas id = "canvas-main" width = "600" height = "600" style = "background-image: url('https://thumbs.gfycat.com/RingedSpicyKodiakbear-size_restricted.gif');"></canvas>
+        </div>
+        <div id = "game-pause" class = "screen">
+            <h2 class="MainTitle">Paused</h2>
+            <ul class = "menu">
+                <li><button id = "id-resume-game">Resume&nbsp;Game</button></li>
+                <li><button id = "id-game-high-scores">High&nbsp;Scores</button></li>
+                <li><button id = "id-game-help">Controls</button></li>
+                <li><button id = "id-game-about">Credits</button></li>
+                <li><button id = "id-main-back">Quit</button></li>
+            </ul>
+        </div>
+        <div id = "game-over" class = "screen">
+            <h1 class="MainTitle">Game Over</h1>
+            <h4 id="finalScore"></h4>
+            <p id="endingMessage"></p>
+            <ul class = "menu">
+                <li><button id = "id-game-main-back">Quit</button></li>
+            </ul>
+        </div>
+        <div id = "high-scores" class = "screen">
+            <h1>High Scores</h1>
+            <div id="scores"></div>
+            <ul class = "menu">
+                <li><button id = "id-high-scores-back">Back</button></li>
+            </ul>
+        </div>
+        <div id = "help" class = "screen">
+            <h1>Controls</h1>
+            <p>Arrow keys are used to thrust forward (up arrow key) and rotate left/right (left/right arrow keys)</p>
+            <p>Space bar is used to fire bullets</p>
+            <p>Letter 'z' is used for hyperspace (it will complete recharge after 5 seconds)</p><br>
+            <ul class = "menu">
+                <li><button id = "id-help-back">Back</button></li>
+            </ul>
+        </div>
+        <div id = "about" class = "screen">
+            <h1>Credits</h1>
+            <p>Created for CS 5410 by Keisha Gates & Brandon Short</p>
+            <ul class = "menu">
+                <li><button id = "id-about-back">Back</button></li>
+            </ul>
+        </div>
+    </div>
     <script data-main = "scripts/client/loader" src = "scripts/client/require.js"></script>
+
 </body>
 </html>
