@@ -3,23 +3,19 @@
 // This function provides the "game" code.
 //
 //------------------------------------------------------------------
-MyGame.main = (function (graphics, renderer, input, components) {
+MyGame.screens['game-play'] = (function (game, graphics, renderer, input, components) {
     'use strict';
 
     let lastTimeStamp = performance.now();
+    let cancelNextRequest = true;
     let myKeyboard = input.Keyboard();
-    let playerSelf = {
-        model: components.Player(),
-        texture: MyGame.assets['player-self']
-    };
-    let asteroids = {
-        model: components.Asteroid(),
-        texture: MyGame.assets['asteroid']
-    };
-    let playerOthers = {};
-    let messageHistory = MyGame.utilities.Queue();
-    let messageId = 1;
     let socket = io();
+
+    let playerSelf = {};
+    let asteroids = {};
+    let playerOthers = {};
+    let messageHistory;
+    let messageId;
 
     //------------------------------------------------------------------
     //
@@ -165,6 +161,11 @@ MyGame.main = (function (graphics, renderer, input, components) {
         }
     });
 
+    function callEscape() {
+        cancelNextRequest = true;
+        game.showScreen('game-pause');
+    }
+
     //------------------------------------------------------------------
     //
     // Process the registered input handlers here.
@@ -227,6 +228,19 @@ MyGame.main = (function (graphics, renderer, input, components) {
     //------------------------------------------------------------------
     function initialize() {
         console.log('game initializing...');
+
+        playerSelf = {
+            model: components.Player(),
+            texture: MyGame.assets['player-self']
+        };
+        asteroids = {
+            model: components.Asteroid(),
+            texture: MyGame.assets['asteroid']
+        };
+        playerOthers = {};
+        messageHistory = MyGame.utilities.Queue();
+        messageId = 1;
+        
         //
         // Create the keyboard input handler and register the keyboard commands
         myKeyboard.registerHandler(elapsedTime => {
@@ -265,13 +279,24 @@ MyGame.main = (function (graphics, renderer, input, components) {
         },
             'a', true);
 
-        //
-        // Get the game loop started
+        myKeyboard.registerHandler(elapsedTime => {
+            callEscape();
+        }, 'Escape', true);
+    }
+
+    function run() {
+        // game.playSoundBackground('background');
+        lastTimeStamp = performance.now();
+        cancelNextRequest = false;
         requestAnimationFrame(gameLoop);
+        // if(game.pastScreen === 'main-menu' || game.pastScreen === 'game-play') {
+        //     initialize();
+        // }
     }
 
     return {
-        initialize: initialize
+        initialize: initialize,
+        run: run,
     };
 
-}(MyGame.graphics, MyGame.renderer, MyGame.input, MyGame.components));
+}(MyGame.game, MyGame.graphics, MyGame.renderer, MyGame.input, MyGame.components));

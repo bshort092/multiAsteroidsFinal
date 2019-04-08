@@ -3,7 +3,9 @@ MyGame = {
     components: {},
     renderer: {},
     utilities: {},
-    assets: {}
+    assets: {},
+    game: {},
+    screens: {},
 };
 
 //------------------------------------------------------------------
@@ -18,6 +20,9 @@ MyGame.loader = (function() {
     'use strict';
     let scriptOrder = [
         {
+            scripts: ['screens/game'],
+            message: 'Game is loaded'
+        }, {
             scripts: ['queue'],
             message: 'Utilities loaded',
             onComplete: null,
@@ -38,10 +43,10 @@ MyGame.loader = (function() {
             message: 'Renderers loaded',
             onComplete: null
         }, {
-            scripts: ['game'],
-            message: 'Gameplay model loaded',
-            onComplete: null
-        }],
+            scripts: ['screens/gameplay', 'screens/pause', 'screens/about', 'screens/gameover', 'screens/help', 'screens/highscores', 'screens/mainmenu',],
+            message: 'Screens loaded',
+            onComplete: null,
+        }, ],
         assetOrder = [{
             key: 'player-self',
             source: 'assets/blueShip.png'
@@ -167,7 +172,8 @@ MyGame.loader = (function() {
     //------------------------------------------------------------------
     function mainComplete() {
         console.log('it is all loaded up');
-        MyGame.main.initialize();
+        // MyGame.main.initialize();
+        MyGame.game.initialize();
     }
 
     //
