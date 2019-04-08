@@ -34,9 +34,7 @@ MyGame.loader = (function() {
             scripts: ['player', 'player-remote', 'asteroid'],
             message: 'Player and Asteroid models loaded',
             onComplete: null
-        },
-         
-        {
+        }, {
             scripts: ['rendering/graphics'],
             message: 'Graphics loaded',
             onComplete: null
@@ -44,18 +42,11 @@ MyGame.loader = (function() {
             scripts: ['rendering/player', 'rendering/player-remote', 'rendering/asteroid'],
             message: 'Renderers loaded',
             onComplete: null
-        }, 
-        {
-            scripts: ['screens/gameplay', 'screens/about', 'screens/gameover', 'screens/help', 'screens/highscores', 'screens/mainmenu',],
+        }, {
+            scripts: ['screens/gameplay', 'screens/pause', 'screens/about', 'screens/gameover', 'screens/help', 'screens/highscores', 'screens/mainmenu',],
             message: 'Screens loaded',
             onComplete: null,
-        }, 
-        // {
-        //     scripts: ['game'],
-        //     message: 'Gameplay model loaded',
-        //     onComplete: null
-        // }
-        ],
+        }, ],
         assetOrder = [{
             key: 'player-self',
             source: 'assets/blueShip.png'

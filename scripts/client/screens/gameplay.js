@@ -161,6 +161,11 @@ MyGame.screens['game-play'] = (function (game, graphics, renderer, input, compon
         }
     });
 
+    function callEscape() {
+        cancelNextRequest = true;
+        game.showScreen('game-pause');
+    }
+
     //------------------------------------------------------------------
     //
     // Process the registered input handlers here.
@@ -274,15 +279,9 @@ MyGame.screens['game-play'] = (function (game, graphics, renderer, input, compon
         },
             'a', true);
 
-        // myKeyboard.register('Escape', function() {
-        //     // game.pauseSound('background');
-        //     cancelNextRequest = true;
-        //     game.showScreen('game-pause');
-        // });
-
-        //
-        // Get the game loop started
-        // requestAnimationFrame(gameLoop);
+        myKeyboard.registerHandler(elapsedTime => {
+            callEscape();
+        }, 'Escape', true);
     }
 
     function run() {
@@ -290,9 +289,9 @@ MyGame.screens['game-play'] = (function (game, graphics, renderer, input, compon
         lastTimeStamp = performance.now();
         cancelNextRequest = false;
         requestAnimationFrame(gameLoop);
-        if(game.pastScreen === 'main-menu' || game.pastScreen === 'game-play') {
-            initialize();
-        }
+        // if(game.pastScreen === 'main-menu' || game.pastScreen === 'game-play') {
+        //     initialize();
+        // }
     }
 
     return {
