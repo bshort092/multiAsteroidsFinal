@@ -39,6 +39,7 @@ MyGame.main = (function (graphics, renderer, input, components) {
         playerSelf.model.acceleration = data.acceleration;
         playerSelf.model.velocityVector = data.velocityVector;
         playerSelf.model.maxSpeed = data.maxSpeed;
+        playerSelf.model.laserArray = data.laserArray;
     });
 
     // ASTEROID
@@ -133,6 +134,9 @@ MyGame.main = (function (graphics, renderer, input, components) {
                     break;
                 case 'rotate-left':
                     playerSelf.model.rotateLeft(message.elapsedTime);
+                    break;
+                case 'fire-laser':
+                    playerSelf.model.fireLaser(message.elapsedTime);
                     break;
             }
             memory.enqueue(message);
@@ -264,6 +268,18 @@ MyGame.main = (function (graphics, renderer, input, components) {
             playerSelf.model.rotateLeft(elapsedTime);
         },
             'a', true);
+
+        myKeyboard.registerHandler(elapsedTime => {
+            let message = {
+                id: messageId++,
+                elapsedTime: elapsedTime,
+                type: 'fire-laser'
+            };
+            socket.emit('input', message);
+            messageHistory.enqueue(message);
+            playerSelf.model.fireLaser(elapsedTime);
+        },
+            ' ', true);
 
         //
         // Get the game loop started

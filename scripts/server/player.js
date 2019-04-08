@@ -6,6 +6,7 @@
 'use strict';
 
 let random = require('./random');
+let Laser = require('./laser');
 
 //------------------------------------------------------------------
 //
@@ -68,6 +69,10 @@ function createPlayer() {
         get: () => rotateRate
     });
 
+    Object.defineProperty(that, 'laserArray', {
+        get: () => laserArray
+    });
+
     Object.defineProperty(that, 'reportUpdate', {
         get: () => reportUpdate,
         set: value => reportUpdate = value
@@ -103,25 +108,22 @@ function createPlayer() {
     };
 
     that.fireLaser = function () {
-        if (canFire) {
-            canFire = false;
-            fireTime = 0;
-            let myLaser = MyGame.components.Laser({
-                imageSrc: 'assets/laser.png',
-                position: { x: position.x, y: position.y },
-                size: { width: 25, height: 3 },
-                speed: 3,
-                direction: { x: Math.cos(rotation), y: Math.sin(rotation) },
-                rotation: rotation
-            });
+        //if (canFire) {
+        //canFire = false;
 
-            laserArray.push(myLaser);
-
-            if (laserArray.length > 10) {
-                laserArray.shift();
-            }
-
+        let myLaserSpec = {
+            direction : direction,
+            position : position
         }
+
+        let myLaser = Laser.create(myLaserSpec);
+        laserArray.push(myLaser);
+
+        if (laserArray.length > 10) {
+            laserArray.shift();
+        }
+
+        //}
     }
     //------------------------------------------------------------------
     //
@@ -171,6 +173,10 @@ function createPlayer() {
             position.y = 10;
             velocityVector.y = 0;
         }
+
+        laserArray.forEach(laser => {
+            laser.update(elapsedTime);
+        });
     };
 
     return that;

@@ -8,7 +8,6 @@
 let present = require('present');
 let Player = require('./player');
 let Asteroid = require('./asteroid');
-let Laser = require('./laser');
 
 let newAsteroid = Asteroid.create();
 //console.log('newAsteroid created');
@@ -189,6 +188,7 @@ function initializeSocketIO(httpServer) {
                     acceleration: newPlayer.acceleration,
                     maxSpeed: newPlayer.maxSpeed,
                     velocityVector: newPlayer.velocityVector,
+                    laserArray: newPlayer.laserArray,
                 });
 
                 //
@@ -201,7 +201,8 @@ function initializeSocketIO(httpServer) {
                     size: client.player.size,
                     maxSpeed: client.player.maxSpeed,
                     acceleration: client.player.acceleration,
-                    velocityVector: client.player.velocityVector
+                    velocityVector: client.player.velocityVector,
+                    laserArray: client.player.laserArray
                 });
             }
         }
@@ -254,8 +255,6 @@ function initializeSocketIO(httpServer) {
             asteroid: newAsteroid
         };
 
-
-
         socket.emit('connect-ack', {
             direction: newPlayer.direction,
             position: newPlayer.position,
@@ -263,7 +262,8 @@ function initializeSocketIO(httpServer) {
             rotateRate: newPlayer.rotateRate,
             velocityVector: newPlayer.velocityVector,
             maxSpeed: newPlayer.maxSpeed,
-            acceleration: newPlayer.acceleration
+            acceleration: newPlayer.acceleration,
+            laserArray: newPlayer.laserArray
         });
 
         // ASTEROID

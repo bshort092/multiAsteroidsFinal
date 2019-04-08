@@ -1,12 +1,8 @@
-// --------------------------------------------------------------
-//
-//
-// --------------------------------------------------------------
-MyGame.components.Laser = function() {
-    'use strict';
+'use strict';
 
-    let canvas = document.getElementById('canvas-main');
+let random = require ('./random');
 
+function createLaser(infoSpec) {
     let that = {};
 
     let position = {
@@ -15,34 +11,35 @@ MyGame.components.Laser = function() {
     };
 
     let size = {
-        width: 3,
+        width: 25,
         height: 3
     };
 
-    let direction = {
+    let directionVector = {
         x: 0,
         y: 0
-    };
-
-    let rotation = 0;
+    }
+    
+    let direction = 0;    // Angle in radians
     let speed = 0;
 
     Object.defineProperty(that, 'position', {
-        get: () => position
+        get: () => position,
     });
 
     Object.defineProperty(that, 'size', {
-        get: () => size
+        get: () => size,
+        set: value => { size = value; }
     });
 
     Object.defineProperty(that, 'direction', {
         get: () => direction,
-        set: (value) => { direction = value }
-    });
-
-    Object.defineProperty(that, 'rotation', {
-        get: () => rotation,
-        set: (value) => { rotation = value }
+        set: value => { direction = value; }
+    });    
+    
+    Object.defineProperty(that, 'directionVector', {
+        get: () => directionVector,
+        set: value => { directionVector = value; }
     });
 
     Object.defineProperty(that, 'speed', {
@@ -52,8 +49,8 @@ MyGame.components.Laser = function() {
 
     that.update = function(elapsedTime) {
 
-        position.x += (elapsedTime * speed * direction.x);
-        position.y += (elapsedTime * speed * direction.y);
+        position.x += (elapsedTime * speed * directionVector.x);
+        position.y += (elapsedTime * speed * directionVector.y);
 
         // if (spec.center.x > MyGame.graphics.canvas.width) spec.center.x = 0;
         // if (spec.center.x < 0) spec.center.x = MyGame.graphics.canvas.width;
@@ -64,3 +61,5 @@ MyGame.components.Laser = function() {
 
     return that;
 }
+
+module.exports.create = () => createLaser();

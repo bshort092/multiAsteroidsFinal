@@ -3,7 +3,9 @@
 // Model for each player in the game.
 //
 //------------------------------------------------------------------
-MyGame.components.Player = function() {
+let Laser = require('./laser');
+
+MyGame.components.Player = function () {
     'use strict';
     let that = {};
     let position = {
@@ -25,6 +27,7 @@ MyGame.components.Player = function() {
     let rotateRate = 0;
     let acceleration = 0;
     let maxSpeed = 0;
+    let laserArray = [];
 
     Object.defineProperty(that, 'direction', {
         get: () => direction,
@@ -64,13 +67,13 @@ MyGame.components.Player = function() {
     // Public function that moves the player in the current direction.
     //
     //------------------------------------------------------------------
-    that.move = function(elapsedTime) {
+    that.move = function (elapsedTime) {
 
         let vectorX = Math.cos(direction);
         let vectorY = Math.sin(direction);
 
-        velocityVector.x += vectorX * acceleration * elapsedTime/100;
-        velocityVector.y += vectorY * acceleration * elapsedTime/100;
+        velocityVector.x += vectorX * acceleration * elapsedTime / 100;
+        velocityVector.y += vectorY * acceleration * elapsedTime / 100;
 
         if (velocityVector.x > maxSpeed) {
             velocityVector.x = maxSpeed;
@@ -88,12 +91,32 @@ MyGame.components.Player = function() {
 
     };
 
+    that.fireLaser = function () {
+        //if (canFire) {
+        //canFire = false;
+
+        let myLaserSpec = {
+            direction : direction,
+            position : position,
+            imgSrc: MyGame.assets['laser']
+        }
+
+        let myLaser = Laser.create(myLaserSpec);
+        laserArray.push(myLaser);
+
+        if (laserArray.length > 10) {
+            laserArray.shift();
+        }
+
+        //}
+    }
+
     //------------------------------------------------------------------
     //
     // Public function that rotates the player right.
     //
     //------------------------------------------------------------------
-    that.rotateRight = function(elapsedTime) {
+    that.rotateRight = function (elapsedTime) {
         direction += (rotateRate * elapsedTime);
     };
 
@@ -102,11 +125,11 @@ MyGame.components.Player = function() {
     // Public function that rotates the player left.
     //
     //------------------------------------------------------------------
-    that.rotateLeft = function(elapsedTime) {
+    that.rotateLeft = function (elapsedTime) {
         direction -= (rotateRate * elapsedTime);
     };
 
-    that.update = function(elapsedTime) {
+    that.update = function (elapsedTime) {
 
         position.x += velocityVector.x;
         position.y += velocityVector.y;

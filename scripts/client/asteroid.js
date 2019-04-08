@@ -37,12 +37,12 @@ MyGame.components.Asteroid = function() {
 
     Object.defineProperty(that, 'rotateRate', {
         get: () => rotateRate,
-        set: value => { rotateRate = value; }
+        set: (value) => { rotateRate = value; }
     });
 
     Object.defineProperty(that, 'speed', {
         get: () => speed,
-        set: value => { speed = value; }
+        set: (value) => { speed = value; }
     });
 
     that.update = function(elapsedTime) {
