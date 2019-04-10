@@ -7,12 +7,12 @@
 
 let present = require('present');
 let Player = require('./player');
-let Asteroid = require('./asteroid');
+let MultiAsteroids = require('./multiAsteroids');
 
 // TODO: create asteroid manager instead of one asteroid: 
-let newAsteroid = Asteroid.create();
-//console.log('newAsteroid created');
-
+let newAsteroids = MultiAsteroids.create({
+    numOfAsteroids: 2,
+})
 
 const UPDATE_RATE_MS = 10;
 let quit = false;
@@ -63,8 +63,9 @@ function update(elapsedTime, currentTime) {
     for (let clientId in activeClients) {
         activeClients[clientId].player.update(elapsedTime);
     }
-    // TODO: UPDATE ASTEROID MANAGER
-    newAsteroid.update();
+    for(let i = 0; i < newAsteroids.length; i++){
+        newAsteroids[i].update();
+    }
 }
 
 //------------------------------------------------------------------
@@ -76,9 +77,8 @@ function updateClients(elapsedTime) {
     for (let clientId in activeClients) {
         let client = activeClients[clientId];
 
-        // ASTEROIDS
         let updateAsteroid = {
-            asteroid: newAsteroid,
+            asteroid: newAsteroids,
         }
         client.socket.emit('update-self-asteroid', updateAsteroid);
         

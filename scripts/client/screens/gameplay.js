@@ -13,6 +13,7 @@ MyGame.screens['game-play'] = (function (game, graphics, renderer, input, compon
 
     let playerSelf = {};
     let asteroids = {};
+    let multiAsteroids = [];
     let playerOthers = {};
     let messageHistory;
     let messageId;
@@ -37,20 +38,6 @@ MyGame.screens['game-play'] = (function (game, graphics, renderer, input, compon
         playerSelf.model.maxSpeed = data.maxSpeed;
         playerSelf.model.laserArray = data.laserArray;
     });
-
-    // ASTEROID
-    // socket.on('connect-ack-asteroid', function (data) {
-    //     asteroids.model.position.x = data.position.x;
-    //     asteroids.model.position.y = data.position.y;
-
-    //     asteroids.model.size.x = data.size.x;
-    //     asteroids.model.size.y = data.size.y;
-
-    //     asteroids.model.direction = data.direction;
-    //     asteroids.model.speed = data.speed;
-    //     asteroids.model.rotateRate = data.rotateRate;
-    //     asteroids.model.rotation = data.rotation;
-    // });
 
     //------------------------------------------------------------------
     //
@@ -135,13 +122,13 @@ MyGame.screens['game-play'] = (function (game, graphics, renderer, input, compon
         messageHistory = memory;
     });
 
-
-    // ASTEROID
     socket.on('update-self-asteroid', function (data) {
-        asteroids.model.position.x = data.asteroid.position.x;
-        asteroids.model.position.y = data.asteroid.position.y;
-        asteroids.model.direction = data.asteroid.direction;
-        asteroids.model.rotation = data.asteroid.rotation;
+        for(let i = 0; i < 2; i++){
+            multiAsteroids[i].model.position.x = data.asteroid[i].position.x;
+            multiAsteroids[i].model.position.y = data.asteroid[i].position.y;
+            multiAsteroids[i].model.direction = data.asteroid[i].direction;
+            multiAsteroids[i].model.rotation = data.asteroid[i].rotation;
+        }
     });
 
     //------------------------------------------------------------------
@@ -181,7 +168,9 @@ MyGame.screens['game-play'] = (function (game, graphics, renderer, input, compon
     //------------------------------------------------------------------
     function update(elapsedTime) {
 
-        asteroids.model.update();
+        for(let i = 0; i < 2; i++){
+            multiAsteroids[i].model.update();
+        }
 
         playerSelf.model.update(elapsedTime);
         for (let id in playerOthers) {
@@ -197,7 +186,9 @@ MyGame.screens['game-play'] = (function (game, graphics, renderer, input, compon
     function render() {
         graphics.clear();
 
-        renderer.Asteroid.render(asteroids.model, asteroids.texture);
+        for(let i = 0; i < 2; i++){
+            renderer.Asteroid.render(multiAsteroids[i].model, multiAsteroids[i].texture);
+        }
 
         renderer.Player.render(playerSelf.model, playerSelf.texture);
         for (let id in playerOthers) {
@@ -236,10 +227,12 @@ MyGame.screens['game-play'] = (function (game, graphics, renderer, input, compon
             model: components.Player(),
             texture: MyGame.assets['player-self']
         };
-        asteroids = {
-            model: components.Asteroid(),
-            texture: MyGame.assets['asteroid']
-        };
+        for(let i = 0; i < 2; i++){
+            multiAsteroids.push({
+                model: components.Asteroid(),
+                texture: MyGame.assets['asteroid']
+            })
+        }
         playerOthers = {};
         messageHistory = MyGame.utilities.Queue();
         messageId = 1;

@@ -32,8 +32,8 @@ MyGame.loader = (function() {
             message: 'Input loaded',
             onComplete: null
         }, {
-            scripts: ['laser', 'player', 'player-remote', 'asteroid'],
-            message: 'Player, Asteroid, and Laser models loaded',
+            scripts: ['laser', 'player', 'player-remote', 'asteroid', 'multiAsteroids'],
+            message: 'Player and Asteroid models loaded',
             onComplete: null
         }, {
             scripts: ['rendering/graphics'],
