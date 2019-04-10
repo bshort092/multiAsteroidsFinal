@@ -31,7 +31,7 @@ MyGame.loader = (function() {
             message: 'Input loaded',
             onComplete: null
         }, {
-            scripts: ['player', 'player-remote', 'asteroid'],
+            scripts: ['player', 'player-remote', 'asteroid', 'multiAsteroids'],
             message: 'Player and Asteroid models loaded',
             onComplete: null
         }, {

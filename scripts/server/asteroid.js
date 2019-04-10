@@ -1,8 +1,6 @@
 'use strict';
 
 let random = require ('./random');
-// let canvas = document.getElementById('canvas-main');
-
 
 function checkXpos(canvas){
     let x = Math.random() * 600;
