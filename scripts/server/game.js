@@ -8,11 +8,14 @@
 let present = require('present');
 let Player = require('./player');
 let MultiAsteroids = require('./multiAsteroids');
+let Laser = require('./laser');
 
 // TODO: create asteroid manager instead of one asteroid: 
 let newAsteroids = MultiAsteroids.create({
     numOfAsteroids: 2,
 })
+
+let lasers = [];
 
 const UPDATE_RATE_MS = 10;
 let quit = false;
@@ -66,6 +69,10 @@ function update(elapsedTime, currentTime) {
     for(let i = 0; i < newAsteroids.length; i++){
         newAsteroids[i].update();
     }
+
+    for(let i = 0; i < lasers.length; i++){
+        lasers[i].update();
+    }
 }
 
 //------------------------------------------------------------------
@@ -81,6 +88,11 @@ function updateClients(elapsedTime) {
             asteroid: newAsteroids,
         }
         client.socket.emit('update-self-asteroid', updateAsteroid);
+
+        let updateLasers = {
+            lasers: lasers,
+        }
+        client.socket.emit('update-self-laser', updateLasers);
         
         let update = {
             clientId: clientId,
@@ -158,7 +170,6 @@ function initializeSocketIO(httpServer) {
                     acceleration: newPlayer.acceleration,
                     maxSpeed: newPlayer.maxSpeed,
                     velocityVector: newPlayer.velocityVector,
-                    laserArray: newPlayer.laserArray,
                 });
 
                 //
@@ -172,7 +183,6 @@ function initializeSocketIO(httpServer) {
                     maxSpeed: client.player.maxSpeed,
                     acceleration: client.player.acceleration,
                     velocityVector: client.player.velocityVector,
-                    laserArray: client.player.laserArray
                 });
             }
         }

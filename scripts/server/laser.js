@@ -2,11 +2,11 @@
 
 let random = require('./random');
 
-function createLaser(infoSpec) {
+function createLaser(laserSpec) {
     let that = {
         position: {
-            x: infoSpec.position.x,
-            y: infoSpec.position.y
+            x: laserSpec.position.x,
+            y: laserSpec.position.y
         },
 
         size: {
@@ -14,21 +14,17 @@ function createLaser(infoSpec) {
             height: 3
         },
 
-        directionVector: {
-            x: Math.cos(infoSpec.direction),
-            y: Math.sin(infoSpec.direction)
-        },
-
-        direction: infoSpec.direction,   // Angle in radians
+        direction: laserSpec.direction,   // Angle in radians
         speed: 3,
         reportUpdate: false,
 
-        update: function (elapsedTime) {
-            that.reportUpdate = true;
-
-            that.position.x += (elapsedTime * that.speed * that.directionVector.x);
-            that.position.y += (elapsedTime * that.speed * that.directionVector.y);
-
+        update: function(elapsedTime) {
+            let vectorX = Math.cos(that.direction);
+            let vectorY = Math.sin(that.direction);
+        
+            that.position.x += (vectorX * that.speed * elapsedTime);
+            that.position.y += (vectorY * that.speed * elapsedTime);
+    
             // if (spec.center.x > MyGame.graphics.canvas.width) spec.center.x = 0;
             // if (spec.center.x < 0) spec.center.x = MyGame.graphics.canvas.width;
             // if (spec.center.y > MyGame.graphics.canvas.height) spec.center.y = 0;
@@ -37,8 +33,6 @@ function createLaser(infoSpec) {
     };
 
     //console.log(infoSpec);
-
-    // Indicates if this model was updated during the last update
 
     return that;
 }

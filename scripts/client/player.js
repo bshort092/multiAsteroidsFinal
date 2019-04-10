@@ -27,7 +27,6 @@ MyGame.components.Player = function () {
         rotateRate: 0,
         acceleration: 0,
         maxSpeed: 0,
-        laserArray: [],
 
         move: function (elapsedTime) {
 
@@ -50,9 +49,6 @@ MyGame.components.Player = function () {
             if (that.velocityVector.y < 0 - that.maxSpeed) {
                 that.velocityVector.y = 0 - that.maxSpeed;
             }
-        },
-
-        fireLaser: function () {
         },
 
         rotateRight: function (elapsedTime) {

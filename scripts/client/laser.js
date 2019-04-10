@@ -13,25 +13,21 @@ function createLaser() {
             width: 25,
             height: 3
         },
-    
-        directionVector: {
-            x: 0,
-            y: 0
-        },
         
-        direction: 0,    // Angle in radians
+        direction: 0,
         speed: 0,
         
         update: function(elapsedTime) {
-
-            that.position.x += (elapsedTime * that.speed * that.directionVector.x);
-            that.position.y += (elapsedTime * that.speed * that.directionVector.y);
+            let vectorX = Math.cos(that.direction);
+            let vectorY = Math.sin(that.direction);
+        
+            that.position.x += (vectorX * that.speed * elapsedTime);
+            that.position.y += (vectorY * that.speed * elapsedTime);
     
             // if (spec.center.x > MyGame.graphics.canvas.width) spec.center.x = 0;
             // if (spec.center.x < 0) spec.center.x = MyGame.graphics.canvas.width;
             // if (spec.center.y > MyGame.graphics.canvas.height) spec.center.y = 0;
             // if (spec.center.y < 0) spec.center.y = MyGame.graphics.canvas.height;
-    
         },
     };
     return that;

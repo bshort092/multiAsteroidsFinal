@@ -14,6 +14,7 @@ MyGame.screens['game-play'] = (function (game, graphics, renderer, input, compon
     let playerSelf = {};
     let asteroids = {};
     let multiAsteroids = [];
+    let multiLasers = [];
     let playerOthers = {};
     let messageHistory;
     let messageId;
@@ -36,7 +37,6 @@ MyGame.screens['game-play'] = (function (game, graphics, renderer, input, compon
         playerSelf.model.acceleration = data.acceleration;
         playerSelf.model.velocityVector = data.velocityVector;
         playerSelf.model.maxSpeed = data.maxSpeed;
-        playerSelf.model.laserArray = data.laserArray;
     });
 
     //------------------------------------------------------------------
@@ -113,9 +113,9 @@ MyGame.screens['game-play'] = (function (game, graphics, renderer, input, compon
                 case 'rotate-left':
                     playerSelf.model.rotateLeft(message.elapsedTime);
                     break;
-                case 'fire-laser':
-                    playerSelf.model.fireLaser(message.elapsedTime);
-                    break;
+                // case 'fire-laser':
+                //     playerSelf.model.fireLaser(message.elapsedTime);
+                //     break;
             }
             memory.enqueue(message);
         }
@@ -123,11 +123,20 @@ MyGame.screens['game-play'] = (function (game, graphics, renderer, input, compon
     });
 
     socket.on('update-self-asteroid', function (data) {
-        for(let i = 0; i < 2; i++){
+        for (let i = 0; i < 2; i++) {
             multiAsteroids[i].model.position.x = data.asteroid[i].position.x;
             multiAsteroids[i].model.position.y = data.asteroid[i].position.y;
             multiAsteroids[i].model.direction = data.asteroid[i].direction;
             multiAsteroids[i].model.rotation = data.asteroid[i].rotation;
+        }
+    });
+
+    socket.on('update-self-laser', function (data) {
+        for (let i = 0; i < data.lasers.length; i++) {
+            multiLasers[i].model.position.x = data.lasers[i].position.x;
+            multiLasers[i].model.position.y = data.lasers[i].position.y;
+            multiLasers[i].model.direction = data.lasers[i].direction;
+            multiLasers[i].model.rotation = data.lasers[i].rotation;
         }
     });
 
@@ -168,8 +177,12 @@ MyGame.screens['game-play'] = (function (game, graphics, renderer, input, compon
     //------------------------------------------------------------------
     function update(elapsedTime) {
 
-        for(let i = 0; i < 2; i++){
+        for (let i = 0; i < 2; i++) {
             multiAsteroids[i].model.update();
+        }
+
+        for (let i = 0; i < multiLasers.length; i++) {
+            multiLasers[i].model.update();
         }
 
         playerSelf.model.update(elapsedTime);
@@ -186,8 +199,12 @@ MyGame.screens['game-play'] = (function (game, graphics, renderer, input, compon
     function render() {
         graphics.clear();
 
-        for(let i = 0; i < 2; i++){
+        for (let i = 0; i < 2; i++) {
             renderer.Asteroid.render(multiAsteroids[i].model, multiAsteroids[i].texture);
+        }
+
+        for (let i = 0; i < multiLasers.length; i++) {
+            renderer.Laser.render(multiLasers[i].model, multiLasers[i].texture);
         }
 
         renderer.Player.render(playerSelf.model, playerSelf.texture);
@@ -227,7 +244,7 @@ MyGame.screens['game-play'] = (function (game, graphics, renderer, input, compon
             model: components.Player(),
             texture: MyGame.assets['player-self']
         };
-        for(let i = 0; i < 2; i++){
+        for (let i = 0; i < 2; i++) {
             multiAsteroids.push({
                 model: components.Asteroid(),
                 texture: MyGame.assets['asteroid']
@@ -283,7 +300,10 @@ MyGame.screens['game-play'] = (function (game, graphics, renderer, input, compon
             };
             socket.emit('input', message);
             messageHistory.enqueue(message);
-            playerSelf.model.fireLaser(elapsedTime);
+            multiLasers.push({
+                model: components.Laser(),
+                texture: MyGame.assets['laser']
+            })
         },
             ' ', true);
 

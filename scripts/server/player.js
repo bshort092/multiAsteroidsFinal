@@ -31,8 +31,6 @@ function createPlayer() {
             height: 35
         },
 
-        laserArray: [],
-
         direction: random.nextDouble() * 2 * Math.PI,    // Angle in radians
         rotateRate: Math.PI / 1000,    // radians per millisecond
         reportUpdate: false,    // Indicates if this model was updated during the last update
@@ -64,27 +62,6 @@ function createPlayer() {
             }
         },
 
-        fireLaser: function () {
-            //if (canFire) {
-            //canFire = false;
-
-            let myLaserSpec = {
-                direction: that.direction,
-                position: that.position
-            }
-
-            //console.log(myLaserSpec);
-
-            let myLaser = Laser.create(myLaserSpec);
-            that.laserArray.push(myLaser);
-
-            if (that.laserArray.length > 10) {
-                that.laserArray.shift();
-            }
-
-            //}
-        },
-
         rotateRight: function (elapsedTime) {
             that.reportUpdate = true;
             that.direction += (that.rotateRate * elapsedTime);
@@ -100,8 +77,6 @@ function createPlayer() {
 
             that.position.x += that.velocityVector.x;
             that.position.y += that.velocityVector.y;
-
-            console.log(that.laserArray.length);
 
             if (that.position.x > 590) {
                 that.position.x = 590;
@@ -119,10 +94,6 @@ function createPlayer() {
                 that.position.y = 10;
                 that.velocityVector.y = 0;
             }
-
-            that.laserArray.forEach(laser => {
-                laser.update(elapsedTime);
-            });
         }
     };
 
