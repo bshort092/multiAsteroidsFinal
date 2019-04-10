@@ -76,9 +76,7 @@ MyGame.game = (function(screens) {
 
         let screen = null;
         for (screen in screens) {
-            console.log('Screen: ', screen)
             if (screens.hasOwnProperty(screen)) {
-                console.log('screen to initialize: ', screen)
                 screens[screen].initialize();
             }
         }
