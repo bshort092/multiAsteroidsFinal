@@ -38,18 +38,18 @@ MyGame.screens['game-play'] = (function (game, graphics, renderer, input, compon
     });
 
     // ASTEROID
-    socket.on('connect-ack-asteroid', function (data) {
-        asteroids.model.position.x = data.position.x;
-        asteroids.model.position.y = data.position.y;
+    // socket.on('connect-ack-asteroid', function (data) {
+    //     asteroids.model.position.x = data.position.x;
+    //     asteroids.model.position.y = data.position.y;
 
-        asteroids.model.size.x = data.size.x;
-        asteroids.model.size.y = data.size.y;
+    //     asteroids.model.size.x = data.size.x;
+    //     asteroids.model.size.y = data.size.y;
 
-        asteroids.model.direction = data.direction;
-        asteroids.model.speed = data.speed;
-        asteroids.model.rotateRate = data.rotateRate;
-        asteroids.model.rotation = data.rotation;
-    });
+    //     asteroids.model.direction = data.direction;
+    //     asteroids.model.speed = data.speed;
+    //     asteroids.model.rotateRate = data.rotateRate;
+    //     asteroids.model.rotation = data.rotation;
+    // });
 
     //------------------------------------------------------------------
     //
@@ -86,11 +86,6 @@ MyGame.screens['game-play'] = (function (game, graphics, renderer, input, compon
     socket.on('disconnect-other', function (data) {
         delete playerOthers[data.clientId];
     });
-
-    // ASTEROID
-    // socket.on('disconnect-other-asteroid', function (data) {
-    //     delete asteroids[data.clientId];
-    // });
 
     //------------------------------------------------------------------
     //
@@ -139,10 +134,10 @@ MyGame.screens['game-play'] = (function (game, graphics, renderer, input, compon
 
     // ASTEROID
     socket.on('update-self-asteroid', function (data) {
-        asteroids.model.position.x = data.position.x;
-        asteroids.model.position.y = data.position.y;
-        asteroids.model.direction = data.direction;
-        asteroids.model.rotation = data.rotation;
+        asteroids.model.position.x = data.asteroid.position.x;
+        asteroids.model.position.y = data.asteroid.position.y;
+        asteroids.model.direction = data.asteroid.direction;
+        asteroids.model.rotation = data.asteroid.rotation;
     });
 
     //------------------------------------------------------------------
@@ -181,7 +176,9 @@ MyGame.screens['game-play'] = (function (game, graphics, renderer, input, compon
     //
     //------------------------------------------------------------------
     function update(elapsedTime) {
-        asteroids.model.update(elapsedTime);
+
+        asteroids.model.update();
+
         playerSelf.model.update(elapsedTime);
         for (let id in playerOthers) {
             playerOthers[id].model.update(elapsedTime);
@@ -195,7 +192,9 @@ MyGame.screens['game-play'] = (function (game, graphics, renderer, input, compon
     //------------------------------------------------------------------
     function render() {
         graphics.clear();
+
         renderer.Asteroid.render(asteroids.model, asteroids.texture);
+
         renderer.Player.render(playerSelf.model, playerSelf.texture);
         for (let id in playerOthers) {
             let player = playerOthers[id];
