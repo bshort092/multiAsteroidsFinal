@@ -2,7 +2,7 @@
 
 let random = require ('./random');
 
-function createLaser(infoSpec) {
+function createLaser() {
     let that = {};
 
     let position = {

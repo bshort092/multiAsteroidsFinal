@@ -116,6 +116,8 @@ function createPlayer() {
             position : position
         }
 
+        //console.log(myLaserSpec);
+
         let myLaser = Laser.create(myLaserSpec);
         laserArray.push(myLaser);
 
@@ -156,6 +158,8 @@ function createPlayer() {
 
         position.x += velocityVector.x;
         position.y += velocityVector.y;
+
+        console.log(laserArray.length);
 
         if (position.x > 590) {
             position.x = 590;

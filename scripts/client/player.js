@@ -88,27 +88,29 @@ MyGame.components.Player = function () {
         if (velocityVector.y < 0 - maxSpeed) {
             velocityVector.y = 0 - maxSpeed;
         }
-
     };
 
     that.fireLaser = function () {
-        //if (canFire) {
-        //canFire = false;
+        // //if (canFire) {
+        // //canFire = false;
 
-        let myLaserSpec = {
-            direction : direction,
-            position : position,
-            imgSrc: MyGame.assets['laser']
-        }
+        // let myLaserSpec = {
+        //     direction : direction,
+        //     position : position
+        // }
 
-        let myLaser = Laser.create(myLaserSpec);
-        laserArray.push(myLaser);
+        // //console.log(Laser);
 
-        if (laserArray.length > 10) {
-            laserArray.shift();
-        }
+        // //console.log(myLaserSpec);
 
-        //}
+        // let myLaser = Laser.create();
+        // laserArray.push(myLaser);
+
+        // if (laserArray.length > 10) {
+        //     laserArray.shift();
+        // }
+
+        // //}
     }
 
     //------------------------------------------------------------------
@@ -150,6 +152,10 @@ MyGame.components.Player = function () {
             position.y = 10;
             velocityVector.y = 0;
         }
+
+        laserArray.forEach(laser => {
+            laser.update(elapsedTime);
+        });
     }
 
     return that;

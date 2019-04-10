@@ -16,6 +16,7 @@ MyGame = {
 // loaded.
 //
 //------------------------------------------------------------------
+
 MyGame.loader = (function() {
     'use strict';
     let scriptOrder = [
@@ -31,15 +32,15 @@ MyGame.loader = (function() {
             message: 'Input loaded',
             onComplete: null
         }, {
-            scripts: ['player', 'player-remote', 'asteroid', 'laser'],
-            message: 'Player and Asteroid models loaded',
+            scripts: ['laser', 'player', 'player-remote', 'asteroid'],
+            message: 'Player, Asteroid, and Laser models loaded',
             onComplete: null
         }, {
             scripts: ['rendering/graphics'],
             message: 'Graphics loaded',
             onComplete: null
         }, {
-            scripts: ['rendering/player', 'rendering/player-remote', 'rendering/asteroid'],
+            scripts: ['rendering/player', 'rendering/player-remote', 'rendering/asteroid', 'rendering/laser'],
             message: 'Renderers loaded',
             onComplete: null
         }, {

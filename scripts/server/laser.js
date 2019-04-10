@@ -5,9 +5,11 @@ let random = require ('./random');
 function createLaser(infoSpec) {
     let that = {};
 
+    //console.log(infoSpec);
+
     let position = {
-        x: infoSpec.center.x,
-        y: infoSpec.center.y
+        x: infoSpec.position.x,
+        y: infoSpec.position.y
     };
 
     let size = {
@@ -59,10 +61,9 @@ function createLaser(infoSpec) {
         // if (spec.center.x < 0) spec.center.x = MyGame.graphics.canvas.width;
         // if (spec.center.y > MyGame.graphics.canvas.height) spec.center.y = 0;
         // if (spec.center.y < 0) spec.center.y = MyGame.graphics.canvas.height;
-
     };
 
     return that;
 }
 
-module.exports.create = () => createLaser();
+module.exports.create = (infoSpec) => createLaser(infoSpec);
