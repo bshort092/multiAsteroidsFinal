@@ -15,172 +15,115 @@ let Laser = require('./laser');
 //
 //------------------------------------------------------------------
 function createPlayer() {
-    let that = {};
+    let that = {
+        position: {
+            x: Math.floor(random.nextDouble() * 600),
+            y: Math.floor(random.nextDouble() * 600)
+        },
 
-    let position = {
-        x: Math.floor(random.nextDouble() * 600),
-        y: Math.floor(random.nextDouble() * 600)
-    };
+        velocityVector: {
+            x: 0,
+            y: 0
+        },
 
-    let velocityVector = {
-        x: 0,
-        y: 0
-    }
+        size: {
+            width: 35,
+            height: 35
+        },
 
-    let size = {
-        width: 35,
-        height: 35
-    };
+        laserArray: [],
 
-    let laserArray = [];
+        direction: random.nextDouble() * 2 * Math.PI,    // Angle in radians
+        rotateRate: Math.PI / 1000,    // radians per millisecond
+        reportUpdate: false,    // Indicates if this model was updated during the last update
 
-    let direction = random.nextDouble() * 2 * Math.PI;    // Angle in radians
-    let rotateRate = Math.PI / 1000;    // radians per millisecond
-    let reportUpdate = false;    // Indicates if this model was updated during the last update
+        acceleration: .2,
+        maxSpeed: 2,
 
-    let acceleration = .2;
-    let maxSpeed = 2;
+        move: function (elapsedTime) {
+            that.reportUpdate = true;
 
-    Object.defineProperty(that, 'velocityVector', {
-        get: () => velocityVector
-    });
+            let vectorX = Math.cos(that.direction);
+            let vectorY = Math.sin(that.direction);
 
-    Object.defineProperty(that, 'acceleration', {
-        get: () => acceleration
-    });
+            that.velocityVector.x += vectorX * that.acceleration * elapsedTime / 100;
+            that.velocityVector.y += vectorY * that.acceleration * elapsedTime / 100;
 
-    Object.defineProperty(that, 'maxSpeed', {
-        get: () => maxSpeed
-    });
+            if (that.velocityVector.x > that.maxSpeed) {
+                that.velocityVector.x = that.maxSpeed;
+            }
+            if (that.velocityVector.x < 0 - that.maxSpeed) {
+                that.velocityVector.x = 0 - that.maxSpeed;
+            }
 
-    Object.defineProperty(that, 'direction', {
-        get: () => direction
-    });
+            if (that.velocityVector.y > that.maxSpeed) {
+                that.velocityVector.y = that.maxSpeed;
+            }
+            if (that.velocityVector.y < 0 - that.maxSpeed) {
+                that.velocityVector.y = 0 - that.maxSpeed;
+            }
+        },
 
-    Object.defineProperty(that, 'position', {
-        get: () => position
-    });
+        fireLaser: function () {
+            //if (canFire) {
+            //canFire = false;
 
-    Object.defineProperty(that, 'size', {
-        get: () => size
-    });
+            let myLaserSpec = {
+                direction: that.direction,
+                position: that.position
+            }
 
-    Object.defineProperty(that, 'rotateRate', {
-        get: () => rotateRate
-    });
+            //console.log(myLaserSpec);
 
-    Object.defineProperty(that, 'laserArray', {
-        get: () => laserArray
-    });
+            let myLaser = Laser.create(myLaserSpec);
+            that.laserArray.push(myLaser);
 
-    Object.defineProperty(that, 'reportUpdate', {
-        get: () => reportUpdate,
-        set: value => reportUpdate = value
-    });
+            if (that.laserArray.length > 10) {
+                that.laserArray.shift();
+            }
 
-    //------------------------------------------------------------------
-    //
-    // Moves the player forward based on how long it has been since the
-    // last move took place.
-    //------------------------------------------------------------------
-    that.move = function (elapsedTime) {
-        reportUpdate = true;
+            //}
+        },
 
-        let vectorX = Math.cos(direction);
-        let vectorY = Math.sin(direction);
+        rotateRight: function (elapsedTime) {
+            that.reportUpdate = true;
+            that.direction += (that.rotateRate * elapsedTime);
+        },
 
-        velocityVector.x += vectorX * acceleration * elapsedTime / 100;
-        velocityVector.y += vectorY * acceleration * elapsedTime / 100;
+        rotateLeft: function (elapsedTime) {
+            that.reportUpdate = true;
+            that.direction -= (that.rotateRate * elapsedTime);
+        },
 
-        if (velocityVector.x > maxSpeed) {
-            velocityVector.x = maxSpeed;
+        update: function (elapsedTime) {
+            that.reportUpdate = true;
+
+            that.position.x += that.velocityVector.x;
+            that.position.y += that.velocityVector.y;
+
+            console.log(that.laserArray.length);
+
+            if (that.position.x > 590) {
+                that.position.x = 590;
+                that.velocityVector.x = 0;
+            }
+            if (that.position.x < 10) {
+                that.position.x = 10;
+                that.velocityVector.x = 0;
+            }
+            if (that.position.y > 590) {
+                that.position.y = 590;
+                that.velocityVector.y = 0;
+            }
+            if (that.position.y < 10) {
+                that.position.y = 10;
+                that.velocityVector.y = 0;
+            }
+
+            that.laserArray.forEach(laser => {
+                laser.update(elapsedTime);
+            });
         }
-        if (velocityVector.x < 0 - maxSpeed) {
-            velocityVector.x = 0 - maxSpeed;
-        }
-
-        if (velocityVector.y > maxSpeed) {
-            velocityVector.y = maxSpeed;
-        }
-        if (velocityVector.y < 0 - maxSpeed) {
-            velocityVector.y = 0 - maxSpeed;
-        }
-    };
-
-    that.fireLaser = function () {
-        //if (canFire) {
-        //canFire = false;
-
-        let myLaserSpec = {
-            direction : direction,
-            position : position
-        }
-
-        //console.log(myLaserSpec);
-
-        let myLaser = Laser.create(myLaserSpec);
-        laserArray.push(myLaser);
-
-        if (laserArray.length > 10) {
-            laserArray.shift();
-        }
-
-        //}
-    }
-    //------------------------------------------------------------------
-    //
-    // Rotates the player right based on how long it has been since the
-    // last rotate took place.
-    //------------------------------------------------------------------
-    that.rotateRight = function (elapsedTime) {
-        reportUpdate = true;
-        direction += (rotateRate * elapsedTime);
-    };
-
-    //------------------------------------------------------------------
-    //
-    // Rotates the player left based on how long it has been since the
-    // last rotate took place.
-    //------------------------------------------------------------------
-    that.rotateLeft = function (elapsedTime) {
-        reportUpdate = true;
-        direction -= (rotateRate * elapsedTime);
-    };
-
-    //------------------------------------------------------------------
-    //
-    // Function used to update the player during the game loop.
-    //
-    //------------------------------------------------------------------
-
-    that.update = function (elapsedTime) {
-        reportUpdate = true;
-
-        position.x += velocityVector.x;
-        position.y += velocityVector.y;
-
-        console.log(laserArray.length);
-
-        if (position.x > 590) {
-            position.x = 590;
-            velocityVector.x = 0;
-        }
-        if (position.x < 10) {
-            position.x = 10;
-            velocityVector.x = 0;
-        }
-        if (position.y > 590) {
-            position.y = 590;
-            velocityVector.y = 0;
-        }
-        if (position.y < 10) {
-            position.y = 10;
-            velocityVector.y = 0;
-        }
-
-        laserArray.forEach(laser => {
-            laser.update(elapsedTime);
-        });
     };
 
     return that;
