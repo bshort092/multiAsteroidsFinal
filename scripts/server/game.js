@@ -9,10 +9,15 @@ let present = require('present');
 let Player = require('./player');
 let Laser = require('./laser');
 let MultiAsteroids = require('./multiAsteroids');
+let MultiUfos = require('./multiUFOs');
 
 // TODO: create asteroid manager instead of one asteroid: 
 let newAsteroids = MultiAsteroids.create({
     numOfAsteroids: 2,
+})
+
+let newUfos = MultiUfos.create({
+    numOfUfos: 1,
 })
 
 let laserArray = [];
@@ -20,7 +25,6 @@ let laserArray = [];
 const UPDATE_RATE_MS = 10;
 let quit = false;
 let activeClients = {};
-let activeAsteroids = {};
 let inputQueue = [];
 let fireTime = 0;
 let lastUpdateTime = present();
@@ -89,6 +93,9 @@ function update(elapsedTime) {
     for (let i = 0; i < newAsteroids.length; i++) {
         newAsteroids[i].update();
     }
+    for (let i = 0; i < newUfos.length; i++) {
+        newUfos[i].update();
+    }
 
     for (let i = 0; i < laserArray.length; i++) {
         laserArray[i].lifetime -= elapsedTime;
@@ -112,6 +119,12 @@ function updateClients(elapsedTime) {
             asteroid: newAsteroids,
         }
         client.socket.emit('update-self-asteroid', updateAsteroid);
+
+        let updateUfo = {
+            ufo: newUfos,
+        }
+        client.socket.emit('update-self-ufo', updateUfo);
+
 
         let updateLasers = {
             lasers: laserArray,
@@ -276,7 +289,6 @@ function initializeSocketIO(httpServer) {
 //
 //------------------------------------------------------------------
 function initialize(httpServer) {
-    // TODO: INITIALIZE ASTEROIDS (FOR LOOP THING)
     initializeSocketIO(httpServer);
     gameLoop(present(), 0);
 }

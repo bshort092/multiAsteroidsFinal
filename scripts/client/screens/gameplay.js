@@ -7,13 +7,13 @@ MyGame.screens['game-play'] = (function (game, graphics, renderer, input, compon
     'use strict';
 
     let lastTimeStamp = performance.now(),
-        cancelNextRequest = true,
+        cancelNextRequest,
         myKeyboard = input.Keyboard(),
         socket = io(),
 
         playerSelf = {},
-        asteroids = {},
         multiAsteroids = [],
+        multiUfos = [],
         multiLasers = [],
         playerOthers = {},
         messageHistory = MyGame.utilities.Queue(),
@@ -141,6 +141,15 @@ MyGame.screens['game-play'] = (function (game, graphics, renderer, input, compon
         }
     });
 
+    socket.on('update-self-ufo', function (data) {
+        for (let i = 0; i < 1; i++) {
+            multiUfos[i].model.position.x = data.ufo[i].position.x;
+            multiUfos[i].model.position.y = data.ufo[i].position.y;
+            multiUfos[i].model.direction = data.ufo[i].direction;
+            multiUfos[i].model.rotation = data.ufo[i].rotation;
+        }
+    });
+
     socket.on('update-self-laser', function (data) {
         multiLasers = [];
         for (let i = 0; i < data.lasers.length; i++) {
@@ -206,6 +215,11 @@ MyGame.screens['game-play'] = (function (game, graphics, renderer, input, compon
             multiAsteroids[i].model.update();
         }
 
+        for (let i = 0; i < 1; i++) {
+            multiUfos[i].model.update();
+        }
+
+
         multiLasers.forEach(laser => {
             laser.model.update(elapsedTime);
         });
@@ -230,6 +244,9 @@ MyGame.screens['game-play'] = (function (game, graphics, renderer, input, compon
 
         for (let i = 0; i < 2; i++) {
             renderer.Asteroid.render(multiAsteroids[i].model, multiAsteroids[i].texture);
+        }
+        for (let i = 0; i < 1; i++) {
+            renderer.Ufo.render(multiUfos[i].model, multiUfos[i].texture);
         }
 
         for (let i = 0; i < multiLasers.length; i++) {
@@ -279,6 +296,14 @@ MyGame.screens['game-play'] = (function (game, graphics, renderer, input, compon
                 texture: MyGame.assets['asteroid']
             })
         }
+
+        for (let i = 0; i < 1; i++) {
+            multiUfos.push({
+                model: components.Ufo(),
+                texture: MyGame.assets['ufo']
+            })
+        }
+
         playerOthers = {};
         messageHistory = MyGame.utilities.Queue();
         messageId = 1;

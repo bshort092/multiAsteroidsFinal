@@ -1,4 +1,4 @@
-MyGame.components.Asteroid = function() {
+MyGame.components.Ufo = function() {
     'use strict';
 
     let that = {
