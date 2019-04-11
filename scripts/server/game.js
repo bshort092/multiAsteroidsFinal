@@ -17,7 +17,7 @@ let newAsteroids = MultiAsteroids.create({
 
 let laserArray = [];
 
-const UPDATE_RATE_MS = 250;
+const UPDATE_RATE_MS = 10;
 let quit = false;
 let activeClients = {};
 let activeAsteroids = {};
