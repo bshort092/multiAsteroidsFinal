@@ -3,131 +3,86 @@
 // Model for each player in the game.
 //
 //------------------------------------------------------------------
-MyGame.components.Player = function() {
+
+MyGame.components.Player = function () {
     'use strict';
-    let that = {};
-    let position = {
-        x: 0,
-        y: 0
-    };
+    let that = {
+        position: {
+            x: 0,
+            y: 0
+        },
 
-    let velocityVector = {
-        x: 0,
-        y: 0
-    };
+        velocityVector: {
+            x: 0,
+            y: 0
+        },
+    
+        size: {
+            width: 35,
+            height: 35
+        },
+    
+        direction: 0,
+        rotateRate: 0,
+        acceleration: 0,
+        maxSpeed: 0,
 
-    let size = {
-        width: 35,
-        height: 35
-    };
+        move: function (elapsedTime) {
 
-    let direction = 0;
-    let rotateRate = 0;
-    let acceleration = 0;
-    let maxSpeed = 0;
+            let vectorX = Math.cos(that.direction);
+            let vectorY = Math.sin(that.direction);
+    
+            that.velocityVector.x += vectorX * that.acceleration * elapsedTime / 100;
+            that.velocityVector.y += vectorY * that.acceleration * elapsedTime / 100;
+    
+            if (that.velocityVector.x > that.maxSpeed) {
+                that.velocityVector.x = that.maxSpeed;
+            }
+            if (that.velocityVector.x < 0 - that.maxSpeed) {
+                that.velocityVector.x = 0 - that.maxSpeed;
+            }
+    
+            if (that.velocityVector.y > that.maxSpeed) {
+                that.velocityVector.y = that.maxSpeed;
+            }
+            if (that.velocityVector.y < 0 - that.maxSpeed) {
+                that.velocityVector.y = 0 - that.maxSpeed;
+            }
+        },
 
-    Object.defineProperty(that, 'direction', {
-        get: () => direction,
-        set: (value) => { direction = value }
-    });
+        rotateRight: function (elapsedTime) {
+            that.direction += (that.rotateRate * elapsedTime);
+        },
 
-    Object.defineProperty(that, 'velocityVector', {
-        get: () => velocityVector,
-        set: (value) => { velocityVector = value }
-    });
-
-    Object.defineProperty(that, 'acceleration', {
-        get: () => acceleration,
-        set: (value) => { acceleration = value }
-    });
-
-    Object.defineProperty(that, 'maxSpeed', {
-        get: () => maxSpeed,
-        set: (value) => { maxSpeed = value }
-    });
-
-    Object.defineProperty(that, 'rotateRate', {
-        get: () => rotateRate,
-        set: value => { rotateRate = value; }
-    });
-
-    Object.defineProperty(that, 'position', {
-        get: () => position
-    });
-
-    Object.defineProperty(that, 'size', {
-        get: () => size
-    });
-
-    //------------------------------------------------------------------
-    //
-    // Public function that moves the player in the current direction.
-    //
-    //------------------------------------------------------------------
-    that.move = function(elapsedTime) {
-
-        let vectorX = Math.cos(direction);
-        let vectorY = Math.sin(direction);
-
-        velocityVector.x += vectorX * acceleration * elapsedTime/100;
-        velocityVector.y += vectorY * acceleration * elapsedTime/100;
-
-        if (velocityVector.x > maxSpeed) {
-            velocityVector.x = maxSpeed;
-        }
-        if (velocityVector.x < 0 - maxSpeed) {
-            velocityVector.x = 0 - maxSpeed;
-        }
-
-        if (velocityVector.y > maxSpeed) {
-            velocityVector.y = maxSpeed;
-        }
-        if (velocityVector.y < 0 - maxSpeed) {
-            velocityVector.y = 0 - maxSpeed;
+        rotateLeft: function (elapsedTime) {
+            that.direction -= (that.rotateRate * elapsedTime);
+        },
+    
+        update: function (elapsedTime) {
+    
+            that.position.x += that.velocityVector.x;
+            that.position.y += that.velocityVector.y;
+    
+            if (that.position.x > 590) {
+                that.position.x = 590;
+                that.velocityVector.x = 0;
+            }
+            if (that.position.x < 10) {
+                that.position.x = 10;
+                that.velocityVector.x = 0;
+            }
+            if (that.position.y > 590) {
+                that.position.y = 590;
+                that.velocityVector.y = 0;
+            }
+            if (that.position.y < 10) {
+                that.position.y = 10;
+                that.velocityVector.y = 0;
+            }
+    
         }
 
     };
-
-    //------------------------------------------------------------------
-    //
-    // Public function that rotates the player right.
-    //
-    //------------------------------------------------------------------
-    that.rotateRight = function(elapsedTime) {
-        direction += (rotateRate * elapsedTime);
-    };
-
-    //------------------------------------------------------------------
-    //
-    // Public function that rotates the player left.
-    //
-    //------------------------------------------------------------------
-    that.rotateLeft = function(elapsedTime) {
-        direction -= (rotateRate * elapsedTime);
-    };
-
-    that.update = function(elapsedTime) {
-
-        position.x += velocityVector.x;
-        position.y += velocityVector.y;
-
-        if (position.x > 590) {
-            position.x = 590;
-            velocityVector.x = 0;
-        }
-        if (position.x < 10) {
-            position.x = 10;
-            velocityVector.x = 0;
-        }
-        if (position.y > 590) {
-            position.y = 590;
-            velocityVector.y = 0;
-        }
-        if (position.y < 10) {
-            position.y = 10;
-            velocityVector.y = 0;
-        }
-    }
 
     return that;
 };

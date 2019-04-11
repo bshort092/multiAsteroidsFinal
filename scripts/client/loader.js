@@ -16,6 +16,7 @@ MyGame = {
 // loaded.
 //
 //------------------------------------------------------------------
+
 MyGame.loader = (function() {
     'use strict';
     let scriptOrder = [
@@ -31,7 +32,7 @@ MyGame.loader = (function() {
             message: 'Input loaded',
             onComplete: null
         }, {
-            scripts: ['player', 'player-remote', 'asteroid', 'multiAsteroids'],
+            scripts: ['laser', 'player', 'player-remote', 'asteroid', 'multiAsteroids'],
             message: 'Player and Asteroid models loaded',
             onComplete: null
         }, {
@@ -39,7 +40,7 @@ MyGame.loader = (function() {
             message: 'Graphics loaded',
             onComplete: null
         }, {
-            scripts: ['rendering/player', 'rendering/player-remote', 'rendering/asteroid'],
+            scripts: ['rendering/player', 'rendering/player-remote', 'rendering/asteroid', 'rendering/laser'],
             message: 'Renderers loaded',
             onComplete: null
         }, {
@@ -56,6 +57,9 @@ MyGame.loader = (function() {
         }, {
             key: 'asteroid',
             source: 'assets/asteroid.png'
+        },{
+            key: 'laser',
+            source: 'assets/laser.png'
         }];
 
     //------------------------------------------------------------------

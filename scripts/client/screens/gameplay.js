@@ -14,9 +14,12 @@ MyGame.screens['game-play'] = (function (game, graphics, renderer, input, compon
     let playerSelf = {};
     let asteroids = {};
     let multiAsteroids = [];
+    let multiLasers = [];
     let playerOthers = {};
     let messageHistory;
     let messageId;
+    let fireTime = 0;
+    let canFire = true;
 
     //------------------------------------------------------------------
     //
@@ -112,6 +115,9 @@ MyGame.screens['game-play'] = (function (game, graphics, renderer, input, compon
                 case 'rotate-left':
                     playerSelf.model.rotateLeft(message.elapsedTime);
                     break;
+                // case 'fire-laser':
+                //     playerSelf.model.fireLaser(message.elapsedTime);
+                //     break;
             }
             memory.enqueue(message);
         }
@@ -119,11 +125,25 @@ MyGame.screens['game-play'] = (function (game, graphics, renderer, input, compon
     });
 
     socket.on('update-self-asteroid', function (data) {
-        for(let i = 0; i < 2; i++){
+        for (let i = 0; i < 2; i++) {
             multiAsteroids[i].model.position.x = data.asteroid[i].position.x;
             multiAsteroids[i].model.position.y = data.asteroid[i].position.y;
             multiAsteroids[i].model.direction = data.asteroid[i].direction;
             multiAsteroids[i].model.rotation = data.asteroid[i].rotation;
+        }
+    });
+
+    socket.on('update-self-laser', function (data) {
+        multiLasers = [];
+        for (let i = 0; i < data.lasers.length; i++) {
+            multiLasers.push({
+                model: components.Laser(),
+                texture: MyGame.assets['laser']
+            })
+            multiLasers[i].model.position.x = data.lasers[i].position.x;
+            multiLasers[i].model.position.y = data.lasers[i].position.y;
+            multiLasers[i].model.direction = data.lasers[i].direction;
+            multiLasers[i].model.shipId = data.lasers[i].shipId;
         }
     });
 
@@ -164,9 +184,24 @@ MyGame.screens['game-play'] = (function (game, graphics, renderer, input, compon
     //------------------------------------------------------------------
     function update(elapsedTime) {
 
-        for(let i = 0; i < 2; i++){
+        fireTime += elapsedTime;
+
+        if (fireTime >= 250) {
+            canFire = true;
+            fireTime -= 250;
+        }
+
+        for (let i = 0; i < 2; i++) {
             multiAsteroids[i].model.update();
         }
+
+        multiLasers.forEach(laser => {
+            laser.model.update(elapsedTime);
+        });
+
+        // for (let i = 0; i < multiLasers.length; i++) {
+        //     multiLasers[i].model.update();
+        // }
 
         playerSelf.model.update(elapsedTime);
         for (let id in playerOthers) {
@@ -182,8 +217,12 @@ MyGame.screens['game-play'] = (function (game, graphics, renderer, input, compon
     function render() {
         graphics.clear();
 
-        for(let i = 0; i < 2; i++){
+        for (let i = 0; i < 2; i++) {
             renderer.Asteroid.render(multiAsteroids[i].model, multiAsteroids[i].texture);
+        }
+
+        for (let i = 0; i < multiLasers.length; i++) {
+            renderer.Laser.render(multiLasers[i].model, multiLasers[i].texture);
         }
 
         renderer.Player.render(playerSelf.model, playerSelf.texture);
@@ -223,7 +262,7 @@ MyGame.screens['game-play'] = (function (game, graphics, renderer, input, compon
             model: components.Player(),
             texture: MyGame.assets['player-self']
         };
-        for(let i = 0; i < 2; i++){
+        for (let i = 0; i < 2; i++) {
             multiAsteroids.push({
                 model: components.Asteroid(),
                 texture: MyGame.assets['asteroid']
@@ -232,7 +271,7 @@ MyGame.screens['game-play'] = (function (game, graphics, renderer, input, compon
         playerOthers = {};
         messageHistory = MyGame.utilities.Queue();
         messageId = 1;
-        
+
         //
         // Create the keyboard input handler and register the keyboard commands
         myKeyboard.registerHandler(elapsedTime => {
@@ -272,8 +311,25 @@ MyGame.screens['game-play'] = (function (game, graphics, renderer, input, compon
             'a', true);
 
         myKeyboard.registerHandler(elapsedTime => {
+            let message = {
+                id: messageId++,
+                elapsedTime: elapsedTime,
+                type: 'fire-laser'
+            };
+            if (canFire) {
+                canFire = false;
+                fireTime = 0;
+                socket.emit('input', message);
+                messageHistory.enqueue(message);
+            }
+
+        },
+            ' ', true);
+
+        myKeyboard.registerHandler(elapsedTime => {
             callEscape();
-        }, 'Escape', true);
+        },
+            'Escape', true);
     }
 
     function run() {
