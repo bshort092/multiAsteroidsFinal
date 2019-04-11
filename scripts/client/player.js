@@ -3,7 +3,6 @@
 // Model for each player in the game.
 //
 //------------------------------------------------------------------
-let Laser = require('./laser');
 
 MyGame.components.Player = function () {
     'use strict';
@@ -81,9 +80,6 @@ MyGame.components.Player = function () {
                 that.velocityVector.y = 0;
             }
     
-            that.laserArray.forEach(laser => {
-                laser.update(elapsedTime);
-            });
         }
 
     };

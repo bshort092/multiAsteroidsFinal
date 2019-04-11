@@ -17,13 +17,6 @@ MyGame.renderer.Player = (function(graphics) {
         graphics.rotateCanvas(model.position, model.direction);
         graphics.drawImage(texture, model.position, model.size);
         graphics.restoreContext();
-
-        model.laserArray.forEach(laser => {
-            graphics.saveContext();
-            graphics.rotateCanvas(laser.postion, laser.direction);
-            graphics.drawImage(MyGame.assets['laser'], laser.position, laser.size);
-            grapcics.restoreContext();
-        })
     };
 
     return that;

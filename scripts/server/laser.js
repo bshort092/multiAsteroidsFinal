@@ -3,7 +3,9 @@
 let random = require('./random');
 
 function createLaser(laserSpec) {
+    //console.log(laserSpec);
     let that = {
+        shipId: laserSpec.shipId,
         position: {
             x: laserSpec.position.x,
             y: laserSpec.position.y
@@ -15,16 +17,18 @@ function createLaser(laserSpec) {
         },
 
         direction: laserSpec.direction,   // Angle in radians
-        speed: 3,
+        speed: .5,
         reportUpdate: false,
+        lifetime: 1000,
 
-        update: function(elapsedTime) {
+        update: function (elapsedTime) {
+            that.reportUpdate = true;
             let vectorX = Math.cos(that.direction);
             let vectorY = Math.sin(that.direction);
-        
+
             that.position.x += (vectorX * that.speed * elapsedTime);
             that.position.y += (vectorY * that.speed * elapsedTime);
-    
+
             // if (spec.center.x > MyGame.graphics.canvas.width) spec.center.x = 0;
             // if (spec.center.x < 0) spec.center.x = MyGame.graphics.canvas.width;
             // if (spec.center.y > MyGame.graphics.canvas.height) spec.center.y = 0;
@@ -37,4 +41,4 @@ function createLaser(laserSpec) {
     return that;
 }
 
-module.exports.create = (infoSpec) => createLaser(infoSpec);
+module.exports.create = (laserSpec) => createLaser(laserSpec);

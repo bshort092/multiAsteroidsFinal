@@ -18,6 +18,8 @@ MyGame.screens['game-play'] = (function (game, graphics, renderer, input, compon
     let playerOthers = {};
     let messageHistory;
     let messageId;
+    let fireTime = 0;
+    let canFire = true;
 
     //------------------------------------------------------------------
     //
@@ -132,11 +134,16 @@ MyGame.screens['game-play'] = (function (game, graphics, renderer, input, compon
     });
 
     socket.on('update-self-laser', function (data) {
+        multiLasers = [];
         for (let i = 0; i < data.lasers.length; i++) {
+            multiLasers.push({
+                model: components.Laser(),
+                texture: MyGame.assets['laser']
+            })
             multiLasers[i].model.position.x = data.lasers[i].position.x;
             multiLasers[i].model.position.y = data.lasers[i].position.y;
             multiLasers[i].model.direction = data.lasers[i].direction;
-            multiLasers[i].model.rotation = data.lasers[i].rotation;
+            multiLasers[i].model.shipId = data.lasers[i].shipId;
         }
     });
 
@@ -177,13 +184,24 @@ MyGame.screens['game-play'] = (function (game, graphics, renderer, input, compon
     //------------------------------------------------------------------
     function update(elapsedTime) {
 
+        fireTime += elapsedTime;
+
+        if (fireTime >= 250) {
+            canFire = true;
+            fireTime -= 250;
+        }
+
         for (let i = 0; i < 2; i++) {
             multiAsteroids[i].model.update();
         }
 
-        for (let i = 0; i < multiLasers.length; i++) {
-            multiLasers[i].model.update();
-        }
+        multiLasers.forEach(laser => {
+            laser.model.update(elapsedTime);
+        });
+
+        // for (let i = 0; i < multiLasers.length; i++) {
+        //     multiLasers[i].model.update();
+        // }
 
         playerSelf.model.update(elapsedTime);
         for (let id in playerOthers) {
@@ -298,12 +316,13 @@ MyGame.screens['game-play'] = (function (game, graphics, renderer, input, compon
                 elapsedTime: elapsedTime,
                 type: 'fire-laser'
             };
-            socket.emit('input', message);
-            messageHistory.enqueue(message);
-            multiLasers.push({
-                model: components.Laser(),
-                texture: MyGame.assets['laser']
-            })
+            if (canFire) {
+                canFire = false;
+                fireTime = 0;
+                socket.emit('input', message);
+                messageHistory.enqueue(message);
+            }
+
         },
             ' ', true);
 

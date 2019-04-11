@@ -7,21 +7,22 @@
 
 let present = require('present');
 let Player = require('./player');
-let MultiAsteroids = require('./multiAsteroids');
 let Laser = require('./laser');
+let MultiAsteroids = require('./multiAsteroids');
 
 // TODO: create asteroid manager instead of one asteroid: 
 let newAsteroids = MultiAsteroids.create({
     numOfAsteroids: 2,
 })
 
-let lasers = [];
+let laserArray = [];
 
 const UPDATE_RATE_MS = 10;
 let quit = false;
 let activeClients = {};
 let activeAsteroids = {};
 let inputQueue = [];
+let fireTime = 0;
 
 //------------------------------------------------------------------
 //
@@ -51,10 +52,23 @@ function processInput() {
                 client.player.rotateRight(input.message.elapsedTime);
                 break;
             case 'fire-laser':
-                client.player.fireLaser(input.message.elapsedTime);
+                fireLaser(client.player, input.message.elapsedTime, input.clientId);
                 break;
         }
     }
+}
+
+function fireLaser(playerSpec, elapsedTime, playerId) {
+    let laserSpec = {
+        position: {
+            x: playerSpec.position.x,
+            y: playerSpec.position.y,
+        },
+        direction: playerSpec.direction,
+        shipId: playerId,
+    };
+
+    laserArray.push(Laser.create(laserSpec));
 }
 
 //------------------------------------------------------------------
@@ -66,12 +80,16 @@ function update(elapsedTime, currentTime) {
     for (let clientId in activeClients) {
         activeClients[clientId].player.update(elapsedTime);
     }
-    for(let i = 0; i < newAsteroids.length; i++){
+    for (let i = 0; i < newAsteroids.length; i++) {
         newAsteroids[i].update();
     }
 
-    for(let i = 0; i < lasers.length; i++){
-        lasers[i].update();
+    for (let i = 0; i < laserArray.length; i++) {
+        laserArray[i].lifetime -= elapsedTime;
+        laserArray[i].update(elapsedTime);
+        if(laserArray[i].lifetime <= 0){
+            laserArray.splice(i, 1);
+        }
     }
 }
 
@@ -90,10 +108,10 @@ function updateClients(elapsedTime) {
         client.socket.emit('update-self-asteroid', updateAsteroid);
 
         let updateLasers = {
-            lasers: lasers,
+            lasers: laserArray,
         }
         client.socket.emit('update-self-laser', updateLasers);
-        
+
         let update = {
             clientId: clientId,
             lastMessageId: client.lastMessageId,
@@ -205,7 +223,7 @@ function initializeSocketIO(httpServer) {
         }
     }
 
-    io.on('connection', function(socket) {
+    io.on('connection', function (socket) {
         console.log('Connection established: ', socket.id);
         //
         // Create an entry in our list of connected clients
