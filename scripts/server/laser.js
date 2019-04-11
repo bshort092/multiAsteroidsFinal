@@ -17,7 +17,7 @@ function createLaser(laserSpec) {
         },
 
         direction: laserSpec.direction,   // Angle in radians
-        speed: .5,
+        speed: .75,
         reportUpdate: false,
         lifetime: 1000,
 
