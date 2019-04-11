@@ -3,10 +3,9 @@ MyGame.components.Ufo = function() {
 
     let that = {
         position:{x: 0, y: 0},
-        size: {width: 148, height: 148},
+        size: {width: 0, height: 0},
         direction: 0,
         rotation: 0,
-        rotateRate: 0,
         speed: 0,
         update: function() {
             let vectorX = Math.cos(that.direction);
@@ -14,8 +13,6 @@ MyGame.components.Ufo = function() {
         
             that.position.x += (vectorX * that.speed);
             that.position.y += (vectorY * that.speed);
-        
-            that.rotation += that.rotateRate;
         
             if (that.position.x - (that.size.width/2) > 600)  { that.position.x = 0 - (that.size.width/2); }
             if (that.position.x + (that.size.width/2)  < 0)      { that.position.x = 600 + (that.size.width/2); }

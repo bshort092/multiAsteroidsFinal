@@ -3,7 +3,7 @@ MyGame.components.Asteroid = function() {
 
     let that = {
         position:{x: 0, y: 0},
-        size: {width: 148, height: 148},
+        size: {width: 0, height: 0},
         direction: 0,
         rotation: 0,
         rotateRate: 0,
