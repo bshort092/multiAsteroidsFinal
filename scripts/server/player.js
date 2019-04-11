@@ -21,7 +21,7 @@ function createPlayer() {
             y: Math.floor(random.nextDouble() * 600)
         },
 
-        velocityVector: {
+        momentum: {
             x: 0,
             y: 0
         },
@@ -35,30 +35,34 @@ function createPlayer() {
         rotateRate: Math.PI / 1000,    // radians per millisecond
         reportUpdate: false,    // Indicates if this model was updated during the last update
 
-        acceleration: .2,
-        maxSpeed: 2,
+        thrustRate: .04,
+        maxSpeed: .2,
+        reportUpdate: false,        // Indicates if this model was updated during the last update
+        lastUpdateDiff: 0,
 
-        move: function (elapsedTime) {
+        thrust: function (elapsedTime, updateDiff) {
+            that.lastUpdateDiff += updateDiff;
+            that.update(updateDiff, true);
             that.reportUpdate = true;
 
             let vectorX = Math.cos(that.direction);
             let vectorY = Math.sin(that.direction);
 
-            that.velocityVector.x += vectorX * that.acceleration * elapsedTime / 100;
-            that.velocityVector.y += vectorY * that.acceleration * elapsedTime / 100;
+            that.momentum.x += (vectorX * that.thrustRate * elapsedTime/100);
+            that.momentum.y += (vectorY * that.thrustRate * elapsedTime/100);
 
-            if (that.velocityVector.x > that.maxSpeed) {
-                that.velocityVector.x = that.maxSpeed;
+            if (that.momentum.x > that.maxSpeed) {
+                that.momentum.x = that.maxSpeed;
             }
-            if (that.velocityVector.x < 0 - that.maxSpeed) {
-                that.velocityVector.x = 0 - that.maxSpeed;
+            if (that.momentum.x < 0 - that.maxSpeed) {
+                that.momentum.x = 0 - that.maxSpeed;
             }
 
-            if (that.velocityVector.y > that.maxSpeed) {
-                that.velocityVector.y = that.maxSpeed;
+            if (that.momentum.y > that.maxSpeed) {
+                that.momentum.y = that.maxSpeed;
             }
-            if (that.velocityVector.y < 0 - that.maxSpeed) {
-                that.velocityVector.y = 0 - that.maxSpeed;
+            if (that.momentum.y < 0 - that.maxSpeed) {
+                that.momentum.y = 0 - that.maxSpeed;
             }
         },
 
@@ -72,27 +76,31 @@ function createPlayer() {
             that.direction -= (that.rotateRate * elapsedTime);
         },
 
-        update: function (elapsedTime) {
-            that.reportUpdate = true;
+        update: function(elapsedTime, intraUpdate) {
 
-            that.position.x += that.velocityVector.x;
-            that.position.y += that.velocityVector.y;
+            if (intraUpdate === false) {
+                elapsedTime -= that.lastUpdateDiff;
+                that.lastUpdateDiff = 0;
+            }
+    
+            that.position.x += (that.momentum.x * elapsedTime);
+            that.position.y += (that.momentum.y * elapsedTime);
 
             if (that.position.x > 590) {
                 that.position.x = 590;
-                that.velocityVector.x = 0;
+                that.momentum.x = 0;
             }
             if (that.position.x < 10) {
                 that.position.x = 10;
-                that.velocityVector.x = 0;
+                that.momentum.x = 0;
             }
             if (that.position.y > 590) {
                 that.position.y = 590;
-                that.velocityVector.y = 0;
+                that.momentum.y = 0;
             }
             if (that.position.y < 10) {
                 that.position.y = 10;
-                that.velocityVector.y = 0;
+                that.momentum.y = 0;
             }
         }
     };
