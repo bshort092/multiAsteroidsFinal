@@ -17,12 +17,13 @@ let newAsteroids = MultiAsteroids.create({
 
 let laserArray = [];
 
-const UPDATE_RATE_MS = 10;
+const UPDATE_RATE_MS = 250;
 let quit = false;
 let activeClients = {};
 let activeAsteroids = {};
 let inputQueue = [];
 let fireTime = 0;
+let lastUpdateTime = present();
 
 //------------------------------------------------------------------
 //
@@ -42,8 +43,13 @@ function processInput() {
         let client = activeClients[input.clientId];
         client.lastMessageId = input.message.id;
         switch (input.message.type) {
-            case 'move':
-                client.player.move(input.message.elapsedTime);
+            case 'thrust':
+                // Need to compute the difference since the last update and when the thrust
+                // input was received.  This time difference needs to be simulated before the
+                // thrust input is processed in order to keep the client and server thinking
+                // the same think about the player's ship.
+                client.player.thrust(input.message.elapsedTime, input.receiveTime - lastUpdateTime);
+                lastUpdateTime = input.receiveTime;
                 break;
             case 'rotate-left':
                 client.player.rotateLeft(input.message.elapsedTime);
@@ -76,9 +82,9 @@ function fireLaser(playerSpec, elapsedTime, playerId) {
 // Update the simulation of the game.
 //
 //------------------------------------------------------------------
-function update(elapsedTime, currentTime) {
+function update(elapsedTime) {
     for (let clientId in activeClients) {
-        activeClients[clientId].player.update(elapsedTime);
+        activeClients[clientId].player.update(elapsedTime, false);
     }
     for (let i = 0; i < newAsteroids.length; i++) {
         newAsteroids[i].update();
@@ -87,7 +93,7 @@ function update(elapsedTime, currentTime) {
     for (let i = 0; i < laserArray.length; i++) {
         laserArray[i].lifetime -= elapsedTime;
         laserArray[i].update(elapsedTime);
-        if(laserArray[i].lifetime <= 0){
+        if (laserArray[i].lifetime <= 0) {
             laserArray.splice(i, 1);
         }
     }
@@ -117,6 +123,7 @@ function updateClients(elapsedTime) {
             lastMessageId: client.lastMessageId,
             direction: client.player.direction,
             position: client.player.position,
+            momentum: client.player.momentum,
             updateWindow: elapsedTime,
         };
 
@@ -137,6 +144,7 @@ function updateClients(elapsedTime) {
     for (let clientId in activeClients) {
         activeClients[clientId].player.reportUpdate = false;
     }
+    lastUpdateTime = present();
 }
 
 //------------------------------------------------------------------
@@ -146,7 +154,7 @@ function updateClients(elapsedTime) {
 //------------------------------------------------------------------
 function gameLoop(currentTime, elapsedTime) {
     processInput();
-    update(elapsedTime, currentTime);
+    update(elapsedTime);
     updateClients(elapsedTime);
 
     if (!quit) {
@@ -185,9 +193,9 @@ function initializeSocketIO(httpServer) {
                     position: newPlayer.position,
                     rotateRate: newPlayer.rotateRate,
                     size: newPlayer.size,
-                    acceleration: newPlayer.acceleration,
+                    thrustRate: newPlayer.thrustRate,
                     maxSpeed: newPlayer.maxSpeed,
-                    velocityVector: newPlayer.velocityVector,
+                    momentum: newPlayer.momentum,
                 });
 
                 //
@@ -199,8 +207,8 @@ function initializeSocketIO(httpServer) {
                     rotateRate: client.player.rotateRate,
                     size: client.player.size,
                     maxSpeed: client.player.maxSpeed,
-                    acceleration: client.player.acceleration,
-                    velocityVector: client.player.velocityVector,
+                    thrustRate: client.player.thrustRate,
+                    momentum: client.player.momentum,
                 });
             }
         }
@@ -235,20 +243,21 @@ function initializeSocketIO(httpServer) {
         };
 
         socket.emit('connect-ack', {
+            momentum: newPlayer.momentum,
             direction: newPlayer.direction,
             position: newPlayer.position,
             size: newPlayer.size,
             rotateRate: newPlayer.rotateRate,
-            velocityVector: newPlayer.velocityVector,
             maxSpeed: newPlayer.maxSpeed,
-            acceleration: newPlayer.acceleration,
+            thrustRate: newPlayer.thrustRate
             // TODO: WORLD SIZE HERE MAYBE?
         });
 
         socket.on('input', data => {
             inputQueue.push({
                 clientId: socket.id,
-                message: data
+                message: data,
+                receiveTime: present()
             });
         });
 

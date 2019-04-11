@@ -6,20 +6,20 @@
 MyGame.screens['game-play'] = (function (game, graphics, renderer, input, components) {
     'use strict';
 
-    let lastTimeStamp = performance.now();
-    let cancelNextRequest = true;
-    let myKeyboard = input.Keyboard();
-    let socket = io();
+    let lastTimeStamp = performance.now(),
+        cancelNextRequest = true,
+        myKeyboard = input.Keyboard(),
+        socket = io(),
 
-    let playerSelf = {};
-    let asteroids = {};
-    let multiAsteroids = [];
-    let multiLasers = [];
-    let playerOthers = {};
-    let messageHistory;
-    let messageId;
-    let fireTime = 0;
-    let canFire = true;
+        playerSelf = {},
+        asteroids = {},
+        multiAsteroids = [],
+        multiLasers = [],
+        playerOthers = {},
+        messageHistory = MyGame.utilities.Queue(),
+        messageId = 1,
+        fireTime = 0,
+        canFire = true;
 
     //------------------------------------------------------------------
     //
@@ -28,6 +28,9 @@ MyGame.screens['game-play'] = (function (game, graphics, renderer, input, compon
     //
     //------------------------------------------------------------------
     socket.on('connect-ack', function (data) {
+        playerSelf.model.momentum.x = data.momentum.x;
+        playerSelf.model.momentum.y = data.momentum.y;
+
         playerSelf.model.position.x = data.position.x;
         playerSelf.model.position.y = data.position.y;
 
@@ -36,8 +39,7 @@ MyGame.screens['game-play'] = (function (game, graphics, renderer, input, compon
 
         playerSelf.model.direction = data.direction;
         playerSelf.model.rotateRate = data.rotateRate;
-        playerSelf.model.acceleration = data.acceleration;
-        playerSelf.model.velocityVector = data.velocityVector;
+        playerSelf.model.thrustRate = data.thrustRate;
         playerSelf.model.maxSpeed = data.maxSpeed;
     });
 
@@ -49,6 +51,9 @@ MyGame.screens['game-play'] = (function (game, graphics, renderer, input, compon
     //------------------------------------------------------------------
     socket.on('connect-other', function (data) {
         let model = components.PlayerRemote();
+        model.state.momentum.x = data.momentum.x;
+        model.state.momentum.y = data.momentum.y;
+
         model.state.position.x = data.position.x;
         model.state.position.y = data.position.y;
         model.state.direction = data.direction;
@@ -83,6 +88,9 @@ MyGame.screens['game-play'] = (function (game, graphics, renderer, input, compon
     //
     //------------------------------------------------------------------
     socket.on('update-self', function (data) {
+        playerSelf.model.momentum.x = data.momentum.x;
+        playerSelf.model.momentum.y = data.momentum.y;
+
         playerSelf.model.position.x = data.position.x;
         playerSelf.model.position.y = data.position.y;
         playerSelf.model.direction = data.direction;
@@ -106,8 +114,8 @@ MyGame.screens['game-play'] = (function (game, graphics, renderer, input, compon
         while (!messageHistory.empty) {
             let message = messageHistory.dequeue();
             switch (message.type) {
-                case 'move':
-                    playerSelf.model.move(message.elapsedTime);
+                case 'thrust':
+                    playerSelf.model.thrust(message.elapsedTime);
                     break;
                 case 'rotate-right':
                     playerSelf.model.rotateRight(message.elapsedTime);
@@ -156,6 +164,9 @@ MyGame.screens['game-play'] = (function (game, graphics, renderer, input, compon
         if (playerOthers.hasOwnProperty(data.clientId)) {
             let model = playerOthers[data.clientId].model;
             model.goal.updateWindow = data.updateWindow;
+
+            model.state.momentum.x = data.momentum.x;
+            model.state.momentum.y = data.momentum.y
 
             model.goal.position.x = data.position.x;
             model.goal.position.y = data.position.y;
@@ -278,11 +289,11 @@ MyGame.screens['game-play'] = (function (game, graphics, renderer, input, compon
             let message = {
                 id: messageId++,
                 elapsedTime: elapsedTime,
-                type: 'move'
+                type: 'thrust'
             };
             socket.emit('input', message);
             messageHistory.enqueue(message);
-            playerSelf.model.move(elapsedTime);
+            playerSelf.model.thrust(elapsedTime);
         },
             'w', true);
 

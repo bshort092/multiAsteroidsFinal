@@ -12,7 +12,7 @@ MyGame.components.Player = function () {
             y: 0
         },
 
-        velocityVector: {
+        momentum: {
             x: 0,
             y: 0
         },
@@ -24,29 +24,29 @@ MyGame.components.Player = function () {
     
         direction: 0,
         rotateRate: 0,
-        acceleration: 0,
+        thrustRate: 0,
         maxSpeed: 0,
 
-        move: function (elapsedTime) {
+        thrust: function (elapsedTime) {
 
             let vectorX = Math.cos(that.direction);
             let vectorY = Math.sin(that.direction);
     
-            that.velocityVector.x += vectorX * that.acceleration * elapsedTime / 100;
-            that.velocityVector.y += vectorY * that.acceleration * elapsedTime / 100;
+            that.momentum.x += (vectorX * that.thrustRate * elapsedTime/100);
+            that.momentum.y += (vectorY * that.thrustRate * elapsedTime/100);
     
-            if (that.velocityVector.x > that.maxSpeed) {
-                that.velocityVector.x = that.maxSpeed;
+            if (that.momentum.x > that.maxSpeed) {
+                that.momentum.x = that.maxSpeed;
             }
-            if (that.velocityVector.x < 0 - that.maxSpeed) {
-                that.velocityVector.x = 0 - that.maxSpeed;
+            if (that.momentum.x < 0 - that.maxSpeed) {
+                that.momentum.x = 0 - that.maxSpeed;
             }
     
-            if (that.velocityVector.y > that.maxSpeed) {
-                that.velocityVector.y = that.maxSpeed;
+            if (that.momentum.y > that.maxSpeed) {
+                that.momentum.y = that.maxSpeed;
             }
-            if (that.velocityVector.y < 0 - that.maxSpeed) {
-                that.velocityVector.y = 0 - that.maxSpeed;
+            if (that.momentum.y < 0 - that.maxSpeed) {
+                that.momentum.y = 0 - that.maxSpeed;
             }
         },
 
@@ -59,25 +59,25 @@ MyGame.components.Player = function () {
         },
     
         update: function (elapsedTime) {
-    
-            that.position.x += that.velocityVector.x;
-            that.position.y += that.velocityVector.y;
+
+            that.position.x += (that.momentum.x * elapsedTime);
+            that.position.y += (that.momentum.y * elapsedTime);
     
             if (that.position.x > 590) {
                 that.position.x = 590;
-                that.velocityVector.x = 0;
+                that.momentum.x = 0;
             }
             if (that.position.x < 10) {
                 that.position.x = 10;
-                that.velocityVector.x = 0;
+                that.momentum.x = 0;
             }
             if (that.position.y > 590) {
                 that.position.y = 590;
-                that.velocityVector.y = 0;
+                that.momentum.y = 0;
             }
             if (that.position.y < 10) {
                 that.position.y = 10;
-                that.velocityVector.y = 0;
+                that.momentum.y = 0;
             }
     
         }
