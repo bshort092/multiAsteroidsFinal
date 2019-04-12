@@ -63,8 +63,35 @@ MyGame.loader = (function() {
         }, {
             key: 'ufo',
             source: 'assets/ufo.jpg'
+        }, {
+            key: 'background',
+            source: 'assets/outer_space.jpg'
         }, ];
 
+    // function prepareTiledImage(assetArray, rootName, rootKey, sizeX, sizeY, tileSize) {
+    //     let numberX = sizeX / tileSize;
+    //     let numberY = sizeY / tileSize;
+    //     //
+    //     // Create an entry in the assets that holds the properties of the tiled image
+    //     MyGame.assets[rootKey] = {
+    //         width: sizeX,
+    //         height: sizeY,
+    //         tileSize: tileSize
+    //     };
+    //     for (let tileY = 0; tileY < numberY; tileY += 1) {
+    //         for (let tileX = 0; tileX < numberX; tileX += 1) {
+    //             let tileFile = numberPad((tileY * numberX + tileX), 4);
+    //             let tileSource = rootName + tileFile + '.jpg';
+    //             let tileKey = rootKey + '-' + tileFile;
+    //             assetArray.push({
+    //                 key: tileKey,
+    //                 source: tileSource
+    //             });
+    //         }
+    //     }
+    // }
+    // prepareTiledImage(assetOrder, 'assets/TileImages', 'background', 1920, 1152, 128);
+    
     //------------------------------------------------------------------
     //
     // Helper function used to load scripts in the order specified by the
