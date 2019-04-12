@@ -2,14 +2,14 @@
 
 let random = require ('./random');
 
-function createAsteroid(spec) {
+function createUfo(spec) {
+    // let valid = [canvas.width/2 - shipWidth*2, canvas.width/2 + shipWidth*2, canvas.height/2 - shipHeight*2, canvas.height/2 + shipHeight*2];
     
     let that = {
         position:{ x: spec.position.x, y: spec.position.y },
         size: { width: spec.size.width, height: spec.size.height },
         direction: spec.direction, // Angle in radians
         rotation: spec.rotation, // Angle in radians
-        rotateRate: spec.rotateRate, // radians per millisecond
         speed: spec.speed, // unit distance per millisecond
         reportUpdate: false, // Indicates if this model was updated during the last update 
 
@@ -23,7 +23,6 @@ function createAsteroid(spec) {
             that.position.x += (vectorX * that.speed);
             that.position.y += (vectorY * that.speed);
         
-            that.rotation += that.rotateRate;
         
             // if (position.x - (size.width/2) > canvas.width)  { position.x = 0 - (size.width/2); }
             // if (position.x + (size.width/2)  < 0)      { position.x = canvas.width + (size.width/2); }
@@ -40,4 +39,4 @@ function createAsteroid(spec) {
     return that;
 }
 
-module.exports.create = (spec) => createAsteroid(spec);
+module.exports.create = (spec) => createUfo(spec);

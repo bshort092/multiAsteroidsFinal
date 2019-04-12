@@ -7,13 +7,13 @@ MyGame.screens['game-play'] = (function (game, graphics, renderer, input, compon
     'use strict';
 
     let lastTimeStamp = performance.now(),
-        cancelNextRequest = true,
+        cancelNextRequest,
         myKeyboard = input.Keyboard(),
         socket = io(),
 
         playerSelf = {},
-        asteroids = {},
         multiAsteroids = [],
+        multiUfos = [],
         multiLasers = [],
         playerOthers = {},
         messageHistory = MyGame.utilities.Queue(),
@@ -133,11 +133,22 @@ MyGame.screens['game-play'] = (function (game, graphics, renderer, input, compon
     });
 
     socket.on('update-self-asteroid', function (data) {
-        for (let i = 0; i < 2; i++) {
+        for (let i = 0; i < multiAsteroids.length; i++) {
             multiAsteroids[i].model.position.x = data.asteroid[i].position.x;
             multiAsteroids[i].model.position.y = data.asteroid[i].position.y;
             multiAsteroids[i].model.direction = data.asteroid[i].direction;
             multiAsteroids[i].model.rotation = data.asteroid[i].rotation;
+            multiAsteroids[i].model.size = data.asteroid[i].size;
+        }
+    });
+
+    socket.on('update-self-ufo', function (data) {
+        for (let i = 0; i < multiUfos.length; i++) {
+            multiUfos[i].model.position.x = data.ufo[i].position.x;
+            multiUfos[i].model.position.y = data.ufo[i].position.y;
+            multiUfos[i].model.direction = data.ufo[i].direction;
+            multiUfos[i].model.rotation = data.ufo[i].rotation;
+            multiUfos[i].model.size = data.ufo[i].size;
         }
     });
 
@@ -202,9 +213,14 @@ MyGame.screens['game-play'] = (function (game, graphics, renderer, input, compon
             fireTime -= 250;
         }
 
-        for (let i = 0; i < 2; i++) {
+        for (let i = 0; i < multiAsteroids.length; i++) {
             multiAsteroids[i].model.update();
         }
+
+        for (let i = 0; i < multiUfos.length; i++) {
+            multiUfos[i].model.update();
+        }
+
 
         multiLasers.forEach(laser => {
             laser.model.update(elapsedTime);
@@ -228,8 +244,11 @@ MyGame.screens['game-play'] = (function (game, graphics, renderer, input, compon
     function render() {
         graphics.clear();
 
-        for (let i = 0; i < 2; i++) {
+        for (let i = 0; i < multiAsteroids.length; i++) {
             renderer.Asteroid.render(multiAsteroids[i].model, multiAsteroids[i].texture);
+        }
+        for (let i = 0; i < multiUfos.length; i++) {
+            renderer.Ufo.render(multiUfos[i].model, multiUfos[i].texture);
         }
 
         for (let i = 0; i < multiLasers.length; i++) {
@@ -279,6 +298,14 @@ MyGame.screens['game-play'] = (function (game, graphics, renderer, input, compon
                 texture: MyGame.assets['asteroid']
             })
         }
+
+        for (let i = 0; i < 1; i++) {
+            multiUfos.push({
+                model: components.Ufo(),
+                texture: MyGame.assets['ufo']
+            })
+        }
+
         playerOthers = {};
         messageHistory = MyGame.utilities.Queue();
         messageId = 1;
