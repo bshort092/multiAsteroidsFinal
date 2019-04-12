@@ -20,6 +20,7 @@ function createLaser(laserSpec) {
         speed: .75,
         reportUpdate: false,
         lifetime: 1000,
+        radius: 3,
 
         update: function (elapsedTime) {
             that.reportUpdate = true;

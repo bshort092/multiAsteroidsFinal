@@ -41,6 +41,7 @@ MyGame.screens['game-play'] = (function (game, graphics, renderer, input, compon
         playerSelf.model.rotateRate = data.rotateRate;
         playerSelf.model.thrustRate = data.thrustRate;
         playerSelf.model.maxSpeed = data.maxSpeed;
+        playerSelf.model.radius = data.radius;
     });
 
     //------------------------------------------------------------------
@@ -133,12 +134,18 @@ MyGame.screens['game-play'] = (function (game, graphics, renderer, input, compon
     });
 
     socket.on('update-self-asteroid', function (data) {
-        for (let i = 0; i < multiAsteroids.length; i++) {
+        multiAsteroids = [];
+        for (let i = 0; i < data.asteroid.length; i++) {
+            multiAsteroids.push({
+                model: components.Asteroid(),
+                texture: MyGame.assets['asteroid']
+            })
             multiAsteroids[i].model.position.x = data.asteroid[i].position.x;
             multiAsteroids[i].model.position.y = data.asteroid[i].position.y;
             multiAsteroids[i].model.direction = data.asteroid[i].direction;
             multiAsteroids[i].model.rotation = data.asteroid[i].rotation;
             multiAsteroids[i].model.size = data.asteroid[i].size;
+            multiAsteroids[i].model.radius = data.asteroid[i].radius;
         }
     });
 
@@ -149,6 +156,7 @@ MyGame.screens['game-play'] = (function (game, graphics, renderer, input, compon
             multiUfos[i].model.direction = data.ufo[i].direction;
             multiUfos[i].model.rotation = data.ufo[i].rotation;
             multiUfos[i].model.size = data.ufo[i].size;
+            multiUfos[i].model.radius = data.ufo[i].radius;
         }
     });
 
@@ -163,6 +171,7 @@ MyGame.screens['game-play'] = (function (game, graphics, renderer, input, compon
             multiLasers[i].model.position.y = data.lasers[i].position.y;
             multiLasers[i].model.direction = data.lasers[i].direction;
             multiLasers[i].model.shipId = data.lasers[i].shipId;
+            multiLasers[i].model.radius = data.lasers[i].radius;
         }
     });
 
@@ -360,7 +369,6 @@ MyGame.screens['game-play'] = (function (game, graphics, renderer, input, compon
                 socket.emit('input', message);
                 messageHistory.enqueue(message);
             }
-
         },
             ' ', true);
 

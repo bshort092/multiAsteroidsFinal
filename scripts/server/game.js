@@ -21,7 +21,7 @@ let newAsteroids = MultiAsteroids.create({
 
 let newUfos = MultiUfos.create({
     numOfUfos: 1,
-    UfoSizes: [[101,60], [55, 30]],
+    UfoSizes: [[101, 60], [55, 30]],
     minVelocity: 0.5,
     maxVelocity: 1.5,
 })
@@ -87,6 +87,29 @@ function fireLaser(playerSpec, elapsedTime, playerId) {
     laserArray.push(Laser.create(laserSpec));
 }
 
+function didCollide(obj1, obj2, ) {
+    let dx = obj1.position.x - obj2.position.x;
+    let dy = obj1.position.y - obj2.position.y;
+    let distance = Math.sqrt(dx * dx + dy * dy);
+
+    return (distance < obj1.radius + obj2.radius)
+}
+
+function detectCollision(playerShip) {
+    //for each asteroid detect ship collision
+
+    for (let i = 0; i < newAsteroids.length; i++) {
+        if (didCollide(newAsteroids[i], playerShip)) {
+            console.log("Player + Asteroid collided " + Date.now());
+            newAsteroids.splice(i, 1);
+        }
+    }
+    // newAsteroids.forEach(asteroid => {
+
+    // })
+
+}
+
 //------------------------------------------------------------------
 //
 // Update the simulation of the game.
@@ -95,6 +118,7 @@ function fireLaser(playerSpec, elapsedTime, playerId) {
 function update(elapsedTime) {
     for (let clientId in activeClients) {
         activeClients[clientId].player.update(elapsedTime, false);
+        detectCollision(activeClients[clientId].player);
     }
     for (let i = 0; i < newAsteroids.length; i++) {
         newAsteroids[i].update();
@@ -215,6 +239,7 @@ function initializeSocketIO(httpServer) {
                     thrustRate: newPlayer.thrustRate,
                     maxSpeed: newPlayer.maxSpeed,
                     momentum: newPlayer.momentum,
+                    radius: newPlayer.radius,
                 });
 
                 //
@@ -228,6 +253,7 @@ function initializeSocketIO(httpServer) {
                     maxSpeed: client.player.maxSpeed,
                     thrustRate: client.player.thrustRate,
                     momentum: client.player.momentum,
+                    radius: newPlayer.radius,
                 });
             }
         }
@@ -268,7 +294,8 @@ function initializeSocketIO(httpServer) {
             size: newPlayer.size,
             rotateRate: newPlayer.rotateRate,
             maxSpeed: newPlayer.maxSpeed,
-            thrustRate: newPlayer.thrustRate
+            thrustRate: newPlayer.thrustRate,
+            radius: newPlayer.radius
             // TODO: WORLD SIZE HERE MAYBE?
         });
 

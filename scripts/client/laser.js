@@ -17,6 +17,7 @@ MyGame.components.Laser = function () {
         direction: 0,
         speed: 0,
         lifetime: 0,
+        radius: 0,
 
         update: function (elapsedTime) {
             let vectorX = Math.cos(that.direction);
