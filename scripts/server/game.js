@@ -12,7 +12,7 @@ let MultiAsteroids = require('./multiAsteroids');
 let MultiUfos = require('./multiUFOs');
 
 // TODO: create asteroid manager instead of one asteroid: 
-let newAsteroids = MultiAsteroids.create({
+let asteroids = MultiAsteroids.init({
     numOfAsteroids: 2,
     asteroidSizes: [37, 74, 148],
     minVelocity: 0.5,
@@ -98,15 +98,68 @@ function didCollide(obj1, obj2, ) {
 function detectCollision(playerShip) {
     //for each asteroid detect ship collision
 
-    for (let i = 0; i < newAsteroids.length; i++) {
-        if (didCollide(newAsteroids[i], playerShip)) {
-            console.log("Player + Asteroid collided " + Date.now());
-            newAsteroids.splice(i, 1);
+    for (let i = 0; i < asteroids.length; i++) {
+        if (didCollide(asteroids[i], playerShip)) {
+            if (asteroids[i].size.width === 148) {
+                let createdAsteroids = MultiAsteroids.create({
+                    numOfAsteroids: 3,
+                    minVelocity: 0.5,
+                    maxVelocity: 2,
+                    parentPosition: asteroids[i].position,
+                    size: 74,
+                });
+                asteroids.splice(i, 1);
+                asteroids = asteroids.concat(createdAsteroids);
+            }
+            else if (asteroids[i].size.width === 74) {
+                let createdAsteroids = MultiAsteroids.create({
+                    numOfAsteroids: 4,
+                    minVelocity: 0.5,
+                    maxVelocity: 2,
+                    parentPosition: asteroids[i].position,
+                    size: 37,
+                });
+                asteroids.splice(i, 1);
+                asteroids = asteroids.concat(createdAsteroids);
+            }
+            else {
+                asteroids.splice(i, 1);
+            }
         }
     }
-    // newAsteroids.forEach(asteroid => {
 
-    // })
+    for (let i = 0; i < asteroids.length; i++) {
+        for (let j = 0; j < laserArray.length; j++) {
+            if (didCollide(asteroids[i], laserArray[j])) {
+                laserArray.splice(j, 1);
+                if (asteroids[i].size.width === 148) {
+                    let createdAsteroids = MultiAsteroids.create({
+                        numOfAsteroids: 3,
+                        minVelocity: 0.5,
+                        maxVelocity: 2,
+                        parentPosition: asteroids[i].position,
+                        size: 74,
+                    });
+                    asteroids.splice(i, 1);
+                    asteroids = asteroids.concat(createdAsteroids);
+                }
+                else if (asteroids[i].size.width === 74) {
+                    let createdAsteroids = MultiAsteroids.create({
+                        numOfAsteroids: 4,
+                        minVelocity: 0.5,
+                        maxVelocity: 2,
+                        parentPosition: asteroids[i].position,
+                        size: 37,
+                    });
+                    asteroids.splice(i, 1);
+                    asteroids = asteroids.concat(createdAsteroids);
+                }
+                else {
+                    asteroids.splice(i, 1);
+                }
+            }
+        }
+    }
 
 }
 
@@ -120,8 +173,8 @@ function update(elapsedTime) {
         activeClients[clientId].player.update(elapsedTime, false);
         detectCollision(activeClients[clientId].player);
     }
-    for (let i = 0; i < newAsteroids.length; i++) {
-        newAsteroids[i].update();
+    for (let i = 0; i < asteroids.length; i++) {
+        asteroids[i].update();
     }
     for (let i = 0; i < newUfos.length; i++) {
         newUfos[i].update();
@@ -146,7 +199,7 @@ function updateClients(elapsedTime) {
         let client = activeClients[clientId];
 
         let updateAsteroid = {
-            asteroid: newAsteroids,
+            asteroid: asteroids,
         }
         client.socket.emit('update-self-asteroid', updateAsteroid);
 
@@ -154,7 +207,6 @@ function updateClients(elapsedTime) {
             ufo: newUfos,
         }
         client.socket.emit('update-self-ufo', updateUfo);
-
 
         let updateLasers = {
             lasers: laserArray,
