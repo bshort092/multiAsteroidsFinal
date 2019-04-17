@@ -19,7 +19,7 @@ let asteroids = MultiAsteroids.init({
     maxVelocity: 2,
 })
 
-let newUfos = MultiUfos.create({
+let ufos = MultiUfos.create({
     numOfUfos: 1,
     UfoSizes: [[101, 60], [55, 30]],
     minVelocity: 0.5,
@@ -27,12 +27,14 @@ let newUfos = MultiUfos.create({
 })
 
 let laserArray = [];
+let ufoLaserArray = [];
 
 const UPDATE_RATE_MS = 10;
 let quit = false;
 let activeClients = {};
 let inputQueue = [];
 let fireTime = 0;
+let ufoFireDelay = 1000;
 let lastUpdateTime = present();
 
 //------------------------------------------------------------------
@@ -82,17 +84,32 @@ function fireLaser(playerSpec, elapsedTime, playerId) {
         },
         direction: playerSpec.direction,
         shipId: playerId,
+        speed: .75
     };
-
     laserArray.push(Laser.create(laserSpec));
 }
 
-function didCollide(obj1, obj2, ) {
-    let dx = obj1.position.x - obj2.position.x;
-    let dy = obj1.position.y - obj2.position.y;
-    let distance = Math.sqrt(dx * dx + dy * dy);
+function fireUfoLaser(ufoSpec, elapsedTime) {
+    let laserSpec = {
+        position: {
+            x: ufoSpec.position.x,
+            y: ufoSpec.position.y,
+        },
+        direction: Math.random() * 360,
+        speed: .25
+    };
+    ufoLaserArray.push(Laser.create(laserSpec));
+}
 
-    return (distance < obj1.radius + obj2.radius)
+function didCollide(obj1, obj2, ) {
+    if (obj1 && obj2) {
+        let dx = obj1.position.x - obj2.position.x;
+        let dy = obj1.position.y - obj2.position.y;
+        let distance = Math.sqrt(dx * dx + dy * dy);
+
+        return (distance < obj1.radius + obj2.radius)
+    }
+    return false;
 }
 
 function detectCollision(playerShip) {
@@ -146,7 +163,7 @@ function detectCollision(playerShip) {
                 else if (asteroids[i].size.width === 74) {
                     let createdAsteroids = MultiAsteroids.create({
                         numOfAsteroids: 4,
-                        minVelocity: 0.5,
+                        minVelocity: 1,
                         maxVelocity: 2,
                         parentPosition: asteroids[i].position,
                         size: 37,
@@ -161,6 +178,24 @@ function detectCollision(playerShip) {
         }
     }
 
+    for (let i = 0; i < ufos.length; i++) {
+        if (ufos[i] && didCollide(ufos[i], playerShip)) {
+            ufos.splice(i, 1);
+            break;
+        }
+        for (let j = 0; j < laserArray.length; j++) {
+            if (didCollide(laserArray[j], ufos[i])) {
+                ufos.splice(i, 1);
+                laserArray.splice(j, 1);
+            }
+        }
+    }
+
+    for (let i = 0; i < ufoLaserArray.length; i++) {
+        if (didCollide(ufoLaserArray[i], playerShip)) {
+            ufoLaserArray.splice(i, 1);
+        }
+    }
 }
 
 //------------------------------------------------------------------
@@ -173,11 +208,18 @@ function update(elapsedTime) {
         activeClients[clientId].player.update(elapsedTime, false);
         detectCollision(activeClients[clientId].player);
     }
+
     for (let i = 0; i < asteroids.length; i++) {
         asteroids[i].update();
     }
-    for (let i = 0; i < newUfos.length; i++) {
-        newUfos[i].update();
+
+    for (let i = 0; i < ufos.length; i++) {
+        ufos[i].update();
+        ufoFireDelay -= elapsedTime;
+        if (ufoFireDelay <= 1000) {
+            fireUfoLaser(ufos[i], elapsedTime);
+            ufoFireDelay += 1000;
+        }
     }
 
     for (let i = 0; i < laserArray.length; i++) {
@@ -185,6 +227,14 @@ function update(elapsedTime) {
         laserArray[i].update(elapsedTime);
         if (laserArray[i].lifetime <= 0) {
             laserArray.splice(i, 1);
+        }
+    }
+
+    for (let i = 0; i < ufoLaserArray.length; i++) {
+        ufoLaserArray[i].lifetime -= elapsedTime * .25;
+        ufoLaserArray[i].update(elapsedTime);
+        if (ufoLaserArray[i].lifetime <= 0) {
+            ufoLaserArray.splice(i, 1);
         }
     }
 }
@@ -199,12 +249,12 @@ function updateClients(elapsedTime) {
         let client = activeClients[clientId];
 
         let updateAsteroid = {
-            asteroid: asteroids,
+            asteroids: asteroids,
         }
         client.socket.emit('update-self-asteroid', updateAsteroid);
 
         let updateUfo = {
-            ufo: newUfos,
+            ufos: ufos,
         }
         client.socket.emit('update-self-ufo', updateUfo);
 
@@ -212,6 +262,11 @@ function updateClients(elapsedTime) {
             lasers: laserArray,
         }
         client.socket.emit('update-self-laser', updateLasers);
+
+        let updateUfoLasers = {
+            ufoLasers: ufoLaserArray,
+        }
+        client.socket.emit('update-ufo-laser', updateUfoLasers);
 
         let update = {
             clientId: clientId,
@@ -305,7 +360,7 @@ function initializeSocketIO(httpServer) {
                     maxSpeed: client.player.maxSpeed,
                     thrustRate: client.player.thrustRate,
                     momentum: client.player.momentum,
-                    radius: newPlayer.radius,
+                    radius: client.player.radius,
                 });
             }
         }
