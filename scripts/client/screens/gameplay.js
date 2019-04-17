@@ -3,7 +3,7 @@
 // This function provides the "game" code.
 //
 //------------------------------------------------------------------
-MyGame.screens['game-play'] = (function (game, graphics, renderer, input, components) {
+MyGame.screens['game-play'] = (function (game, graphics, renderer, input, components, systems) {
     'use strict';
 
     let lastTimeStamp = performance.now(),
@@ -197,9 +197,14 @@ MyGame.screens['game-play'] = (function (game, graphics, renderer, input, compon
         }
     });
 
-    // socket.on('create-particle-system', function (data){
-    //     //data
-    // });
+    socket.on('create-particle-system', function (data){
+        //data: 
+        //type of system (ship explosion, asteroid breakup, etc.)
+        //postion of system
+        if(data.type === "ship-explosion"){
+            MyGame.systems.Manager().createShipExplosion(data.x, data.y);
+        }
+    });
 
     //------------------------------------------------------------------
     //
@@ -427,4 +432,4 @@ MyGame.screens['game-play'] = (function (game, graphics, renderer, input, compon
         run: run,
     };
 
-}(MyGame.game, MyGame.graphics, MyGame.renderer, MyGame.input, MyGame.components));
+}(MyGame.game, MyGame.graphics, MyGame.renderer, MyGame.input, MyGame.components, MyGame.systems));
