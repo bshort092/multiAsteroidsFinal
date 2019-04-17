@@ -12,6 +12,7 @@ function createUfo(spec) {
         rotation: spec.rotation, // Angle in radians
         speed: spec.speed, // unit distance per millisecond
         reportUpdate: false, // Indicates if this model was updated during the last update 
+        radius: spec.size.width / 2,
 
         update: function() {
             

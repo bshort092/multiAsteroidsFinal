@@ -13,6 +13,7 @@ MyGame.screens['game-play'] = (function (game, graphics, renderer, input, compon
 
         playerSelf = {},
         multiAsteroids = [],
+        multiUfoLasers = [],
         multiUfos = [],
         multiLasers = [],
         playerOthers = {},
@@ -41,6 +42,7 @@ MyGame.screens['game-play'] = (function (game, graphics, renderer, input, compon
         playerSelf.model.rotateRate = data.rotateRate;
         playerSelf.model.thrustRate = data.thrustRate;
         playerSelf.model.maxSpeed = data.maxSpeed;
+        playerSelf.model.radius = data.radius;
     });
 
     //------------------------------------------------------------------
@@ -133,22 +135,34 @@ MyGame.screens['game-play'] = (function (game, graphics, renderer, input, compon
     });
 
     socket.on('update-self-asteroid', function (data) {
-        for (let i = 0; i < multiAsteroids.length; i++) {
-            multiAsteroids[i].model.position.x = data.asteroid[i].position.x;
-            multiAsteroids[i].model.position.y = data.asteroid[i].position.y;
-            multiAsteroids[i].model.direction = data.asteroid[i].direction;
-            multiAsteroids[i].model.rotation = data.asteroid[i].rotation;
-            multiAsteroids[i].model.size = data.asteroid[i].size;
+        multiAsteroids = [];
+        for (let i = 0; i < data.asteroids.length; i++) {
+            multiAsteroids.push({
+                model: components.Asteroid(),
+                texture: MyGame.assets['asteroid']
+            })
+            multiAsteroids[i].model.position.x = data.asteroids[i].position.x;
+            multiAsteroids[i].model.position.y = data.asteroids[i].position.y;
+            multiAsteroids[i].model.direction = data.asteroids[i].direction;
+            multiAsteroids[i].model.rotation = data.asteroids[i].rotation;
+            multiAsteroids[i].model.size = data.asteroids[i].size;
+            multiAsteroids[i].model.radius = data.asteroids[i].radius;
         }
     });
 
     socket.on('update-self-ufo', function (data) {
-        for (let i = 0; i < multiUfos.length; i++) {
-            multiUfos[i].model.position.x = data.ufo[i].position.x;
-            multiUfos[i].model.position.y = data.ufo[i].position.y;
-            multiUfos[i].model.direction = data.ufo[i].direction;
-            multiUfos[i].model.rotation = data.ufo[i].rotation;
-            multiUfos[i].model.size = data.ufo[i].size;
+        multiUfos = [];
+        for (let i = 0; i < data.ufos.length; i++) {
+            multiUfos.push({
+                model: components.Ufo(),
+                texture: MyGame.assets['ufo']
+            })
+            multiUfos[i].model.position.x = data.ufos[i].position.x;
+            multiUfos[i].model.position.y = data.ufos[i].position.y;
+            multiUfos[i].model.direction = data.ufos[i].direction;
+            multiUfos[i].model.rotation = data.ufos[i].rotation;
+            multiUfos[i].model.size = data.ufos[i].size;
+            multiUfos[i].model.radius = data.ufos[i].radius;
         }
     });
 
@@ -163,8 +177,29 @@ MyGame.screens['game-play'] = (function (game, graphics, renderer, input, compon
             multiLasers[i].model.position.y = data.lasers[i].position.y;
             multiLasers[i].model.direction = data.lasers[i].direction;
             multiLasers[i].model.shipId = data.lasers[i].shipId;
+            multiLasers[i].model.radius = data.lasers[i].radius;
+            multiLasers[i].model.speed = data.lasers[i].speed;
         }
     });
+
+    socket.on('update-ufo-laser', function (data) {
+        multiUfoLasers = [];
+        for (let i = 0; i < data.ufoLasers.length; i++) {
+            multiUfoLasers.push({
+                model: components.Laser(),
+                texture: MyGame.assets['ufoLaser']
+            })
+            multiUfoLasers[i].model.position.x = data.ufoLasers[i].position.x;
+            multiUfoLasers[i].model.position.y = data.ufoLasers[i].position.y;
+            multiUfoLasers[i].model.direction = data.ufoLasers[i].direction;
+            multiUfoLasers[i].model.radius = data.ufoLasers[i].radius;
+            multiUfoLasers[i].model.speed = data.ufoLasers[i].speed;
+        }
+    });
+
+    // socket.on('create-particle-system', function (data){
+    //     //data
+    // });
 
     //------------------------------------------------------------------
     //
@@ -221,8 +256,11 @@ MyGame.screens['game-play'] = (function (game, graphics, renderer, input, compon
             multiUfos[i].model.update();
         }
 
-
         multiLasers.forEach(laser => {
+            laser.model.update(elapsedTime);
+        });
+
+        multiUfoLasers.forEach(laser => {
             laser.model.update(elapsedTime);
         });
 
@@ -247,6 +285,11 @@ MyGame.screens['game-play'] = (function (game, graphics, renderer, input, compon
         for (let i = 0; i < multiAsteroids.length; i++) {
             renderer.Asteroid.render(multiAsteroids[i].model, multiAsteroids[i].texture);
         }
+
+        for (let i = 0; i < multiUfoLasers.length; i++) {
+            renderer.Laser.render(multiUfoLasers[i].model, multiUfoLasers[i].texture);
+        }
+
         for (let i = 0; i < multiUfos.length; i++) {
             renderer.Ufo.render(multiUfos[i].model, multiUfos[i].texture);
         }
@@ -360,7 +403,6 @@ MyGame.screens['game-play'] = (function (game, graphics, renderer, input, compon
                 socket.emit('input', message);
                 messageHistory.enqueue(message);
             }
-
         },
             ' ', true);
 

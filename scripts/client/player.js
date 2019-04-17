@@ -26,6 +26,7 @@ MyGame.components.Player = function () {
         rotateRate: 0,
         thrustRate: 0,
         maxSpeed: 0,
+        radius: 0,
 
         thrust: function (elapsedTime) {
 

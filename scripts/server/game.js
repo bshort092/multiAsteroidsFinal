@@ -12,27 +12,29 @@ let MultiAsteroids = require('./multiAsteroids');
 let MultiUfos = require('./multiUFOs');
 
 // TODO: create asteroid manager instead of one asteroid: 
-let newAsteroids = MultiAsteroids.create({
+let asteroids = MultiAsteroids.init({
     numOfAsteroids: 2,
     asteroidSizes: [37, 74, 148],
     minVelocity: 0.5,
     maxVelocity: 2,
 })
 
-let newUfos = MultiUfos.create({
+let ufos = MultiUfos.create({
     numOfUfos: 1,
-    UfoSizes: [[101,60], [55, 30]],
+    UfoSizes: [[101, 60], [55, 30]],
     minVelocity: 0.5,
     maxVelocity: 1.5,
 })
 
 let laserArray = [];
+let ufoLaserArray = [];
 
 const UPDATE_RATE_MS = 10;
 let quit = false;
 let activeClients = {};
 let inputQueue = [];
 let fireTime = 0;
+let ufoFireDelay = 1000;
 let lastUpdateTime = present();
 
 //------------------------------------------------------------------
@@ -82,9 +84,118 @@ function fireLaser(playerSpec, elapsedTime, playerId) {
         },
         direction: playerSpec.direction,
         shipId: playerId,
+        speed: .75
     };
-
     laserArray.push(Laser.create(laserSpec));
+}
+
+function fireUfoLaser(ufoSpec, elapsedTime) {
+    let laserSpec = {
+        position: {
+            x: ufoSpec.position.x,
+            y: ufoSpec.position.y,
+        },
+        direction: Math.random() * 360,
+        speed: .25
+    };
+    ufoLaserArray.push(Laser.create(laserSpec));
+}
+
+function didCollide(obj1, obj2, ) {
+    if (obj1 && obj2) {
+        let dx = obj1.position.x - obj2.position.x;
+        let dy = obj1.position.y - obj2.position.y;
+        let distance = Math.sqrt(dx * dx + dy * dy);
+
+        return (distance < obj1.radius + obj2.radius)
+    }
+    return false;
+}
+
+function detectCollision(playerShip) {
+    //for each asteroid detect ship collision
+
+    for (let i = 0; i < asteroids.length; i++) {
+        if (didCollide(asteroids[i], playerShip)) {
+            if (asteroids[i].size.width === 148) {
+                let createdAsteroids = MultiAsteroids.create({
+                    numOfAsteroids: 3,
+                    minVelocity: 0.5,
+                    maxVelocity: 2,
+                    parentPosition: asteroids[i].position,
+                    size: 74,
+                });
+                asteroids.splice(i, 1);
+                asteroids = asteroids.concat(createdAsteroids);
+            }
+            else if (asteroids[i].size.width === 74) {
+                let createdAsteroids = MultiAsteroids.create({
+                    numOfAsteroids: 4,
+                    minVelocity: 0.5,
+                    maxVelocity: 2,
+                    parentPosition: asteroids[i].position,
+                    size: 37,
+                });
+                asteroids.splice(i, 1);
+                asteroids = asteroids.concat(createdAsteroids);
+            }
+            else {
+                asteroids.splice(i, 1);
+            }
+        }
+    }
+
+    for (let i = 0; i < asteroids.length; i++) {
+        for (let j = 0; j < laserArray.length; j++) {
+            if (didCollide(asteroids[i], laserArray[j])) {
+                laserArray.splice(j, 1);
+                if (asteroids[i].size.width === 148) {
+                    let createdAsteroids = MultiAsteroids.create({
+                        numOfAsteroids: 3,
+                        minVelocity: 0.5,
+                        maxVelocity: 2,
+                        parentPosition: asteroids[i].position,
+                        size: 74,
+                    });
+                    asteroids.splice(i, 1);
+                    asteroids = asteroids.concat(createdAsteroids);
+                }
+                else if (asteroids[i].size.width === 74) {
+                    let createdAsteroids = MultiAsteroids.create({
+                        numOfAsteroids: 4,
+                        minVelocity: 1,
+                        maxVelocity: 2,
+                        parentPosition: asteroids[i].position,
+                        size: 37,
+                    });
+                    asteroids.splice(i, 1);
+                    asteroids = asteroids.concat(createdAsteroids);
+                }
+                else {
+                    asteroids.splice(i, 1);
+                }
+            }
+        }
+    }
+
+    for (let i = 0; i < ufos.length; i++) {
+        if (ufos[i] && didCollide(ufos[i], playerShip)) {
+            ufos.splice(i, 1);
+            break;
+        }
+        for (let j = 0; j < laserArray.length; j++) {
+            if (didCollide(laserArray[j], ufos[i])) {
+                ufos.splice(i, 1);
+                laserArray.splice(j, 1);
+            }
+        }
+    }
+
+    for (let i = 0; i < ufoLaserArray.length; i++) {
+        if (didCollide(ufoLaserArray[i], playerShip)) {
+            ufoLaserArray.splice(i, 1);
+        }
+    }
 }
 
 //------------------------------------------------------------------
@@ -95,12 +206,20 @@ function fireLaser(playerSpec, elapsedTime, playerId) {
 function update(elapsedTime) {
     for (let clientId in activeClients) {
         activeClients[clientId].player.update(elapsedTime, false);
+        detectCollision(activeClients[clientId].player);
     }
-    for (let i = 0; i < newAsteroids.length; i++) {
-        newAsteroids[i].update();
+
+    for (let i = 0; i < asteroids.length; i++) {
+        asteroids[i].update();
     }
-    for (let i = 0; i < newUfos.length; i++) {
-        newUfos[i].update();
+
+    for (let i = 0; i < ufos.length; i++) {
+        ufos[i].update();
+        ufoFireDelay -= elapsedTime;
+        if (ufoFireDelay <= 1000) {
+            fireUfoLaser(ufos[i], elapsedTime);
+            ufoFireDelay += 1000;
+        }
     }
 
     for (let i = 0; i < laserArray.length; i++) {
@@ -108,6 +227,14 @@ function update(elapsedTime) {
         laserArray[i].update(elapsedTime);
         if (laserArray[i].lifetime <= 0) {
             laserArray.splice(i, 1);
+        }
+    }
+
+    for (let i = 0; i < ufoLaserArray.length; i++) {
+        ufoLaserArray[i].lifetime -= elapsedTime * .25;
+        ufoLaserArray[i].update(elapsedTime);
+        if (ufoLaserArray[i].lifetime <= 0) {
+            ufoLaserArray.splice(i, 1);
         }
     }
 }
@@ -122,20 +249,24 @@ function updateClients(elapsedTime) {
         let client = activeClients[clientId];
 
         let updateAsteroid = {
-            asteroid: newAsteroids,
+            asteroids: asteroids,
         }
         client.socket.emit('update-self-asteroid', updateAsteroid);
 
         let updateUfo = {
-            ufo: newUfos,
+            ufos: ufos,
         }
         client.socket.emit('update-self-ufo', updateUfo);
-
 
         let updateLasers = {
             lasers: laserArray,
         }
         client.socket.emit('update-self-laser', updateLasers);
+
+        let updateUfoLasers = {
+            ufoLasers: ufoLaserArray,
+        }
+        client.socket.emit('update-ufo-laser', updateUfoLasers);
 
         let update = {
             clientId: clientId,
@@ -215,6 +346,7 @@ function initializeSocketIO(httpServer) {
                     thrustRate: newPlayer.thrustRate,
                     maxSpeed: newPlayer.maxSpeed,
                     momentum: newPlayer.momentum,
+                    radius: newPlayer.radius,
                 });
 
                 //
@@ -228,6 +360,7 @@ function initializeSocketIO(httpServer) {
                     maxSpeed: client.player.maxSpeed,
                     thrustRate: client.player.thrustRate,
                     momentum: client.player.momentum,
+                    radius: client.player.radius,
                 });
             }
         }
@@ -268,7 +401,8 @@ function initializeSocketIO(httpServer) {
             size: newPlayer.size,
             rotateRate: newPlayer.rotateRate,
             maxSpeed: newPlayer.maxSpeed,
-            thrustRate: newPlayer.thrustRate
+            thrustRate: newPlayer.thrustRate,
+            radius: newPlayer.radius
             // TODO: WORLD SIZE HERE MAYBE?
         });
 

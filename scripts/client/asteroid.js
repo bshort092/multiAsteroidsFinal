@@ -8,6 +8,7 @@ MyGame.components.Asteroid = function() {
         rotation: 0,
         rotateRate: 0,
         speed: 0,
+        radius: 0,
         update: function() {
             let vectorX = Math.cos(that.direction);
             let vectorY = Math.sin(that.direction);

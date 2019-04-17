@@ -39,6 +39,7 @@ function createPlayer() {
         maxSpeed: .2,
         reportUpdate: false,        // Indicates if this model was updated during the last update
         lastUpdateDiff: 0,
+        radius: 35/2,
 
         thrust: function (elapsedTime, updateDiff) {
             that.lastUpdateDiff += updateDiff;
