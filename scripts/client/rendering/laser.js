@@ -3,8 +3,6 @@ MyGame.renderer.Laser = (function(graphics) {
     let that = {};
 
     that.render = function(model, texture) {
-        //console.log(model);
-        //console.log(texture);
         graphics.saveContext();
         graphics.rotateCanvas(model.position, model.direction);
         graphics.drawImage(texture, model.position, model.size);
