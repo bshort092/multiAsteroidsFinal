@@ -294,7 +294,7 @@ MyGame.screens['game-play'] = (function (game, graphics, renderer, input, compon
             model: components.Player(),
             texture: MyGame.assets['player-self']
         };
-        for (let i = 0; i < 2; i++) {
+        for (let i = 0; i < 20; i++) {
             multiAsteroids.push({
                 model: components.Asteroid(),
                 texture: MyGame.assets['asteroid']

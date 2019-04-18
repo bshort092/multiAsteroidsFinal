@@ -81,17 +81,17 @@ MyGame.components.Player = function () {
             }
 
             let playerView = MyGame.components.Viewport.changeView(that.position); 
-            if(playerView.y < (0.1*600) && that.position.y > (0.1*600)) {
-                MyGame.components.Viewport.moveY(-1 * ((0.1*600) - playerView.y));  //up
+            if(playerView.y < (0.2*600) && that.position.y > (0.2*600)) {
+                MyGame.components.Viewport.moveY(-1 * ((0.2*600) - playerView.y));  //up
             }
-            if(playerView.y > (0.9*600) && that.position.y < 1152 - (0.1*600)) {
-                MyGame.components.Viewport.moveY(playerView.y - (0.9*600)); //down
+            if(playerView.y > (0.8*600) && that.position.y < 1152 - (0.2*600)) {
+                MyGame.components.Viewport.moveY(playerView.y - (0.8*600)); //down
             }
-            if(playerView.x < (0.1*600) && that.position.x > (0.1*600)) {
-                MyGame.components.Viewport.moveX(-1 * ((0.1*600) - playerView.x)); //left
+            if(playerView.x < (0.2*600) && that.position.x > (0.2*600)) {
+                MyGame.components.Viewport.moveX(-1 * ((0.2*600) - playerView.x)); //left
             }
-            if(playerView.x > (0.9*600) && that.position.x < 1920 - (0.1*600)) {
-                MyGame.components.Viewport.moveX(playerView.x - (0.9*600)); //right
+            if(playerView.x > (0.8*600) && that.position.x < 1920 - (0.2*600)) {
+                MyGame.components.Viewport.moveX(playerView.x - (0.8*600)); //right
             }
     
         }

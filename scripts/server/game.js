@@ -13,7 +13,7 @@ let MultiUfos = require('./multiUFOs');
 
 // TODO: create asteroid manager instead of one asteroid: 
 let newAsteroids = MultiAsteroids.create({
-    numOfAsteroids: 2,
+    numOfAsteroids: 20,
     asteroidSizes: [37, 74, 148],
     minVelocity: 0.5,
     maxVelocity: 2,

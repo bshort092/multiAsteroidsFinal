@@ -32,6 +32,7 @@ MyGame.graphics = (function () {
     //------------------------------------------------------------------
     function clear() {
         context.clear();
+        context_minimap.clear();
     }
 
     //------------------------------------------------------------------
@@ -41,7 +42,7 @@ MyGame.graphics = (function () {
     //------------------------------------------------------------------
     function saveContext() {
         context.save();
-        context_minimap.clear();
+        context_minimap.save();
     }
 
     //------------------------------------------------------------------
@@ -97,16 +98,16 @@ MyGame.graphics = (function () {
     }
     function drawImageMiniMap(texture, center, size, rotation) {
         let localCenter = {
-            x: center.x / 1920, // * minimap.width,
-            y: center.y / 1152 // * minimap.height
+            x: center.x / 1920 * canvas_minimap.width,
+            y: center.y / 1152 * canvas_minimap.height
         };
         let localSize = {
-            width: size.width / 1920, // * minimap.width,
-            height: size.height / 1152 // * minimap.height
+            width: size.width / 1920 * canvas_minimap.width,
+            height: size.height / 1152 * canvas_minimap.height
         };
-        context.translate(localCenter.x, localCenter.y);
-        context.rotate(rotation);
-        context.translate(-localCenter.x, -localCenter.y);
+        context_minimap.translate(localCenter.x, localCenter.y);
+        context_minimap.rotate(rotation);
+        context_minimap.translate(-localCenter.x, -localCenter.y);
 
         context_minimap.drawImage(
             texture,
