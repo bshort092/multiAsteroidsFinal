@@ -16,6 +16,8 @@ MyGame.renderer.PlayerRemote = (function(graphics) {
         graphics.saveContext();
         graphics.rotateCanvas(model.state.position, model.state.direction);
         graphics.drawImage(texture, model.state.position, model.size);
+        graphics.rotateCanvasMiniMap(model.state.position, model.state.direction);
+        graphics.drawImageMiniMap(texture, model.state.position, model.size);
         graphics.restoreContext();
     };
 

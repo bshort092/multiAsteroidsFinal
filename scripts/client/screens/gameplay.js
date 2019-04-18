@@ -282,6 +282,8 @@ MyGame.screens['game-play'] = (function (game, graphics, renderer, input, compon
     function render() {
         graphics.clear();
 
+        renderer.Tiles.render();
+
         for (let i = 0; i < multiAsteroids.length; i++) {
             renderer.Asteroid.render(multiAsteroids[i].model, multiAsteroids[i].texture);
         }
@@ -335,7 +337,7 @@ MyGame.screens['game-play'] = (function (game, graphics, renderer, input, compon
             model: components.Player(),
             texture: MyGame.assets['player-self']
         };
-        for (let i = 0; i < 2; i++) {
+        for (let i = 0; i < 20; i++) {
             multiAsteroids.push({
                 model: components.Asteroid(),
                 texture: MyGame.assets['asteroid']

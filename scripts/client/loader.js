@@ -32,7 +32,7 @@ MyGame.loader = (function () {
             message: 'Utilities loaded',
             onComplete: null,
         }, {
-            scripts: ['laser', 'player', 'player-remote', 'asteroid', 'ufo',],
+            scripts: ['laser', 'player', 'player-remote', 'asteroid', 'ufo', 'viewport'],
             message: 'Player and Asteroid models loaded',
             onComplete: null
         }, {
@@ -40,7 +40,7 @@ MyGame.loader = (function () {
             message: 'Graphics loaded',
             onComplete: null
         }, {
-            scripts: ['rendering/player', 'rendering/player-remote', 'rendering/asteroid', 'rendering/laser', 'rendering/ufo'],
+            scripts: ['rendering/player', 'rendering/player-remote', 'rendering/asteroid', 'rendering/laser', 'rendering/ufo', 'rendering/tiles'],
             message: 'Renderers loaded',
             onComplete: null
         }, {
@@ -66,7 +66,40 @@ MyGame.loader = (function () {
         }, {
             key: 'ufo',
             source: 'assets/ufo.jpg'
+        }, {
+            key: 'background',
+            source: 'assets/outer_space.jpg'
         },];
+
+    function numberPad(n, p, c) {
+        var pad_char = typeof c !== 'undefined' ? c : '0',
+            pad = new Array(1 + p).join(pad_char);
+        return (pad + n).slice(-pad.length);
+    }
+
+    function prepareTiledImage(assetArray, rootName, rootKey, sizeX, sizeY, tileSize) {
+        let numberX = sizeX / tileSize;
+        let numberY = sizeY / tileSize;
+        //
+        // Create an entry in the assets that holds the properties of the tiled image
+        MyGame.assets[rootKey] = {
+            width: sizeX,
+            height: sizeY,
+            tileSize: tileSize
+        };
+        for (let tileY = 0; tileY < numberY; tileY += 1) {
+            for (let tileX = 0; tileX < numberX; tileX += 1) {
+                let tileFile = numberPad((tileY * numberX + tileX), 4);
+                let tileSource = rootName + tileFile + '.jpg';
+                let tileKey = rootKey + tileFile;
+                assetArray.push({
+                    key: tileKey,
+                    source: tileSource
+                });
+            }
+        }
+    }
+    prepareTiledImage(assetOrder, 'assets/TileImages/tiles', 'background', 1920, 1152, 128);
 
     //------------------------------------------------------------------
     //
