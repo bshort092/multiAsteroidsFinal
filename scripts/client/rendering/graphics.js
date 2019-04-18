@@ -115,6 +115,27 @@ MyGame.graphics = (function () {
             localCenter.y - localSize.height / 2,
             localSize.width, localSize.height);
     }
+    function outlineShipMiniMap(center, size, color){
+        let localCenter = {
+            x: center.x / 1920 * canvas_minimap.width,
+            y: center.y / 1152 * canvas_minimap.height
+        };
+        let localSize = {
+            width: size.width / 1920 * canvas_minimap.width,
+            height: size.height / 1152 * canvas_minimap.height
+        };
+        context_minimap.beginPath();
+        // outline
+        context_minimap.strokeStyle = color;
+        context_minimap.lineWidth = 0.4;
+        //
+        context_minimap.arc(localCenter.x, localCenter.y, localSize.width/2 + 1, 0, 2 * Math.PI);
+        // white fill
+        // context_minimap.fillStyle = 'white'
+        // context_minimap.fill();
+        //
+        context_minimap.stroke();
+    }
 
     return {
         clear: clear,
@@ -124,5 +145,6 @@ MyGame.graphics = (function () {
         rotateCanvasMiniMap: rotateCanvasMiniMap,
         drawImage: drawImage,
         drawImageMiniMap: drawImageMiniMap,
+        outlineShipMiniMap: outlineShipMiniMap
     };
 }());

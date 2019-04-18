@@ -14,6 +14,7 @@ MyGame.renderer.Player = (function(graphics) {
     // ------------------------------------------------------------------
     that.render = function(model, texture) {
         graphics.saveContext();
+        graphics.outlineShipMiniMap(model.position, model.size, '#00faff')
         graphics.rotateCanvas(model.position, model.direction);
         graphics.drawImage(texture, model.position, model.size);
         graphics.rotateCanvasMiniMap(model.position, model.direction);

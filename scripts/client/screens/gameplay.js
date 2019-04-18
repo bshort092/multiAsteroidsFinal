@@ -221,6 +221,7 @@ MyGame.screens['game-play'] = (function (game, graphics, renderer, input, compon
     });
 
     function callEscape() {
+        // game.pauseSound('backgroundSound');
         cancelNextRequest = true;
         game.showScreen('game-pause');
     }
@@ -415,7 +416,7 @@ MyGame.screens['game-play'] = (function (game, graphics, renderer, input, compon
     }
 
     function run() {
-        // game.playSoundBackground('background');
+        // game.playSoundBackground('backgroundSound');
         lastTimeStamp = performance.now();
         cancelNextRequest = false;
         requestAnimationFrame(gameLoop);

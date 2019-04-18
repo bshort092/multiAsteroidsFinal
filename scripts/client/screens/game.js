@@ -9,43 +9,42 @@ MyGame.game = (function(screens) {
     let top_five;
     let previousScores;
 
-    // function loadAudio() {
-    //     MyGame.sounds = {};
-    //     MyGame.sounds['background'] = loadSound('assets/AsteroidsBackground.mp3');
-    //     MyGame.sounds['shipBullet'] = loadSound('assets/shipBullet.wav' );
-    //     MyGame.sounds['shipBulletHitsAsteroid'] = loadSound('assets/shipBulletHitsAsteroid.wav' );
-    //     MyGame.sounds['shipBulletHitsUfo'] = loadSound('assets/shipBulletHitsUfo.wav' );
-    //     MyGame.sounds['shipHitsObject'] = loadSound('assets/shipHitsObject.wav' );
-    //     MyGame.sounds['ufoBullet'] = loadSound('assets/ufoBullet.wav' );
-    //     MyGame.sounds['ufoBulletHitsShip'] = loadSound('assets/ufoBulletHitsShip.wav' );
-    // }
-    // function loadSound(source) {
-    //     let sound = new Audio();
-    //     sound.addEventListener('play', function() {});
-    //     sound.addEventListener('pause', function() {});
-    //     sound.addEventListener('ended', function() {
-    //         if(source === 'assets/AsteroidsBackground.mp3') {
-    //             MyGame.sounds['background'].play()
-    //         }
-    //     });
-    //     sound.addEventListener('timeupdate', function() {});
-    //     sound.src = source;
-    //     return sound;
-    // }
-    // function playSound(whichSound){
-    //     MyGame.sounds[whichSound].pause();
-    //     MyGame.sounds[whichSound].currentTime = 0;
-    //     MyGame.sounds[whichSound].play();
-    // }
-    // function playSoundBackground(whichSound){
-    //     MyGame.sounds[whichSound].play();
-    // }
-    // function pauseSound(whichSound){
-    //     MyGame.sounds[whichSound].pause();
-    // }
-    // function changeVolume(whichSound, value){
-    //     MyGame.sounds[whichSound].volume = value / 100;
-    // }
+    function loadAudio() {
+        MyGame.assets['backgroundSound'] = loadSound('assets/sounds/AsteroidsBackground.mp3');
+        MyGame.assets['shipBullet'] = loadSound('assets/sounds/shipBullet.wav' );
+        MyGame.assets['shipBulletHitsAsteroid'] = loadSound('assets/sounds/shipBulletHitsAsteroid.wav' );
+        MyGame.assets['shipBulletHitsUfo'] = loadSound('assets/sounds/shipBulletHitsUfo.wav' );
+        MyGame.assets['shipHitsObject'] = loadSound('assets/sounds/shipHitsObject.wav' );
+        MyGame.assets['ufoBullet'] = loadSound('assets/sounds/ufoBullet.wav' );
+        MyGame.assets['ufoBulletHitsShip'] = loadSound('assets/sounds/ufoBulletHitsShip.wav' );
+    }
+    function loadSound(source) {
+        let sound = new Audio();
+        sound.addEventListener('play', function() {});
+        sound.addEventListener('pause', function() {});
+        sound.addEventListener('ended', function() {
+            if(source === 'assets/sounds/AsteroidsBackground.mp3') {
+                MyGame.assets['backgroundSound'].play()
+            }
+        });
+        sound.addEventListener('timeupdate', function() {});
+        sound.src = source;
+        return sound;
+    }
+    function playSound(whichSound){
+        MyGame.assets[whichSound].pause();
+        MyGame.assets[whichSound].currentTime = 0;
+        MyGame.assets[whichSound].play();
+    }
+    function playSoundBackground(whichSound){
+        MyGame.assets[whichSound].play();
+    }
+    function pauseSound(whichSound){
+        MyGame.assets[whichSound].pause();
+    }
+    function changeVolume(whichSound, value){
+        MyGame.assets[whichSound].volume = value / 100;
+    }
 
     function updateHighScores() {
         if(!gameIsActive && !scoreIsUpdated){
@@ -109,10 +108,10 @@ MyGame.game = (function(screens) {
     }
 
     return {
-        // playSound: playSound,
-        // playSoundBackground: playSoundBackground,
-        // pauseSound: pauseSound,
-        // changeVolume: changeVolume,
+        playSound: playSound,
+        playSoundBackground: playSoundBackground,
+        pauseSound: pauseSound,
+        changeVolume: changeVolume,
         get my_score() { return my_score; },
         get gameIsActive() { return gameIsActive; },
         get pastScreen() { return pastScreen; },

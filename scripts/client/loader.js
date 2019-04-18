@@ -69,8 +69,31 @@ MyGame.loader = (function () {
         }, {
             key: 'background',
             source: 'assets/outer_space.jpg'
-        },];
-
+        }, 
+        // {
+        //     key: 'backgroundSound',
+        //     source: 'assets/sounds/AsteroidsBackground.mp3'
+        // }, {
+        //     key: 'shipBullet',
+        //     source: 'assets/sounds/shipBullet.wav'
+        // }, {
+        //     key: 'shipBulletHitsAsteroid',
+        //     source: 'assets/sounds/shipBulletHitsAsteroid.wav'
+        // }, {
+        //     key: 'shipBulletHitsUfo',
+        //     source: 'assets/sounds/shipBulletHitsUfo.wav'
+        // }, {
+        //     key: 'shipHitsObject',
+        //     source: 'assets/sounds/shipHitsObject.wav'
+        // }, {
+        //     key: 'ufoBullet',
+        //     source: 'assets/sounds/ufoBullet.wav'
+        // }, {
+        //     key: 'ufoBulletHitsShip',
+        //     source: 'assets/sounds/ufoBulletHitsShip.wav'
+        // },
+    ];
+    
     function numberPad(n, p, c) {
         var pad_char = typeof c !== 'undefined' ? c : '0',
             pad = new Array(1 + p).join(pad_char);
@@ -187,7 +210,7 @@ MyGame.loader = (function () {
                 if (xhr.status === 200) {
                     if (fileExtension === 'png' || fileExtension === 'jpg') {
                         asset = new Image();
-                    } else if (fileExtension === 'mp3') {
+                    } else if (fileExtension === 'mp3' || fileExtension === 'wav') {
                         asset = new Audio();
                     } else {
                         if (onError) { onError('Unknown file extension: ' + fileExtension); }
