@@ -6,6 +6,8 @@ MyGame.renderer.Asteroid = (function(graphics) {
         graphics.saveContext();
         graphics.rotateCanvas(model.position, model.direction);
         graphics.drawImage(texture, model.position, model.size, model.rotation);
+        graphics.rotateCanvasMiniMap(model.position, model.direction);
+        graphics.drawImageMiniMap(texture, model.position, model.size, model.rotation);
         graphics.restoreContext();
     };
 

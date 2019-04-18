@@ -6,6 +6,7 @@ MyGame.renderer.Ufo = (function(graphics) {
         graphics.saveContext();
         // graphics.rotateCanvas(model.position, model.direction);
         graphics.drawImage(texture, model.position, model.size, model.rotation);
+        graphics.drawImageMiniMap(texture, model.position, model.size, model.rotation);
         graphics.restoreContext();
     };
 

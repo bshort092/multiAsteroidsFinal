@@ -63,25 +63,40 @@ MyGame.components.Player = function () {
 
             that.position.x += (that.momentum.x * elapsedTime);
             that.position.y += (that.momentum.y * elapsedTime);
-    
-            if (that.position.x > 590) {
-                that.position.x = 590;
-                that.momentum.x = 0;
-            }
-            if (that.position.x < 10) {
-                that.position.x = 10;
-                that.momentum.x = 0;
-            }
-            if (that.position.y > 590) {
-                that.position.y = 590;
+            
+            if (that.position.y - (that.size.height/2) < 0) {
+                that.position.y = (that.size.height/2);
                 that.momentum.y = 0;
             }
-            if (that.position.y < 10) {
-                that.position.y = 10;
+            if (that.position.y + (that.size.height/2) > 1152) {
+                that.position.y = 1152 - (that.size.height/2);
                 that.momentum.y = 0;
+            }
+            if (that.position.x - (that.size.width/2) < (0)) {
+                that.position.x = (that.size.width/2);
+                that.momentum.x = 0;
+            }
+            if (that.position.x + (that.size.width/2) > 1920) {
+                that.position.x = 1920 - (that.size.width/2);
+                that.momentum.x = 0;
+            }
+
+            let playerView = MyGame.components.Viewport.changeView(that.position); 
+            if(playerView.y < (0.2*600) && that.position.y > (0.2*600)) {
+                MyGame.components.Viewport.moveY(-1 * ((0.2*600) - playerView.y));  //up
+            }
+            if(playerView.y > (0.8*600) && that.position.y < 1152 - (0.2*600)) {
+                MyGame.components.Viewport.moveY(playerView.y - (0.8*600)); //down
+            }
+            if(playerView.x < (0.2*600) && that.position.x > (0.2*600)) {
+                MyGame.components.Viewport.moveX(-1 * ((0.2*600) - playerView.x)); //left
+            }
+            if(playerView.x > (0.8*600) && that.position.x < 1920 - (0.2*600)) {
+                MyGame.components.Viewport.moveX(playerView.x - (0.8*600)); //right
             }
     
         }
+        
 
     };
 

@@ -8,6 +8,8 @@ MyGame.graphics = (function () {
 
     let canvas = document.getElementById('canvas-main');
     let context = canvas.getContext('2d')
+    let canvas_minimap = document.getElementById('canvas-world');
+    let context_minimap = canvas_minimap.getContext('2d');
 
     //------------------------------------------------------------------
     //
@@ -19,6 +21,7 @@ MyGame.graphics = (function () {
         this.save();
         this.setTransform(1, 0, 0, 1, 0, 0);
         this.clearRect(0, 0, canvas.width, canvas.height);
+        this.clearRect(0, 0, canvas_minimap.width, canvas_minimap.height);
         this.restore();
     };
 
@@ -29,6 +32,7 @@ MyGame.graphics = (function () {
     //------------------------------------------------------------------
     function clear() {
         context.clear();
+        context_minimap.clear();
     }
 
     //------------------------------------------------------------------
@@ -38,6 +42,7 @@ MyGame.graphics = (function () {
     //------------------------------------------------------------------
     function saveContext() {
         context.save();
+        context_minimap.save();
     }
 
     //------------------------------------------------------------------
@@ -47,6 +52,7 @@ MyGame.graphics = (function () {
     //------------------------------------------------------------------
     function restoreContext() {
         context.restore();
+        context_minimap.restore();
     }
 
     //------------------------------------------------------------------
@@ -55,43 +61,80 @@ MyGame.graphics = (function () {
     //
     //------------------------------------------------------------------
     function rotateCanvas(center, rotation) {
-
-        context.translate(center.x, center.y);
+        let centerView = MyGame.components.Viewport.changeView(center);
+        context.translate(centerView.x, centerView.y);
         context.rotate(rotation);
-        context.translate(-center.x, -center.y);
+        context.translate(-centerView.x, -centerView.y);
     }
-
+    function rotateCanvasMiniMap(center, rotation) {
+        context_minimap.translate(center.x / 1920 * canvas_minimap.width, center.y / 1152 * canvas_minimap.height);
+        context_minimap.rotate(rotation);
+        context_minimap.translate(-center.x / 1920 * canvas_minimap.width, -center.y / 1152 * canvas_minimap.height);
+    }
     //------------------------------------------------------------------
     //
     // Draw an image into the local canvas coordinate system.
     //
     //------------------------------------------------------------------
     function drawImage(texture, center, size, rotation) {
-        // let localCenter = {
-        //     x: center.x,
-        //     y: center.y
-        // };
-        // let localSize = {
-        //     width: size.width,
-        //     height: size.height
-        // };
-
-        context.translate(center.x, center.y);
+        let localCenter = {
+            x: MyGame.components.Viewport.changeViewX(center.x),
+            y: MyGame.components.Viewport.changeViewY(center.y)
+        };
+        let localSize = {
+            width: size.width, 
+            height: size.height
+        };
+        
+        context.translate(localCenter.x, localCenter.y);
         context.rotate(rotation);
-        context.translate(-center.x, -center.y);
+        context.translate(-localCenter.x, -localCenter.y);
 
         context.drawImage(
             texture,
-            center.x - size.width / 2,
-            center.y - size.height / 2,
-            size.width, size.height
-        );
+            localCenter.x - localSize.width / 2,
+            localCenter.y - localSize.height / 2,
+            localSize.width, localSize.height);
+    }
+    function drawImageMiniMap(texture, center, size, rotation) {
+        let localCenter = {
+            x: center.x / 1920 * canvas_minimap.width,
+            y: center.y / 1152 * canvas_minimap.height
+        };
+        let localSize = {
+            width: size.width / 1920 * canvas_minimap.width,
+            height: size.height / 1152 * canvas_minimap.height
+        };
+        context_minimap.translate(localCenter.x, localCenter.y);
+        context_minimap.rotate(rotation);
+        context_minimap.translate(-localCenter.x, -localCenter.y);
 
-        // context.drawImage(texture,
-        //     localCenter.x - localSize.width / 2,
-        //     localCenter.y - localSize.height,
-        //     localSize.width,
-        //     localSize.height);
+        context_minimap.drawImage(
+            texture,
+            localCenter.x - localSize.width / 2,
+            localCenter.y - localSize.height / 2,
+            localSize.width, localSize.height);
+    }
+    function outlineShipMiniMap(center, size, color){
+        let localCenter = {
+            x: center.x / 1920 * canvas_minimap.width,
+            y: center.y / 1152 * canvas_minimap.height
+        };
+        let localSize = {
+            width: size.width / 1920 * canvas_minimap.width,
+            height: size.height / 1152 * canvas_minimap.height
+        };
+        context_minimap.beginPath();
+        // outline
+        context_minimap.strokeStyle = color;
+        context_minimap.lineWidth = 0.4;
+        //
+        context_minimap.arc(localCenter.x, localCenter.y, localSize.width/2 + 1, 0, 2 * Math.PI);
+        // white fill
+        // context_minimap.fillStyle = 'white'
+        // context_minimap.fill();
+        //
+        context_minimap.stroke();
     }
 
     return {
@@ -99,6 +142,9 @@ MyGame.graphics = (function () {
         saveContext: saveContext,
         restoreContext: restoreContext,
         rotateCanvas: rotateCanvas,
-        drawImage: drawImage
+        rotateCanvasMiniMap: rotateCanvasMiniMap,
+        drawImage: drawImage,
+        drawImageMiniMap: drawImageMiniMap,
+        outlineShipMiniMap: outlineShipMiniMap
     };
 }());

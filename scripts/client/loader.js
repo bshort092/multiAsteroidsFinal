@@ -33,7 +33,7 @@ MyGame.loader = (function () {
             message: 'Utilities loaded',
             onComplete: null,
         }, {
-            scripts: ['laser', 'player', 'player-remote', 'asteroid', 'ufo',],
+            scripts: ['laser', 'player', 'player-remote', 'asteroid', 'ufo', 'viewport'],
             message: 'Player and Asteroid models loaded',
             onComplete: null
         }, {
@@ -41,7 +41,7 @@ MyGame.loader = (function () {
             message: 'Graphics loaded',
             onComplete: null
         }, {
-            scripts: ['rendering/player', 'rendering/player-remote', 'rendering/asteroid', 'rendering/laser', 'rendering/ufo', 'rendering/particle_manager', 'rendering/particle_system'],
+            scripts: ['rendering/player', 'rendering/player-remote', 'rendering/asteroid', 'rendering/laser', 'rendering/ufo', 'rendering/tiles', 'rendering/particle_manager', 'rendering/particle_system'],
             message: 'Renderers loaded',
             onComplete: null
         }, {
@@ -89,7 +89,66 @@ MyGame.loader = (function () {
         }, {
             key: 'yellow',
             source: 'assets/particles/yellowLight.png'
-        },];
+        },{
+            key: 'ufo',
+            source: 'assets/ufo.jpg'
+        }, {
+            key: 'background',
+            source: 'assets/outer_space.jpg'
+        }, 
+        // {
+        //     key: 'backgroundSound',
+        //     source: 'assets/sounds/AsteroidsBackground.mp3'
+        // }, {
+        //     key: 'shipBullet',
+        //     source: 'assets/sounds/shipBullet.wav'
+        // }, {
+        //     key: 'shipBulletHitsAsteroid',
+        //     source: 'assets/sounds/shipBulletHitsAsteroid.wav'
+        // }, {
+        //     key: 'shipBulletHitsUfo',
+        //     source: 'assets/sounds/shipBulletHitsUfo.wav'
+        // }, {
+        //     key: 'shipHitsObject',
+        //     source: 'assets/sounds/shipHitsObject.wav'
+        // }, {
+        //     key: 'ufoBullet',
+        //     source: 'assets/sounds/ufoBullet.wav'
+        // }, {
+        //     key: 'ufoBulletHitsShip',
+        //     source: 'assets/sounds/ufoBulletHitsShip.wav'
+        // },
+    ];
+    
+    function numberPad(n, p, c) {
+        var pad_char = typeof c !== 'undefined' ? c : '0',
+            pad = new Array(1 + p).join(pad_char);
+        return (pad + n).slice(-pad.length);
+    }
+
+    function prepareTiledImage(assetArray, rootName, rootKey, sizeX, sizeY, tileSize) {
+        let numberX = sizeX / tileSize;
+        let numberY = sizeY / tileSize;
+        //
+        // Create an entry in the assets that holds the properties of the tiled image
+        MyGame.assets[rootKey] = {
+            width: sizeX,
+            height: sizeY,
+            tileSize: tileSize
+        };
+        for (let tileY = 0; tileY < numberY; tileY += 1) {
+            for (let tileX = 0; tileX < numberX; tileX += 1) {
+                let tileFile = numberPad((tileY * numberX + tileX), 4);
+                let tileSource = rootName + tileFile + '.jpg';
+                let tileKey = rootKey + tileFile;
+                assetArray.push({
+                    key: tileKey,
+                    source: tileSource
+                });
+            }
+        }
+    }
+    prepareTiledImage(assetOrder, 'assets/TileImages/tiles', 'background', 1920, 1152, 128);
 
     //------------------------------------------------------------------
     //
@@ -177,7 +236,7 @@ MyGame.loader = (function () {
                 if (xhr.status === 200) {
                     if (fileExtension === 'png' || fileExtension === 'jpg') {
                         asset = new Image();
-                    } else if (fileExtension === 'mp3') {
+                    } else if (fileExtension === 'mp3' || fileExtension === 'wav') {
                         asset = new Audio();
                     } else {
                         if (onError) { onError('Unknown file extension: ' + fileExtension); }

@@ -226,6 +226,7 @@ MyGame.screens['game-play'] = (function (game, graphics, renderer, input, compon
     });
 
     function callEscape() {
+        // game.pauseSound('backgroundSound');
         cancelNextRequest = true;
         game.showScreen('game-pause');
     }
@@ -287,6 +288,8 @@ MyGame.screens['game-play'] = (function (game, graphics, renderer, input, compon
     function render() {
         graphics.clear();
 
+        renderer.Tiles.render();
+
         for (let i = 0; i < multiAsteroids.length; i++) {
             renderer.Asteroid.render(multiAsteroids[i].model, multiAsteroids[i].texture);
         }
@@ -340,7 +343,7 @@ MyGame.screens['game-play'] = (function (game, graphics, renderer, input, compon
             model: components.Player(),
             texture: MyGame.assets['player-self']
         };
-        for (let i = 0; i < 2; i++) {
+        for (let i = 0; i < 20; i++) {
             multiAsteroids.push({
                 model: components.Asteroid(),
                 texture: MyGame.assets['asteroid']
@@ -418,7 +421,7 @@ MyGame.screens['game-play'] = (function (game, graphics, renderer, input, compon
     }
 
     function run() {
-        // game.playSoundBackground('background');
+        // game.playSoundBackground('backgroundSound');
         lastTimeStamp = performance.now();
         cancelNextRequest = false;
         requestAnimationFrame(gameLoop);
