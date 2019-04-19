@@ -156,19 +156,19 @@ MyGame.systems.Manager = function(spec) {
         for (let particleSystem of spec.particlesArray) {
             particleSystem.system.update(elapsedTime, 'explosion');
         }
-        // // delete old particle systems:
-        // for (let particleSystem of spec.particlesArray) {
-        //     let isEmpty = true;
-        //     for(let key in particleSystem.system.particles) {
-        //         if(particleSystem.system.particles.hasOwnProperty(key)) {
-        //             isEmpty = false;
-        //             break;
-        //         }
-        //     }
-        //     if(isEmpty) {
-        //         spec.particlesArray.shift();
-        //     }
-        // }
+        // delete old particle systems:
+        for (let particleSystem of spec.particlesArray) {
+            let isEmpty = true;
+            for(let key in particleSystem.system.particles) {
+                if(particleSystem.system.particles.hasOwnProperty(key)) {
+                    isEmpty = false;
+                    break;
+                }
+            }
+            if(isEmpty) {
+                spec.particlesArray.shift();
+            }
+        }
     }
     let api = {
         createAsteroidBreakup: createAsteroidBreakup,

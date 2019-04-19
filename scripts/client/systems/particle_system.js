@@ -1,13 +1,5 @@
 MyGame.systems.ParticleSystem = function (spec) {
 
-    // let image = new Image();
-    // let imageReady = false;
-
-    // image.onload = function() {
-    //     imageReady = true;
-    // };
-    // image.src = spec.imageSrc;
-
     let nextName = 1;
     let particles = {};
 
