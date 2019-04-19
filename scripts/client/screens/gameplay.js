@@ -254,11 +254,11 @@ MyGame.screens['game-play'] = (function (game, graphics, renderer, input, compon
     function callEscape() {
         // game.pauseSound('backgroundSound');
         cancelNextRequest = true;
-        myKeyboard.unregisterHandler(controls['Thrust'][0], thrustKey);
-        myKeyboard.unregisterHandler(controls['Rotate_Left'][0], leftKey);
-        myKeyboard.unregisterHandler(controls['Rotate_Right'][0], rightKey);
-        myKeyboard.unregisterHandler(controls['Hyperspace'][0], hyperspaceKey);
-        myKeyboard.unregisterHandler(controls['Shoot'][0], shootKey);
+        myKeyboard.unregisterHandler(controls['Thrust'], thrustKey);
+        myKeyboard.unregisterHandler(controls['Rotate_Left'], leftKey);
+        myKeyboard.unregisterHandler(controls['Rotate_Right'], rightKey);
+        myKeyboard.unregisterHandler(controls['Hyperspace'], hyperspaceKey);
+        myKeyboard.unregisterHandler(controls['Shoot'], shootKey);
         game.showScreen('main-menu');
     }
 
