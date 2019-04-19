@@ -16,6 +16,7 @@ MyGame.screens['game-play'] = (function (game, graphics, renderer, input, compon
         multiUfoLasers = [],
         multiUfos = [],
         multiLasers = [],
+        powerupArray = [],
         myParticles = systems.Manager({
             particlesArray: [],
         }),
