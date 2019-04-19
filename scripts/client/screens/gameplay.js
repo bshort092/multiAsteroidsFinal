@@ -25,7 +25,13 @@ MyGame.screens['game-play'] = (function (game, graphics, renderer, input, compon
         messageHistory = MyGame.utilities.Queue(),
         messageId = 1,
         fireTime = 0,
-        canFire = true;
+        canFire = true,
+        controls = null,
+        thrustKey = null,
+        leftKey = null,
+        rightKey = null,
+        hyperspaceKey = null,
+        shootKey = null;
 
     //------------------------------------------------------------------
     //
@@ -248,7 +254,12 @@ MyGame.screens['game-play'] = (function (game, graphics, renderer, input, compon
     function callEscape() {
         // game.pauseSound('backgroundSound');
         cancelNextRequest = true;
-        game.showScreen('game-pause');
+        myKeyboard.unregisterHandler(controls['Thrust'][0], thrustKey);
+        myKeyboard.unregisterHandler(controls['Rotate_Left'][0], leftKey);
+        myKeyboard.unregisterHandler(controls['Rotate_Right'][0], rightKey);
+        myKeyboard.unregisterHandler(controls['Hyperspace'][0], hyperspaceKey);
+        myKeyboard.unregisterHandler(controls['Shoot'][0], shootKey);
+        game.showScreen('main-menu');
     }
 
     //------------------------------------------------------------------
@@ -384,9 +395,23 @@ MyGame.screens['game-play'] = (function (game, graphics, renderer, input, compon
         messageHistory = MyGame.utilities.Queue();
         messageId = 1;
 
-        //
-        // Create the keyboard input handler and register the keyboard commands
         myKeyboard.registerHandler(elapsedTime => {
+            callEscape();
+        },
+            'Escape', true);
+    }
+
+    function run() {
+        // Create the keyboard input handler and register the keyboard commands
+        let defaultControls = {Thrust: 'ArrowUp', Rotate_Left: 'ArrowLeft', Rotate_Right: 'ArrowRight', Shoot : ' ', Hyperspace: 'z'}
+        let current_controls = localStorage.getItem('MultiAsteroids.controls');
+        controls = JSON.parse(current_controls)
+
+        for(let key in controls){
+            if(controls[key].length == 0){controls[key] = [defaultControls[key]]}
+        }
+
+        thrustKey = myKeyboard.registerHandler(elapsedTime => {
             let message = {
                 id: messageId++,
                 elapsedTime: elapsedTime,
@@ -396,9 +421,9 @@ MyGame.screens['game-play'] = (function (game, graphics, renderer, input, compon
             messageHistory.enqueue(message);
             playerSelf.model.thrust(elapsedTime);
         },
-            'w', true);
+        controls['Thrust'][0], true);
 
-        myKeyboard.registerHandler(elapsedTime => {
+        rightKey = myKeyboard.registerHandler(elapsedTime => {
             let message = {
                 id: messageId++,
                 elapsedTime: elapsedTime,
@@ -408,9 +433,9 @@ MyGame.screens['game-play'] = (function (game, graphics, renderer, input, compon
             messageHistory.enqueue(message);
             playerSelf.model.rotateRight(elapsedTime);
         },
-            'd', true);
+        controls['Rotate_Right'][0], true);
 
-        myKeyboard.registerHandler(elapsedTime => {
+        leftKey = myKeyboard.registerHandler(elapsedTime => {
             let message = {
                 id: messageId++,
                 elapsedTime: elapsedTime,
@@ -420,9 +445,9 @@ MyGame.screens['game-play'] = (function (game, graphics, renderer, input, compon
             messageHistory.enqueue(message);
             playerSelf.model.rotateLeft(elapsedTime);
         },
-            'a', true);
+        controls['Rotate_Left'][0], true);
 
-        myKeyboard.registerHandler(elapsedTime => {
+        shootKey = myKeyboard.registerHandler(elapsedTime => {
             let message = {
                 id: messageId++,
                 elapsedTime: elapsedTime,
@@ -435,15 +460,8 @@ MyGame.screens['game-play'] = (function (game, graphics, renderer, input, compon
                 messageHistory.enqueue(message);
             }
         },
-            ' ', true);
+        controls['Shoot'][0], true);
 
-        myKeyboard.registerHandler(elapsedTime => {
-            callEscape();
-        },
-            'Escape', true);
-    }
-
-    function run() {
         // game.playSoundBackground('backgroundSound');
         lastTimeStamp = performance.now();
         cancelNextRequest = false;

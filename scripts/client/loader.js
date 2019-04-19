@@ -49,7 +49,7 @@ MyGame.loader = (function () {
             message: 'Systems loaded',
             onComplete: null
         }, {
-            scripts: ['screens/gameplay', 'screens/pause', 'screens/about', 'screens/gameover', 'screens/help', 'screens/highscores', 'screens/mainmenu',],
+            scripts: ['screens/gameplay', 'screens/about', 'screens/gameover', 'screens/help', 'screens/highscores', 'screens/mainmenu',],
             message: 'Screens loaded',
             onComplete: null,
         },],
@@ -99,7 +99,8 @@ MyGame.loader = (function () {
         // {
         //     key: 'backgroundSound',
         //     source: 'assets/sounds/AsteroidsBackground.mp3'
-        // }, {
+        // }, 
+        // {
         //     key: 'shipBullet',
         //     source: 'assets/sounds/shipBullet.wav'
         // }, {
@@ -236,7 +237,7 @@ MyGame.loader = (function () {
                 if (xhr.status === 200) {
                     if (fileExtension === 'png' || fileExtension === 'jpg') {
                         asset = new Image();
-                    } else if (fileExtension === 'mp3' || fileExtension === 'wav') {
+                    } else if (fileExtension === 'mp3') {
                         asset = new Audio();
                     } else {
                         if (onError) { onError('Unknown file extension: ' + fileExtension); }

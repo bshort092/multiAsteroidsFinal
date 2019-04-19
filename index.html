@@ -5,14 +5,13 @@
     <title>Multiplayer Asteroids</title>
     <script src = "/node_modules/socket.io-client/dist/socket.io.slim.js"></script>
     <link rel = "stylesheet" type = "text/css" href = "game.css">
-
 </head>
 <body>
     <div id = "game">
         <div id = "main-menu" class = "screen">
             <h2 class="MainTitle">Multiplayer Asteroids</h2>
             <ul class = "menu">
-                <li><button id = "id-new-game">New Game</button></li>
+                <li><button id = "id-new-game">Join Game</button></li>
                 <li><button id = "id-high-scores">High Scores</button></li>
                 <li><button id = "id-help">Controls</button></li>
                 <li><button id = "id-about">Credits</button></li>
@@ -51,11 +50,24 @@
         </div>
         <div id = "help" class = "screen">
             <h1>Controls</h1>
-            <p>Arrow keys are used to thrust forward (up arrow key) and rotate left/right (left/right arrow keys)</p>
-            <p>Space bar is used to fire bullets</p>
-            <p>Letter 'z' is used for hyperspace (it will complete recharge after 5 seconds)</p><br>
+            <form>
+                Select Action:
+                <select id="controlList" onchange="MyGame.screens['help'].run()">
+                  <option></option>
+                  <option>Thrust</option>
+                  <option>Rotate_Left</option>  
+                  <option>Rotate_Right</option>
+                  <option>Shoot</option>
+                  <option>Hyperspace</option>
+                </select>
+                <span>: <input type="text" id="controlKeys" size="20" onkeydown="return MyGame.screens['help'].changeValue(event)"></span>
+                <div>
+                    <span id="controlName" size="20"></span>
+                    <span id="controlValue" size="20"></span>
+                </div>
+            </form>
             <ul class = "menu">
-                <li><button id = "id-help-back">Back</button></li>
+                <li><button id = "id-help-back">Save</button></li>
             </ul>
         </div>
         <div id = "about" class = "screen">
