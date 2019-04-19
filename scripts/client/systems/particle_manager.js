@@ -7,21 +7,18 @@ MyGame.systems.Manager = function(spec) {
 
     function createAsteroidBreakup(centerX, centerY) {
         let particlesSmoke = systems.ParticleSystem({
-            imageSrc: assets['smoke'],
             center: { x: centerX, y: centerY },
             size: { mean: 20, stdev: 5 },
             speed: { mean: 150, stdev: 50 },
             lifetime: { mean: .5, stdev: .1 }
         });
         let particlesFire = systems.ParticleSystem({
-            imageSrc: assets['fire'],
             center: { x: centerX, y: centerY },
             size: { mean: 20, stdev: 5 },
             speed: { mean: 150, stdev: 50 },
             lifetime: { mean: .5, stdev: .1 }
         });
         let particlesYellow = systems.ParticleSystem({
-            imageSrc: assets['yellow'],
             center: { x: centerX, y: centerY },
             size: { mean: 20, stdev: 5 },
             speed: { mean: 150, stdev: 50 },
@@ -37,21 +34,18 @@ MyGame.systems.Manager = function(spec) {
     }
     function createUFOExplosion(centerX, centerY) {
         let particlesSmoke = systems.ParticleSystem({
-            imageSrc: assets['smoke'],
             center: { x: centerX, y: centerY },
             size: { mean: 20, stdev: 5 },
             speed: { mean: 150, stdev: 50 },
             lifetime: { mean: .5, stdev: .1 }
         });
         let particlesBlue = systems.ParticleSystem({
-            imageSrc: assets['smoke'],
             center: { x: centerX, y: centerY },
             size: { mean: 20, stdev: 5 },
             speed: { mean: 150, stdev: 50 },
             lifetime: { mean: .5, stdev: .1 }
         });
         let particlesRainbow = systems.ParticleSystem({
-            imageSrc: assets['rainbow'],
             center: { x: centerX, y: centerY },
             size: { mean: 20, stdev: 5 },
             speed: { mean: 150, stdev: 50 },
@@ -67,21 +61,18 @@ MyGame.systems.Manager = function(spec) {
     }
     function createShipExplosion(centerX, centerY) {
         let particlesSmoke = systems.ParticleSystem({
-            imageSrc: assets['smoke'],
             center: { x: centerX, y: centerY },
             size: { mean: 20, stdev: 5 },
             speed: { mean: 150, stdev: 50 },
             lifetime: { mean: .5, stdev: .1 }
         });
         let particlesWhite = systems.ParticleSystem({
-            imageSrc: assets['white'],
             center: { x: centerX, y: centerY },
             size: { mean: 20, stdev: 5 },
             speed: { mean: 150, stdev: 50 },
             lifetime: { mean: .5, stdev: .1 }
         });
         let particlesGreen = systems.ParticleSystem({
-            imageSrc: assets['green'],
             center: { x: centerX, y: centerY },
             size: { mean: 20, stdev: 5 },
             speed: { mean: 150, stdev: 50 },
@@ -97,21 +88,18 @@ MyGame.systems.Manager = function(spec) {
     }
     function createShipAsteroidExplosion(centerX, centerY) {
         let particlesGreen = systems.ParticleSystem({
-            imageSrc: assets['green'],
             center: { x: centerX, y: centerY },
             size: { mean: 20, stdev: 5 },
             speed: { mean: 150, stdev: 50 },
             lifetime: { mean: .5, stdev: .1 }
         });
         let particlesSmoke = systems.ParticleSystem({
-            imageSrc: assets['smoke'],
             center: { x: centerX, y: centerY },
             size: { mean: 20, stdev: 5 },
             speed: { mean: 150, stdev: 50 },
             lifetime: { mean: .5, stdev: .1 }
         });
         let particlesYellow = systems.ParticleSystem({
-            imageSrc: assets['yellow'],
             center: { x: centerX, y: centerY },
             size: { mean: 20, stdev: 5 },
             speed: { mean: 150, stdev: 50 },
@@ -127,14 +115,12 @@ MyGame.systems.Manager = function(spec) {
     }
     function createShipUFOExplosion(centerX, centerY) {
         let particlesRainbow = systems.ParticleSystem({
-            imageSrc: assets['rainbow'],
             center: { x: centerX, y: centerY },
             size: { mean: 20, stdev: 5 },
             speed: { mean: 150, stdev: 50 },
             lifetime: { mean: .5, stdev: .1 }
         });
         let particlesGreen = systems.ParticleSystem({
-            imageSrc: assets['green'],
             center: { x: centerX, y: centerY },
             size: { mean: 20, stdev: 5 },
             speed: { mean: 150, stdev: 50 },
@@ -148,14 +134,12 @@ MyGame.systems.Manager = function(spec) {
     }
     function createThrustParticles(centerX, centerY) {
         let particlesWhite = systems.ParticleSystem({
-            imageSrc: assets['white'],
             center: { x: centerX, y: centerY },
             size: { mean: 20, stdev: 1 },
             speed: { mean: 150, stdev: 50 },
             lifetime: { mean: .08, stdev: .01}
         });
         let particlesGreen = systems.ParticleSystem({
-            imageSrc: assets['green'],
             center: { x: centerX, y: centerY },
             size: { mean: 20, stdev: 1 },
             speed: { mean: 150, stdev: 50 },
@@ -172,19 +156,19 @@ MyGame.systems.Manager = function(spec) {
         for (let particleSystem of spec.particlesArray) {
             particleSystem.system.update(elapsedTime, 'explosion');
         }
-        // delete old particle systems:
-        for (let particleSystem of spec.particlesArray) {
-            let isEmpty = true;
-            for(let key in particleSystem.system.particles) {
-                if(particleSystem.system.particles.hasOwnProperty(key)) {
-                    isEmpty = false;
-                    break;
-                }
-            }
-            if(isEmpty) {
-                spec.particlesArray.shift();
-            }
-        }
+        // // delete old particle systems:
+        // for (let particleSystem of spec.particlesArray) {
+        //     let isEmpty = true;
+        //     for(let key in particleSystem.system.particles) {
+        //         if(particleSystem.system.particles.hasOwnProperty(key)) {
+        //             isEmpty = false;
+        //             break;
+        //         }
+        //     }
+        //     if(isEmpty) {
+        //         spec.particlesArray.shift();
+        //     }
+        // }
     }
     let api = {
         createAsteroidBreakup: createAsteroidBreakup,

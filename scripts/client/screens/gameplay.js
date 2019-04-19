@@ -19,6 +19,7 @@ MyGame.screens['game-play'] = (function (game, graphics, renderer, input, compon
         myParticles = systems.Manager({
             particlesArray: [],
         }),
+        particlesArray = [],
         playerOthers = {},
         messageHistory = MyGame.utilities.Queue(),
         messageId = 1,
@@ -205,7 +206,8 @@ MyGame.screens['game-play'] = (function (game, graphics, renderer, input, compon
         //type of system (ship explosion, asteroid breakup, etc.)
         //postion of system
         if (data.type === "asteroidBreakup") {
-            myParticles.createAsteroidBreakup(data.position.x, data.position.y);
+            myParticles.createAsteroidBreakup(data.position.x, data.position.y, particlesArray);
+            console.log(myParticles.particlesArray);
         }
     });
 

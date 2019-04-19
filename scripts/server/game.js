@@ -117,6 +117,14 @@ function detectCollision(playerShip) {
 
     for (let i = 0; i < asteroids.length; i++) {
         if (didCollide(asteroids[i], playerShip)) {
+            //I think this will send a message to the client that will create a particle system at that location
+            let system = {
+                type: 'asteroidBreakup',
+                position: asteroids[i].position,
+            }
+            for (let clientId in activeClients) {
+                activeClients[clientId].socket.emit('create-particle-system', system);
+            }
             if (asteroids[i].size.width === 148) {
                 let createdAsteroids = MultiAsteroids.create({
                     numOfAsteroids: 3,
@@ -125,14 +133,6 @@ function detectCollision(playerShip) {
                     parentPosition: asteroids[i].position,
                     size: 74,
                 });
-                //I think this will send a message to the client that will create a particle system at that location
-                let system = {
-                    type: 'asteroidBreakup',
-                    position: asteroids[i].position,
-                }
-                for (let clientId in activeClients) {
-                    activeClients[clientId].socket.emit('create-particle-system', system);
-                }
                 asteroids.splice(i, 1);
                 asteroids = asteroids.concat(createdAsteroids);
             }

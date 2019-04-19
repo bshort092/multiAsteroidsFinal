@@ -1,12 +1,12 @@
 MyGame.systems.ParticleSystem = function (spec) {
 
-    let image = new Image();
-    let imageReady = false;
+    // let image = new Image();
+    // let imageReady = false;
 
-    image.onload = function() {
-        imageReady = true;
-    };
-    image.src = spec.imageSrc;
+    // image.onload = function() {
+    //     imageReady = true;
+    // };
+    // image.src = spec.imageSrc;
 
     let nextName = 1;
     let particles = {};
@@ -66,7 +66,6 @@ MyGame.systems.ParticleSystem = function (spec) {
     let api = {
         update: update,
         get particles() { return particles; },
-        get imageReady() { return imageReady; },
     };
 
     return api;
