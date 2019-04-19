@@ -6,45 +6,49 @@ MyGame.game = (function(screens) {
     let gameIsActive = false;
     let scoreIsUpdated = false;
     let highScores;
-    let top_five;
     let previousScores;
+    let top_five;
 
-    function loadAudio() {
-        MyGame.assets['backgroundSound'] = loadSound('assets/sounds/AsteroidsBackground.mp3');
-        MyGame.assets['shipBullet'] = loadSound('assets/sounds/shipBullet.wav' );
-        MyGame.assets['shipBulletHitsAsteroid'] = loadSound('assets/sounds/shipBulletHitsAsteroid.wav' );
-        MyGame.assets['shipBulletHitsUfo'] = loadSound('assets/sounds/shipBulletHitsUfo.wav' );
-        MyGame.assets['shipHitsObject'] = loadSound('assets/sounds/shipHitsObject.wav' );
-        MyGame.assets['ufoBullet'] = loadSound('assets/sounds/ufoBullet.wav' );
-        MyGame.assets['ufoBulletHitsShip'] = loadSound('assets/sounds/ufoBulletHitsShip.wav' );
-    }
-    function loadSound(source) {
-        let sound = new Audio();
-        sound.addEventListener('play', function() {});
-        sound.addEventListener('pause', function() {});
-        sound.addEventListener('ended', function() {
-            if(source === 'assets/sounds/AsteroidsBackground.mp3') {
-                MyGame.assets['backgroundSound'].play()
-            }
-        });
-        sound.addEventListener('timeupdate', function() {});
-        sound.src = source;
-        return sound;
-    }
-    function playSound(whichSound){
-        MyGame.assets[whichSound].pause();
-        MyGame.assets[whichSound].currentTime = 0;
-        MyGame.assets[whichSound].play();
-    }
-    function playSoundBackground(whichSound){
-        MyGame.assets[whichSound].play();
-    }
-    function pauseSound(whichSound){
-        MyGame.assets[whichSound].pause();
-    }
-    function changeVolume(whichSound, value){
-        MyGame.assets[whichSound].volume = value / 100;
-    }
+    // let sounds = [{id: 0, name: 'backgroundSound', src: ''}]
+
+    // function loadAudio() {
+    //     sounds.backgroundSound = loadSound('assets/sounds/AsteroidsBackground.mp3');
+
+    //     // MyGame.assets['backgroundSound'] = loadSound('assets/sounds/AsteroidsBackground.mp3');
+    //     // MyGame.assets['shipBullet'] = loadSound('assets/sounds/shipBullet.wav' );
+    //     // MyGame.assets['shipBulletHitsAsteroid'] = loadSound('assets/sounds/shipBulletHitsAsteroid.wav' );
+    //     // MyGame.assets['shipBulletHitsUfo'] = loadSound('assets/sounds/shipBulletHitsUfo.wav' );
+    //     // MyGame.assets['shipHitsObject'] = loadSound('assets/sounds/shipHitsObject.wav' );
+    //     // MyGame.assets['ufoBullet'] = loadSound('assets/sounds/ufoBullet.wav' );
+    //     // MyGame.assets['ufoBulletHitsShip'] = loadSound('assets/sounds/ufoBulletHitsShip.wav' );
+    // }
+    // function loadSound(source) {
+    //     let sound = new Audio();
+    //     sound.addEventListener('play', function() {});
+    //     sound.addEventListener('pause', function() {});
+    //     sound.addEventListener('ended', function() {
+    //         if(source === 'assets/sounds/AsteroidsBackground.mp3') {
+    //             MyGame.assets['backgroundSound'].play()
+    //         }
+    //     });
+    //     sound.addEventListener('timeupdate', function() {});
+    //     sound.src = source;
+    //     return sound;
+    // }
+    // function playSound(whichSound){
+    //     // MyGame.assets[whichSound].pause();
+    //     // MyGame.assets[whichSound].currentTime = 0;
+    //     // MyGame.assets[whichSound].play();
+    // }
+    // function playSoundBackground(whichSound){
+    //     MyGame.assets[whichSound].play();
+    // }
+    // function pauseSound(whichSound){
+    //     MyGame.assets[whichSound].pause();
+    // }
+    // function changeVolume(whichSound, value){
+    //     MyGame.assets[whichSound].volume = value / 100;
+    // }
 
     function updateHighScores() {
         if(!gameIsActive && !scoreIsUpdated){
@@ -82,7 +86,7 @@ MyGame.game = (function(screens) {
         showScreen('main-menu');
     }
     function showScreen(id) {
-        if(id === 'game-pause' || id === 'game-play') {
+        if(id === 'game-play') {
             gameIsActive = true;
         }
         if(id === 'main-menu' || id === 'game-over') {
@@ -108,10 +112,10 @@ MyGame.game = (function(screens) {
     }
 
     return {
-        playSound: playSound,
-        playSoundBackground: playSoundBackground,
-        pauseSound: pauseSound,
-        changeVolume: changeVolume,
+        // playSound: playSound,
+        // playSoundBackground: playSoundBackground,
+        // pauseSound: pauseSound,
+        // changeVolume: changeVolume,
         get my_score() { return my_score; },
         get gameIsActive() { return gameIsActive; },
         get pastScreen() { return pastScreen; },
