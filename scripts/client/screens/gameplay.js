@@ -408,7 +408,7 @@ MyGame.screens['game-play'] = (function (game, graphics, renderer, input, compon
         controls = JSON.parse(current_controls)
 
         for(let key in controls){
-            if(controls[key].length == 0){controls[key] = [defaultControls[key]]}
+            if(controls[key] == ''){controls[key] = [defaultControls[key]]}
         }
 
         thrustKey = myKeyboard.registerHandler(elapsedTime => {
@@ -421,7 +421,7 @@ MyGame.screens['game-play'] = (function (game, graphics, renderer, input, compon
             messageHistory.enqueue(message);
             playerSelf.model.thrust(elapsedTime);
         },
-        controls['Thrust'][0], true);
+        controls['Thrust'], true);
 
         rightKey = myKeyboard.registerHandler(elapsedTime => {
             let message = {
@@ -433,7 +433,7 @@ MyGame.screens['game-play'] = (function (game, graphics, renderer, input, compon
             messageHistory.enqueue(message);
             playerSelf.model.rotateRight(elapsedTime);
         },
-        controls['Rotate_Right'][0], true);
+        controls['Rotate_Right'], true);
 
         leftKey = myKeyboard.registerHandler(elapsedTime => {
             let message = {
@@ -445,7 +445,7 @@ MyGame.screens['game-play'] = (function (game, graphics, renderer, input, compon
             messageHistory.enqueue(message);
             playerSelf.model.rotateLeft(elapsedTime);
         },
-        controls['Rotate_Left'][0], true);
+        controls['Rotate_Left'], true);
 
         shootKey = myKeyboard.registerHandler(elapsedTime => {
             let message = {
@@ -460,7 +460,7 @@ MyGame.screens['game-play'] = (function (game, graphics, renderer, input, compon
                 messageHistory.enqueue(message);
             }
         },
-        controls['Shoot'][0], true);
+        controls['Shoot'], true);
 
         // game.playSoundBackground('backgroundSound');
         lastTimeStamp = performance.now();
