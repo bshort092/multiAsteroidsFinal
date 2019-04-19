@@ -1,6 +1,81 @@
 html, body {
     margin: 0;
 }
+.gameboard {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+.container {
+    display: flex;
+    flex-direction: row;
+    height: 600px;
+    border: white solid 10px;
+}
+.innerLeft {
+    width: 200px;
+}
+.innerMiddle {
+    border-left: white 3px solid;
+    border-right: white 3px solid;
+}
+.innerRight {
+    height: 600px;
+    display: flex;
+    flex-direction: column;
+}
+.myscore {
+    height: 250px;
+    
+}
+.miniMapTitle {
+    border-top: white 3px solid;
+    height: 50px;
+    margin-bottom: 10px;
+    text-align: center;
+}
+.arrowButton {
+    cursor: pointer;
+    font-family: Arial, sans-serif;
+    font-size: 15px;
+    color: white;
+    height: 30px;
+    background: green;
+    border: 0.1em solid darkgrey;
+    border-radius: 0.5em;
+    box-shadow: 0.2em 0.2em 0.3em rgb(0, 0, 0);
+}
+.arrowButton:hover {
+    background: limegreen;
+}
+
+.arrowButton:active {
+    color: lightgrey;
+    background: black
+}
+
+.saveButton {
+    margin-left: 20px;
+    cursor: pointer;
+    font-family: Arial, sans-serif;
+    font-size: 30px;
+    color: black;
+    height: 50px;
+    background: goldenrod;
+    border: 0.1em solid lightgrey;
+    border-radius: 0.5em;
+    box-shadow: 0.2em 0.2em 0.3em rgb(0, 0, 0);
+}
+.saveButton:hover {
+    background: gold;
+}
+
+.saveButton:active {
+    color: goldenrod;
+    background: black
+}
+
+
 #game {
     margin: auto;
     display: block;
@@ -12,30 +87,21 @@ html, body {
     font-size: 40px;
     overflow: hidden;
     position: absolute;
-
 }
 .MainTitle {
     font-weight: bold;
 }
-#canvas-main {
-    position: absolute;
-    left: 0;
-    top: 0;
+/* #canvas-main {
     background-color: white;
     border-color: white;
     border-width: 5px;
     border-style: solid;
-}
-#canvas-world {
-    position: absolute;
-    right: 0;
-    top: 0;
+} */
+#canvas-world { 
     background-image: url("assets/outer_space.jpg");
     background-size: 500px 300px;
-    border-color: yellow;
-    border-width: 3px;
-    border-style: solid;
-}
+    border-top: white 3px solid;
+} 
 
 #game .screen {
     width: 100%;
@@ -82,7 +148,7 @@ ul.menu li button:active {
     background: black
 }
 
-h1, h2, h3, h4 {
+h1, h2, h3, h4, h5, h6 {
     text-align: center;
 }
 
