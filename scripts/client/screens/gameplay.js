@@ -212,7 +212,7 @@ MyGame.screens['game-play'] = (function (game, graphics, renderer, input, compon
         if (data.type === "shipDestroyed") {
             myParticles.createShipExplosion(data.position.x, data.position.y, particlesArray);
         }
-        if (data.type === "ufoExplosion") {
+        if (data.type === "ufoDestroyed") {
             myParticles.createUFOExplosion(data.position.x, data.position.y, particlesArray);
         }
         if (data.type === "hyperspace") {
