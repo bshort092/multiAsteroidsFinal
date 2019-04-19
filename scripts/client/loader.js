@@ -6,6 +6,7 @@ MyGame = {
     assets: {},
     game: {},
     screens: {},
+    systems: {}
 };
 
 //------------------------------------------------------------------
@@ -40,8 +41,12 @@ MyGame.loader = (function () {
             message: 'Graphics loaded',
             onComplete: null
         }, {
-            scripts: ['rendering/player', 'rendering/player-remote', 'rendering/asteroid', 'rendering/laser', 'rendering/ufo', 'rendering/tiles'],
+            scripts: ['rendering/player', 'rendering/player-remote', 'rendering/asteroid', 'rendering/laser', 'rendering/ufo', 'rendering/tiles', 'rendering/particle_manager', 'rendering/particle_system'],
             message: 'Renderers loaded',
+            onComplete: null
+        }, {
+            scripts: ['systems/random', 'systems/particle_system', 'systems/particle_manager'],
+            message: 'Systems loaded',
             onComplete: null
         }, {
             scripts: ['screens/gameplay', 'screens/about', 'screens/gameover', 'screens/help', 'screens/highscores', 'screens/mainmenu',],
@@ -64,6 +69,27 @@ MyGame.loader = (function () {
             key: 'ufoLaser',
             source: 'assets/ufoLaser.png'
         }, {
+            key: 'blue',
+            source: 'assets/particles/blueLight.png'
+        }, {
+            key: 'fire',
+            source: 'assets/particles/fire.png'
+        }, {
+            key: 'green',
+            source: 'assets/particles/greenLight.png'
+        }, {
+            key: 'rainbow',
+            source: 'assets/particles/rainbowLight.png'
+        }, {
+            key: 'smoke',
+            source: 'assets/particles/smoke-2.png'
+        }, {
+            key: 'white',
+            source: 'assets/particles/whiteLight.png'
+        }, {
+            key: 'yellow',
+            source: 'assets/particles/yellowLight.png'
+        },{
             key: 'ufo',
             source: 'assets/ufo.jpg'
         }, {

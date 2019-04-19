@@ -28,6 +28,7 @@ let ufos = MultiUfos.create({
 
 let laserArray = [];
 let ufoLaserArray = [];
+let powerupArray = [];
 
 const UPDATE_RATE_MS = 10;
 let quit = false;
@@ -62,6 +63,25 @@ function processInput() {
                 // the same think about the player's ship.
                 client.player.thrust(input.message.elapsedTime, input.receiveTime - lastUpdateTime);
                 lastUpdateTime = input.receiveTime;
+
+                //adjust for ship thrust particles
+                let vectorX = Math.cos(client.player.direction);
+                let vectorY = Math.sin(client.player.direction);
+
+                let adjustParticlesX = vectorX * client.player.size.width / 2;
+                let adjustParticlesY = vectorY * client.player.size.height / 2;
+
+                let position = {
+                    x: client.player.position.x - adjustParticlesX,
+                    y: client.player.position.y - adjustParticlesY
+                }
+                let system = {
+                    type: 'thrust',
+                    position: position,
+                }
+                for (let clientId in activeClients) {
+                    activeClients[clientId].socket.emit('create-particle-system', system);
+                }
                 break;
             case 'rotate-left':
                 client.player.rotateLeft(input.message.elapsedTime);
@@ -101,6 +121,18 @@ function fireUfoLaser(ufoSpec, elapsedTime) {
     ufoLaserArray.push(Laser.create(laserSpec));
 }
 
+function createPowerup() {
+    let powerupTypes = ['shield', 'rate', 'spread', 'guided'];
+    let powerupSpec = {
+        position: {
+            x: Math.random() * 1500,
+            y: Math.random() * 800
+        },
+        type: powerupTypes[Math.random() * 3],
+    };
+    powerupArray.push(Laser.create(powerupSpec));
+}
+
 function didCollide(obj1, obj2, ) {
     if (obj1 && obj2) {
         let dx = obj1.position.x - obj2.position.x;
@@ -117,6 +149,20 @@ function detectCollision(playerShip) {
 
     for (let i = 0; i < asteroids.length; i++) {
         if (didCollide(asteroids[i], playerShip)) {
+            let system = {
+                type: 'asteroidBreakup',
+                position: asteroids[i].position,
+            }
+            for (let clientId in activeClients) {
+                activeClients[clientId].socket.emit('create-particle-system', system);
+            }
+            let system1 = {
+                type: 'shipDestroyed',
+                position: playerShip.position,
+            }
+            for (let clientId in activeClients) {
+                activeClients[clientId].socket.emit('create-particle-system', system1);
+            }
             if (asteroids[i].size.width === 148) {
                 let createdAsteroids = MultiAsteroids.create({
                     numOfAsteroids: 3,
@@ -148,6 +194,13 @@ function detectCollision(playerShip) {
     for (let i = 0; i < asteroids.length; i++) {
         for (let j = 0; j < laserArray.length; j++) {
             if (didCollide(asteroids[i], laserArray[j])) {
+                let system = {
+                    type: 'asteroidBreakup',
+                    position: asteroids[i].position,
+                }
+                for (let clientId in activeClients) {
+                    activeClients[clientId].socket.emit('create-particle-system', system);
+                }
                 laserArray.splice(j, 1);
                 if (asteroids[i].size.width === 148) {
                     let createdAsteroids = MultiAsteroids.create({
@@ -180,11 +233,32 @@ function detectCollision(playerShip) {
 
     for (let i = 0; i < ufos.length; i++) {
         if (ufos[i] && didCollide(ufos[i], playerShip)) {
+            let system = {
+                type: 'shipDestroyed',
+                position: playerShip.position,
+            }
+            for (let clientId in activeClients) {
+                activeClients[clientId].socket.emit('create-particle-system', system);
+            }
+            let system1 = {
+                type: 'ufoDestroyed',
+                position: ufos[i].position,
+            }
+            for (let clientId in activeClients) {
+                activeClients[clientId].socket.emit('create-particle-system', system1);
+            }
             ufos.splice(i, 1);
             break;
         }
         for (let j = 0; j < laserArray.length; j++) {
             if (didCollide(laserArray[j], ufos[i])) {
+                let system = {
+                    type: 'ufoDestroyed',
+                    position: ufos[i].position,
+                }
+                for (let clientId in activeClients) {
+                    activeClients[clientId].socket.emit('create-particle-system', system);
+                }
                 ufos.splice(i, 1);
                 laserArray.splice(j, 1);
             }
@@ -193,6 +267,13 @@ function detectCollision(playerShip) {
 
     for (let i = 0; i < ufoLaserArray.length; i++) {
         if (didCollide(ufoLaserArray[i], playerShip)) {
+            let system = {
+                type: 'shipDestroyed',
+                position: playerShip.position,
+            }
+            for (let clientId in activeClients) {
+                activeClients[clientId].socket.emit('create-particle-system', system);
+            }
             ufoLaserArray.splice(i, 1);
         }
     }

@@ -77,15 +77,16 @@ MyGame.graphics = (function () {
     //
     //------------------------------------------------------------------
     function drawImage(texture, center, size, rotation) {
+        context.save();
         let localCenter = {
             x: MyGame.components.Viewport.changeViewX(center.x),
             y: MyGame.components.Viewport.changeViewY(center.y)
         };
         let localSize = {
-            width: size.width, 
+            width: size.width,
             height: size.height
         };
-        
+
         context.translate(localCenter.x, localCenter.y);
         context.rotate(rotation);
         context.translate(-localCenter.x, -localCenter.y);
@@ -95,8 +96,10 @@ MyGame.graphics = (function () {
             localCenter.x - localSize.width / 2,
             localCenter.y - localSize.height / 2,
             localSize.width, localSize.height);
+        context.restore();
     }
     function drawImageMiniMap(texture, center, size, rotation) {
+        context_minimap.save();
         let localCenter = {
             x: center.x / 1920 * canvas_minimap.width,
             y: center.y / 1152 * canvas_minimap.height
@@ -114,8 +117,9 @@ MyGame.graphics = (function () {
             localCenter.x - localSize.width / 2,
             localCenter.y - localSize.height / 2,
             localSize.width, localSize.height);
+        context_minimap.restore();
     }
-    function outlineShipMiniMap(center, size, color){
+    function outlineShipMiniMap(center, size, color) {
         let localCenter = {
             x: center.x / 1920 * canvas_minimap.width,
             y: center.y / 1152 * canvas_minimap.height
@@ -129,7 +133,7 @@ MyGame.graphics = (function () {
         context_minimap.strokeStyle = color;
         context_minimap.lineWidth = 0.4;
         //
-        context_minimap.arc(localCenter.x, localCenter.y, localSize.width/2 + 1, 0, 2 * Math.PI);
+        context_minimap.arc(localCenter.x, localCenter.y, localSize.width / 2 + 1, 0, 2 * Math.PI);
         // white fill
         // context_minimap.fillStyle = 'white'
         // context_minimap.fill();

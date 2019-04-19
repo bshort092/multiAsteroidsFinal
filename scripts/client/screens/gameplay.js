@@ -3,7 +3,7 @@
 // This function provides the "game" code.
 //
 //------------------------------------------------------------------
-MyGame.screens['game-play'] = (function (game, graphics, renderer, input, components) {
+MyGame.screens['game-play'] = (function (game, graphics, renderer, input, components, systems) {
     'use strict';
 
     let lastTimeStamp = performance.now(),
@@ -16,6 +16,11 @@ MyGame.screens['game-play'] = (function (game, graphics, renderer, input, compon
         multiUfoLasers = [],
         multiUfos = [],
         multiLasers = [],
+        powerupArray = [],
+        myParticles = systems.Manager({
+            particlesArray: [],
+        }),
+        particlesArray = [],
         playerOthers = {},
         messageHistory = MyGame.utilities.Queue(),
         messageId = 1,
@@ -203,9 +208,29 @@ MyGame.screens['game-play'] = (function (game, graphics, renderer, input, compon
         }
     });
 
-    // socket.on('create-particle-system', function (data){
-    //     //data
-    // });
+    socket.on('create-particle-system', function (data) {
+        //data: 
+        //type of system (ship explosion, asteroid breakup, etc.)
+        //postion of system
+        if (data.type === "asteroidBreakup") {
+            myParticles.createAsteroidBreakup(data.position.x, data.position.y, particlesArray);
+        }
+        if (data.type === "shipDestroyed") {
+            myParticles.createShipExplosion(data.position.x, data.position.y, particlesArray);
+        }
+        if (data.type === "ufoDestroyed") {
+            myParticles.createUFOExplosion(data.position.x, data.position.y, particlesArray);
+        }
+        if (data.type === "hyperspace") {
+            myParticles.createHyperspace(data.position.x, data.position.y, particlesArray);
+        }
+        if (data.type === "powerupPickup") {
+            myParticles.createPowerupPickup(data.position.x, data.position.y, particlesArray);
+        }
+        if (data.type === "thrust") {
+            myParticles.createThrustParticles(data.position.x, data.position.y, particlesArray);
+        }        
+    });
 
     //------------------------------------------------------------------
     //
@@ -252,6 +277,7 @@ MyGame.screens['game-play'] = (function (game, graphics, renderer, input, compon
     //
     //------------------------------------------------------------------
     function update(elapsedTime) {
+        myParticles.updateParticleSystems(elapsedTime);
 
         fireTime += elapsedTime;
 
@@ -295,6 +321,8 @@ MyGame.screens['game-play'] = (function (game, graphics, renderer, input, compon
         graphics.clear();
 
         renderer.Tiles.render();
+
+        renderer.Manager.render(myParticles);
 
         for (let i = 0; i < multiAsteroids.length; i++) {
             renderer.Asteroid.render(multiAsteroids[i].model, multiAsteroids[i].texture);
@@ -448,4 +476,4 @@ MyGame.screens['game-play'] = (function (game, graphics, renderer, input, compon
         run: run,
     };
 
-}(MyGame.game, MyGame.graphics, MyGame.renderer, MyGame.input, MyGame.components));
+}(MyGame.game, MyGame.graphics, MyGame.renderer, MyGame.input, MyGame.components, MyGame.systems));
