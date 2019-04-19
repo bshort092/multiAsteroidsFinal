@@ -207,8 +207,22 @@ MyGame.screens['game-play'] = (function (game, graphics, renderer, input, compon
         //postion of system
         if (data.type === "asteroidBreakup") {
             myParticles.createAsteroidBreakup(data.position.x, data.position.y, particlesArray);
-            console.log(myParticles.particlesArray);
         }
+        if (data.type === "shipDestroyed") {
+            myParticles.createShipExplosion(data.position.x, data.position.y, particlesArray);
+        }
+        if (data.type === "ufoExplosion") {
+            myParticles.createUFOExplosion(data.position.x, data.position.y, particlesArray);
+        }
+        if (data.type === "hyperspace") {
+            myParticles.createHyperspace(data.position.x, data.position.y, particlesArray);
+        }
+        if (data.type === "powerupPickup") {
+            myParticles.createPowerupPickup(data.position.x, data.position.y, particlesArray);
+        }
+        if (data.type === "thrust") {
+            myParticles.createThrustParticles(data.position.x, data.position.y, particlesArray);
+        }        
     });
 
     //------------------------------------------------------------------

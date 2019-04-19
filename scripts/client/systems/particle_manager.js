@@ -4,7 +4,6 @@ MyGame.systems.Manager = function(spec) {
     let systems = MyGame.systems;
     let assets = MyGame.assets;
 
-
     function createAsteroidBreakup(centerX, centerY) {
         let particlesSmoke = systems.ParticleSystem({
             center: { x: centerX, y: centerY },
@@ -32,7 +31,7 @@ MyGame.systems.Manager = function(spec) {
         spec.particlesArray.push({system: particlesFire, renderer: fireRenderer});
         spec.particlesArray.push({system: particlesYellow, renderer: yellowRenderer});
     }
-    function createUFOExplosion(centerX, centerY) {
+    function createPowerupPickup(centerX, centerY) {
         let particlesSmoke = systems.ParticleSystem({
             center: { x: centerX, y: centerY },
             size: { mean: 20, stdev: 5 },
@@ -86,7 +85,7 @@ MyGame.systems.Manager = function(spec) {
         spec.particlesArray.push({system: particlesWhite, renderer: whiteRenderer});
         spec.particlesArray.push({system: particlesGreen, renderer: greenRenderer});
     }
-    function createShipAsteroidExplosion(centerX, centerY) {
+    function createHyperspace(centerX, centerY) {
         let particlesGreen = systems.ParticleSystem({
             center: { x: centerX, y: centerY },
             size: { mean: 20, stdev: 5 },
@@ -113,7 +112,7 @@ MyGame.systems.Manager = function(spec) {
         spec.particlesArray.push({system: particlesSmoke, renderer: smokeRenderer});
         spec.particlesArray.push({system: particlesYellow, renderer: yellowRenderer});
     }
-    function createShipUFOExplosion(centerX, centerY) {
+    function createUFOExplosion(centerX, centerY) {
         let particlesRainbow = systems.ParticleSystem({
             center: { x: centerX, y: centerY },
             size: { mean: 20, stdev: 5 },
@@ -172,10 +171,10 @@ MyGame.systems.Manager = function(spec) {
     }
     let api = {
         createAsteroidBreakup: createAsteroidBreakup,
-        createUFOExplosion: createUFOExplosion,
+        createPowerupPickup: createPowerupPickup,
         createShipExplosion: createShipExplosion,
-        createShipAsteroidExplosion: createShipAsteroidExplosion,
-        createShipUFOExplosion: createShipUFOExplosion,
+        createUFOExplosion: createUFOExplosion,
+        createHyperspace: createHyperspace,
         createThrustParticles: createThrustParticles,
         updateParticleSystems: updateParticleSystems,
         get particlesArray() { return spec.particlesArray; },

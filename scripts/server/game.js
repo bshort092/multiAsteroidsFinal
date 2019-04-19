@@ -62,6 +62,25 @@ function processInput() {
                 // the same think about the player's ship.
                 client.player.thrust(input.message.elapsedTime, input.receiveTime - lastUpdateTime);
                 lastUpdateTime = input.receiveTime;
+
+                //adjust for ship thrust particles
+                let vectorX = Math.cos(client.player.direction);
+                let vectorY = Math.sin(client.player.direction);
+
+                let adjustParticlesX = vectorX * client.player.size.width / 2;
+                let adjustParticlesY = vectorY * client.player.size.height / 2;
+
+                let position = {
+                    x: client.player.position.x - adjustParticlesX,
+                    y: client.player.position.y - adjustParticlesY
+                }
+                let system = {
+                    type: 'thrust',
+                    position: position,
+                }
+                for (let clientId in activeClients) {
+                    activeClients[clientId].socket.emit('create-particle-system', system);
+                }
                 break;
             case 'rotate-left':
                 client.player.rotateLeft(input.message.elapsedTime);
