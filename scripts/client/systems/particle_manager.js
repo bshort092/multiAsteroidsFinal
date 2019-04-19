@@ -57,9 +57,9 @@ MyGame.systems.Manager = function(spec) {
             speed: { mean: 150, stdev: 50 },
             lifetime: { mean: .5, stdev: .1 }
         });
-        let smokeRenderer = renderer.ParticleSystem(particlesSmoke, graphics, 'assets/particles/smoke-2.png');
-        let blueRenderer = renderer.ParticleSystem(particlesBlue, graphics, 'assets/particles/blueLight.png');
-        let rainbowRenderer = renderer.ParticleSystem(particlesRainbow, graphics, 'assets/particles/rainbowLight.png');
+        let smokeRenderer = renderer.ParticleSystem(particlesSmoke, graphics, assets['smoke']);
+        let blueRenderer = renderer.ParticleSystem(particlesBlue, graphics, assets['blue']);
+        let rainbowRenderer = renderer.ParticleSystem(particlesRainbow, graphics, assets['rainbow']);
 
         spec.particlesArray.push({system: particlesSmoke, renderer: smokeRenderer});
         spec.particlesArray.push({system: particlesBlue, renderer: blueRenderer});
@@ -74,22 +74,22 @@ MyGame.systems.Manager = function(spec) {
             lifetime: { mean: .5, stdev: .1 }
         });
         let particlesWhite = systems.ParticleSystem({
-            imageSrc: 'assets/particles/whiteLight.png',
+            imageSrc: assets['white'],
             center: { x: centerX, y: centerY },
             size: { mean: 20, stdev: 5 },
             speed: { mean: 150, stdev: 50 },
             lifetime: { mean: .5, stdev: .1 }
         });
         let particlesGreen = systems.ParticleSystem({
-            imageSrc: 'assets/particles/greenLight.png',
+            imageSrc: assets['green'],
             center: { x: centerX, y: centerY },
             size: { mean: 20, stdev: 5 },
             speed: { mean: 150, stdev: 50 },
             lifetime: { mean: .5, stdev: .1 }
         });
-        let smokeRenderer = renderer.ParticleSystem(particlesSmoke, graphics, 'assets/particles/smoke-2.png');
-        let whiteRenderer = renderer.ParticleSystem(particlesWhite, graphics, 'assets/particles/whiteLight.png');
-        let greenRenderer = renderer.ParticleSystem(particlesGreen, graphics, 'assets/particles/greenLight.png');
+        let smokeRenderer = renderer.ParticleSystem(particlesSmoke, graphics, assets['smoke']);
+        let whiteRenderer = renderer.ParticleSystem(particlesWhite, graphics, assets['white']);
+        let greenRenderer = renderer.ParticleSystem(particlesGreen, graphics, assets['green']);
 
         spec.particlesArray.push({system: particlesSmoke, renderer: smokeRenderer});
         spec.particlesArray.push({system: particlesWhite, renderer: whiteRenderer});
@@ -97,7 +97,7 @@ MyGame.systems.Manager = function(spec) {
     }
     function createShipAsteroidExplosion(centerX, centerY) {
         let particlesGreen = systems.ParticleSystem({
-            imageSrc: 'assets/particles/greenLight.png',
+            imageSrc: assets['green'],
             center: { x: centerX, y: centerY },
             size: { mean: 20, stdev: 5 },
             speed: { mean: 150, stdev: 50 },
@@ -111,15 +111,15 @@ MyGame.systems.Manager = function(spec) {
             lifetime: { mean: .5, stdev: .1 }
         });
         let particlesYellow = systems.ParticleSystem({
-            imageSrc: 'assets/particles/yellowLight.png',
+            imageSrc: assets['yellow'],
             center: { x: centerX, y: centerY },
             size: { mean: 20, stdev: 5 },
             speed: { mean: 150, stdev: 50 },
             lifetime: { mean: .5, stdev: .1 }
         });
-        let greenRenderer = renderer.ParticleSystem(particlesGreen, graphics, 'assets/particles/greenLight.png');
-        let smokeRenderer = renderer.ParticleSystem(particlesSmoke, graphics, 'assets/particles/smoke-2.png');
-        let yellowRenderer = renderer.ParticleSystem(particlesYellow, graphics, 'assets/particles/yellowLight.png');
+        let greenRenderer = renderer.ParticleSystem(particlesGreen, graphics, assets['green']);
+        let smokeRenderer = renderer.ParticleSystem(particlesSmoke, graphics, assets['smoke']);
+        let yellowRenderer = renderer.ParticleSystem(particlesYellow, graphics, assets['yellow']);
 
         spec.particlesArray.push({system: particlesGreen, renderer: greenRenderer});
         spec.particlesArray.push({system: particlesSmoke, renderer: smokeRenderer});
@@ -127,28 +127,28 @@ MyGame.systems.Manager = function(spec) {
     }
     function createShipUFOExplosion(centerX, centerY) {
         let particlesRainbow = systems.ParticleSystem({
-            imageSrc: 'assets/particles/rainbowLight.png',
+            imageSrc: assets['rainbow'],
             center: { x: centerX, y: centerY },
             size: { mean: 20, stdev: 5 },
             speed: { mean: 150, stdev: 50 },
             lifetime: { mean: .5, stdev: .1 }
         });
         let particlesGreen = systems.ParticleSystem({
-            imageSrc: 'assets/particles/greenLight.png',
+            imageSrc: assets['green'],
             center: { x: centerX, y: centerY },
             size: { mean: 20, stdev: 5 },
             speed: { mean: 150, stdev: 50 },
             lifetime: { mean: .5, stdev: .1 }
         });
-        let rainbowRenderer = renderer.ParticleSystem(particlesRainbow, graphics, 'assets/particles/rainbowLight.png');
-        let greenRenderer = renderer.ParticleSystem(particlesGreen, graphics, 'assets/particles/greenLight.png');
+        let rainbowRenderer = renderer.ParticleSystem(particlesRainbow, graphics, assets['rainbow']);
+        let greenRenderer = renderer.ParticleSystem(particlesGreen, graphics, assets['green']);
 
         spec.particlesArray.push({system: particlesRainbow, renderer: rainbowRenderer});
         spec.particlesArray.push({system: particlesGreen, renderer: greenRenderer});
     }
     function createThrustParticles(centerX, centerY) {
         let particlesWhite = systems.ParticleSystem({
-            imageSrc: 'assets/particles/whiteLight.png',
+            imageSrc: assets['white'],
             center: { x: centerX, y: centerY },
             size: { mean: 20, stdev: 1 },
             speed: { mean: 150, stdev: 50 },
