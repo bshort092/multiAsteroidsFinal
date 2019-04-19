@@ -155,14 +155,14 @@ MyGame.systems.Manager = function(spec) {
             lifetime: { mean: .08, stdev: .01}
         });
         let particlesGreen = systems.ParticleSystem({
-            imageSrc: 'assets/particles/greenLight.png',
+            imageSrc: assets['green'],
             center: { x: centerX, y: centerY },
             size: { mean: 20, stdev: 1 },
             speed: { mean: 150, stdev: 50 },
             lifetime: { mean: .08, stdev: .01}
         });
-        let whiteRenderer = renderer.ParticleSystem(particlesWhite, graphics, 'assets/particles/whiteLight.png');
-        let greenRenderer = renderer.ParticleSystem(particlesGreen, graphics, 'assets/particles/greenLight.png');
+        let whiteRenderer = renderer.ParticleSystem(particlesWhite, graphics, assets['white']);
+        let greenRenderer = renderer.ParticleSystem(particlesGreen, graphics, assets['green']);
 
         spec.particlesArray.push({system: particlesWhite, renderer: whiteRenderer});
         spec.particlesArray.push({system: particlesGreen, renderer: greenRenderer});

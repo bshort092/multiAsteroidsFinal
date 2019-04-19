@@ -45,7 +45,7 @@ MyGame.loader = (function () {
             message: 'Renderers loaded',
             onComplete: null
         }, {
-            scripts: ['systems/particle_manager', 'systems/particle_system'],
+            scripts: ['systems/random','systems/particle_system', 'systems/particle_manager'],
             message: 'Systems loaded',
             onComplete: null
         }, {

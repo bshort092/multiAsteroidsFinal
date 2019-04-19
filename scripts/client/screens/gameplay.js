@@ -16,6 +16,9 @@ MyGame.screens['game-play'] = (function (game, graphics, renderer, input, compon
         multiUfoLasers = [],
         multiUfos = [],
         multiLasers = [],
+        myParticles = systems.Manager({
+            particlesArray: [],
+        }),
         playerOthers = {},
         messageHistory = MyGame.utilities.Queue(),
         messageId = 1,
@@ -197,12 +200,12 @@ MyGame.screens['game-play'] = (function (game, graphics, renderer, input, compon
         }
     });
 
-    socket.on('create-particle-system', function (data){
+    socket.on('create-particle-system', function (data) {
         //data: 
         //type of system (ship explosion, asteroid breakup, etc.)
         //postion of system
-        if(data.type === "ship-explosion"){
-            MyGame.systems.Manager().createShipExplosion(data.x, data.y);
+        if (data.type === "asteroidBreakup") {
+            myParticles.createAsteroidBreakup(data.position.x, data.position.y);
         }
     });
 
@@ -246,6 +249,7 @@ MyGame.screens['game-play'] = (function (game, graphics, renderer, input, compon
     //
     //------------------------------------------------------------------
     function update(elapsedTime) {
+        myParticles.updateParticleSystems(elapsedTime);
 
         fireTime += elapsedTime;
 
@@ -289,6 +293,8 @@ MyGame.screens['game-play'] = (function (game, graphics, renderer, input, compon
         graphics.clear();
 
         renderer.Tiles.render();
+
+        renderer.Manager.render(myParticles);
 
         for (let i = 0; i < multiAsteroids.length; i++) {
             renderer.Asteroid.render(multiAsteroids[i].model, multiAsteroids[i].texture);
