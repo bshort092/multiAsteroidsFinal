@@ -8,6 +8,7 @@
 let present = require('present');
 let Player = require('./player');
 let Laser = require('./laser');
+let Powerup = require('./powerup');
 let MultiAsteroids = require('./multiAsteroids');
 let MultiUfos = require('./multiUFOs');
 
@@ -128,9 +129,13 @@ function createPowerup() {
             x: Math.random() * 1500,
             y: Math.random() * 800
         },
-        type: powerupTypes[Math.random() * 3],
+        type: powerupTypes[Math.floor(Math.random() * 3)],
     };
-    powerupArray.push(Laser.create(powerupSpec));
+    powerupArray.push(Powerup.create(powerupSpec));
+}
+
+for(let i = 0; i < 4; i++){
+    createPowerup();
 }
 
 function didCollide(obj1, obj2, ) {
@@ -348,6 +353,11 @@ function updateClients(elapsedTime) {
             ufoLasers: ufoLaserArray,
         }
         client.socket.emit('update-ufo-laser', updateUfoLasers);
+
+        let updatePowerups = {
+            powerups: powerupArray,
+        }
+        client.socket.emit('update-self-powerup', updatePowerups);
 
         let update = {
             clientId: clientId,

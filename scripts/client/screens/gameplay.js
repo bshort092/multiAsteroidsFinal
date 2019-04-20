@@ -16,7 +16,7 @@ MyGame.screens['game-play'] = (function (game, graphics, renderer, input, compon
         multiUfoLasers = [],
         multiUfos = [],
         multiLasers = [],
-        powerupArray = [],
+        multiPowerups = [],
         myParticles = systems.Manager({
             particlesArray: [],
         }),
@@ -177,6 +177,21 @@ MyGame.screens['game-play'] = (function (game, graphics, renderer, input, compon
         }
     });
 
+    socket.on('update-self-powerup', function (data) {
+        multiPowerups = [];
+        for (let i = 0; i < data.powerups.length; i++) {
+            multiPowerups.push({
+                model: components.Powerup(),
+                texture: MyGame.assets['rainbow']
+            })
+            multiPowerups[i].model.position.x = data.powerups[i].position.x;
+            multiPowerups[i].model.position.y = data.powerups[i].position.y;
+            multiPowerups[i].model.size = data.powerups[i].size;
+            multiPowerups[i].model.radius = data.powerups[i].radius;
+            multiPowerups[i].model.type = data.powerups[i].type;
+        }
+    });
+
     socket.on('update-self-laser', function (data) {
         multiLasers = [];
         for (let i = 0; i < data.lasers.length; i++) {
@@ -302,6 +317,10 @@ MyGame.screens['game-play'] = (function (game, graphics, renderer, input, compon
             laser.model.update(elapsedTime);
         });
 
+        multiPowerups.forEach(powerup => {
+            powerup.model.update(elapsedTime);
+        });
+
         // for (let i = 0; i < multiLasers.length; i++) {
         //     multiLasers[i].model.update();
         // }
@@ -338,6 +357,10 @@ MyGame.screens['game-play'] = (function (game, graphics, renderer, input, compon
 
         for (let i = 0; i < multiLasers.length; i++) {
             renderer.Laser.render(multiLasers[i].model, multiLasers[i].texture);
+        }
+
+        for (let i = 0; i < multiPowerups.length; i++) {
+            renderer.Powerup.render(multiPowerups[i].model, multiPowerups[i].texture);
         }
 
         renderer.Player.render(playerSelf.model, playerSelf.texture);
