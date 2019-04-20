@@ -32,7 +32,8 @@ MyGame.screens['game-play'] = (function (game, graphics, renderer, input, compon
         thrustKey = null,
         leftKey = null,
         rightKey = null,
-        shootKey = null;
+        shootKey = null,
+        hyperspaceKey = null;
 
     //------------------------------------------------------------------
     //
@@ -280,6 +281,9 @@ MyGame.screens['game-play'] = (function (game, graphics, renderer, input, compon
         if (data.type === "sadParticles") {
             myParticles.createThrustParticles(data.position.x, data.position.y, particlesArray);
         }
+        if (data.type === "hyperspace") {
+            myParticles.createHyperspace(data.position.x, data.position.y, particlesArray);
+        }
     });
 
     //------------------------------------------------------------------
@@ -311,7 +315,7 @@ MyGame.screens['game-play'] = (function (game, graphics, renderer, input, compon
         myKeyboard.unregisterHandler(controls['Thrust'], thrustKey);
         myKeyboard.unregisterHandler(controls['Rotate_Left'], leftKey);
         myKeyboard.unregisterHandler(controls['Rotate_Right'], rightKey);
-        // myKeyboard.unregisterHandler(controls['Hyperspace'], hyperspaceKey);
+        myKeyboard.unregisterHandler(controls['Hyperspace'], hyperspaceKey);
         myKeyboard.unregisterHandler(controls['Shoot'], shootKey);
         // socket.emit('quit');
         game.showScreen('main-menu');
@@ -333,6 +337,7 @@ MyGame.screens['game-play'] = (function (game, graphics, renderer, input, compon
     //------------------------------------------------------------------
     function update(elapsedTime) {
         if(playerSelf.model.playerNumber == null){
+            console.log('calling escape because player number is null');
             callEscape();
         }
         myParticles.updateParticleSystems(elapsedTime);
@@ -349,25 +354,25 @@ MyGame.screens['game-play'] = (function (game, graphics, renderer, input, compon
             hyperspaceTime -= 3000;
         }
 
-        for (let i = 0; i < multiAsteroids.length; i++) {
-            multiAsteroids[i].model.update();
-        }
+        // for (let i = 0; i < multiAsteroids.length; i++) {
+        //     multiAsteroids[i].model.update();
+        // }
 
-        for (let i = 0; i < multiUfos.length; i++) {
-            multiUfos[i].model.update();
-        }
+        // for (let i = 0; i < multiUfos.length; i++) {
+        //     multiUfos[i].model.update();
+        // }
 
-        multiLasers.forEach(laser => {
-            laser.model.update(elapsedTime);
-        });
+        // multiLasers.forEach(laser => {
+        //     laser.model.update(elapsedTime);
+        // });
 
-        multiUfoLasers.forEach(laser => {
-            laser.model.update(elapsedTime);
-        });
+        // multiUfoLasers.forEach(laser => {
+        //     laser.model.update(elapsedTime);
+        // });
 
-        multiPowerups.forEach(powerup => {
-            powerup.model.update(elapsedTime);
-        });
+        // multiPowerups.forEach(powerup => {
+        //     powerup.model.update(elapsedTime);
+        // });
 
         
         playerSelf.model.update(elapsedTime);
@@ -401,9 +406,9 @@ MyGame.screens['game-play'] = (function (game, graphics, renderer, input, compon
         // if(powerup is guidedLasers){
         //     document.getElementById("game_status_" + num).innerHTML = 'Player ' + num + ' has guided missiles!'
         // }
-        else {
-            document.getElementById("game_status_" + num).innerHTML = '';
-        }
+        // else {
+        //     document.getElementById("game_status_" + num).innerHTML = '';
+        // }
     }
 
     //------------------------------------------------------------------

@@ -42,7 +42,7 @@ let fireTime = 0;
 let ufoFireDelay = 1000;
 let lastUpdateTime = present();
 
-let playerNumbers = [{num: 1, available: true}, {num: 2, available: true}, {num: 3, available: true}, {num: 4, available: true}, {num: 5, available: true}, {num: 6, available: true}];
+let playerNumbers = [{num: 1, available: true}, {num: 2, available: true}, {num: 3, available: true}, {num: 4, available: true}];
 // let playerNumbers = [{num: 1, available: true}];
 
 //------------------------------------------------------------------
