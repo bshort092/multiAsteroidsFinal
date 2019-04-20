@@ -10,16 +10,36 @@ function createPowerup(spec) {
         },
 
         size: {
-            width: 250,
-            height: 250
+            width: 50,
+            height: 35
         },
 
         reportUpdate: false,
-        radius: 3,
+        radius: 25,
         type: spec.type,
 
-        update: function (elapsedTime) {
+        spriteCount: 8,
+        spriteTime: [100, 100, 100, 100, 100, 100, 100, 100],
+
+        animationTime: 0,
+        subImageIndex: 0,
+        subTextureWidth: 256 / 8,
+
+        update: function (elapsedTime){
             that.reportUpdate = true;
+            that.animationTime += elapsedTime;
+            //
+            // Check to see if we should update the animation frame
+            if (that.animationTime >= that.spriteTime[that.subImageIndex]) {
+                //
+                // When switching sprites, keep the leftover time because
+                // it needs to be accounted for the next sprite animation frame.
+                that.animationTime -= that.spriteTime[that.subImageIndex];
+                that.subImageIndex += 1;
+                //
+                // Wrap around from the last back to the first sprite as needed
+                that.subImageIndex = that.subImageIndex % that.spriteCount;
+            }
         },
     };
 

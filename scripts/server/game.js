@@ -93,6 +93,9 @@ function processInput() {
             case 'fire-laser':
                 fireLaser(client.player, input.message.elapsedTime, input.clientId);
                 break;
+            case 'hyperspace':
+                moveSafe(client.player, input.message.elapsedTime, client, true);
+                break;
         }
     }
 }
@@ -126,19 +129,99 @@ function createPowerup() {
     let powerupTypes = ['shield', 'rate', 'spread', 'guided'];
     let powerupSpec = {
         position: {
-            x: Math.random() * 1500,
-            y: Math.random() * 800
+            x: Math.random() * 1820 + 50,
+            y: Math.random() * 1052 + 50
         },
-        type: powerupTypes[Math.floor(Math.random() * 3)],
+        type: powerupTypes[Math.floor(Math.random() * 4)],
     };
     powerupArray.push(Powerup.create(powerupSpec));
 }
 
-for(let i = 0; i < 4; i++){
+for (let i = 0; i < 4; i++) {
     createPowerup();
 }
 
-function didCollide(obj1, obj2, ) {
+function moveSafe(playerShip, elapsedTime, client, hyperspace) {
+    let randomX;
+    let randomY;
+    while (true) {
+        randomX = Math.floor(Math.random() * 1920);
+        randomY = Math.floor(Math.random() * 1152);
+
+        if (randomX < 128) {
+            randomX += 128;
+        }
+        if (randomX > 1792) {
+            randomX -= 128;
+        }
+        if (randomY < 128) {
+            randomY += 128;
+        }
+        if (randomY > 1024) {
+            randomY -= 128;
+        }
+
+        let shipSafeZone = {
+            position: {
+                x: randomX,
+                y: randomY
+            },
+            radius: playerShip.radius * 10
+        }
+
+        let safeSpot = true;
+        asteroids.forEach(asteroid => {
+            if (didCollide(shipSafeZone, asteroid)) {
+                safeSpot = false;
+            }
+        })
+
+        ufos.forEach(ufo => {
+            if (didCollide(shipSafeZone, ufo)) {
+                safeSpot = false;
+            }
+        })
+        if (safeSpot) {
+            break;
+        }
+    }
+
+    playerShip.position.x = randomX;
+    playerShip.position.y = randomY;
+    playerShip.momentum.x = 0;
+    playerShip.momentum.y = 0;
+
+    if (hyperspace) {
+        let system = {
+            type: 'hyperspace',
+            position: playerShip.position,
+        }
+        for (let clientId in activeClients) {
+            activeClients[clientId].socket.emit('create-particle-system', system);
+        }
+    }
+    else {
+        let system = {
+            type: 'sadParticles',
+            position: playerShip.position,
+        }
+        for (let clientId in activeClients) {
+            activeClients[clientId].socket.emit('create-particle-system', system);
+        }
+    }
+
+    let update = {
+        clientId: client.id,
+        lastMessageId: client.lastMessageId,
+        direction: client.player.direction,
+        position: client.player.position,
+        momentum: client.player.momentum,
+        updateWindow: elapsedTime,
+    };
+    client.socket.emit('update-self', update);
+}
+
+function didCollide(obj1, obj2) {
     if (obj1 && obj2) {
         let dx = obj1.position.x - obj2.position.x;
         let dy = obj1.position.y - obj2.position.y;
@@ -149,7 +232,7 @@ function didCollide(obj1, obj2, ) {
     return false;
 }
 
-function detectCollision(playerShip) {
+function detectCollision(playerShip, elapsedTime, client) {
     //for each asteroid detect ship collision
 
     for (let i = 0; i < asteroids.length; i++) {
@@ -168,6 +251,7 @@ function detectCollision(playerShip) {
             for (let clientId in activeClients) {
                 activeClients[clientId].socket.emit('create-particle-system', system1);
             }
+            moveSafe(playerShip, elapsedTime, client, false);
             if (asteroids[i].size.width === 148) {
                 let createdAsteroids = MultiAsteroids.create({
                     numOfAsteroids: 3,
@@ -252,6 +336,7 @@ function detectCollision(playerShip) {
             for (let clientId in activeClients) {
                 activeClients[clientId].socket.emit('create-particle-system', system1);
             }
+            moveSafe(playerShip, elapsedTime, client, false);
             ufos.splice(i, 1);
             break;
         }
@@ -279,7 +364,21 @@ function detectCollision(playerShip) {
             for (let clientId in activeClients) {
                 activeClients[clientId].socket.emit('create-particle-system', system);
             }
+            moveSafe(playerShip, elapsedTime, client, false);
             ufoLaserArray.splice(i, 1);
+        }
+    }
+
+    for (let i = 0; i < powerupArray.length; i++) {
+        if (didCollide(playerShip, powerupArray[i])) {
+            let system = {
+                type: 'powerupPickup',
+                position: powerupArray[i].position,
+            }
+            for (let clientId in activeClients) {
+                activeClients[clientId].socket.emit('create-particle-system', system);
+            }
+            powerupArray.splice(i, 1);
         }
     }
 }
@@ -292,7 +391,7 @@ function detectCollision(playerShip) {
 function update(elapsedTime) {
     for (let clientId in activeClients) {
         activeClients[clientId].player.update(elapsedTime, false);
-        detectCollision(activeClients[clientId].player);
+        detectCollision(activeClients[clientId].player, elapsedTime, activeClients[clientId]);
     }
 
     for (let i = 0; i < asteroids.length; i++) {
@@ -322,6 +421,10 @@ function update(elapsedTime) {
         if (ufoLaserArray[i].lifetime <= 0) {
             ufoLaserArray.splice(i, 1);
         }
+    }
+
+    for (let i = 0; i < powerupArray.length; i++) {
+        powerupArray[i].update(elapsedTime);
     }
 }
 

@@ -9,16 +9,41 @@ MyGame.components.Powerup = function () {
         },
 
         size: {
-            width: 250,
-            height: 250
+            width: 50,
+            height: 35
         },
 
-        radius: 0,
+        radius: 25,
         type: "",
+        spriteCount: 8,
+        spriteTime: [100, 100, 100, 100, 100, 100, 100, 100],
 
-        update: function (elapsedTime) {
-
+        animationTime: 0,
+        subImageIndex: 0,
+        subTextureWidth: 256 / 8,
+    
+        //------------------------------------------------------------------
+        //
+        // Update the state of the animation
+        //
+        //------------------------------------------------------------------
+        update: function (elapsedTime){
+            that.animationTime += elapsedTime;
+            //
+            // Check to see if we should update the animation frame
+            if (that.animationTime >= that.spriteTime[that.subImageIndex]) {
+                //
+                // When switching sprites, keep the leftover time because
+                // it needs to be accounted for the next sprite animation frame.
+                that.animationTime = that.spriteTime[that.subImageIndex];
+                that.subImageIndex += 1;
+                //console.log(that.subImageIndex);
+                //
+                // Wrap around from the last back to the first sprite as needed
+                that.subImageIndex = that.subImageIndex % that.spriteCount;
+            }
         },
+
     };
     return that;
 }

@@ -95,7 +95,19 @@ MyGame.loader = (function () {
         }, {
             key: 'background',
             source: 'assets/outer_space.jpg'
-        }, 
+        }, {
+            key: 'copperCoin',
+            source: 'assets/sprites/coin_copper.png'
+        }, {
+            key: 'silverCoin',
+            source: 'assets/sprites/coin_silver.png'
+        }, {
+            key: 'goldCoin',
+            source: 'assets/sprites/coin_gold.png'
+        }, {
+            key: 'blueYellowCoin',
+            source: 'assets/sprites/coin_blue_yellow.png'
+        },
         // {
         //     key: 'backgroundSound',
         //     source: 'assets/sounds/AsteroidsBackground.mp3'
