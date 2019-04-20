@@ -336,10 +336,6 @@ MyGame.screens['game-play'] = (function (game, graphics, renderer, input, compon
     //
     //------------------------------------------------------------------
     function update(elapsedTime) {
-        if(playerSelf.model.playerNumber == null){
-            console.log('calling escape because player number is null');
-            callEscape();
-        }
         myParticles.updateParticleSystems(elapsedTime);
 
         fireTime += elapsedTime;
@@ -492,6 +488,10 @@ MyGame.screens['game-play'] = (function (game, graphics, renderer, input, compon
     }
 
     function run() {
+        if(playerSelf.model.playerNumber == null){
+            cancelNextRequest = true;
+            game.showScreen('main-menu');
+        }
         // Create the keyboard input handler and register the keyboard commands
         let defaultControls = { Thrust: 'ArrowUp', Rotate_Left: 'ArrowLeft', Rotate_Right: 'ArrowRight', Shoot: ' ', Hyperspace: 'z' }
         let current_controls = localStorage.getItem('MultiAsteroids.controls');

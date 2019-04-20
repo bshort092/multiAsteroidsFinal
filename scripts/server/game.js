@@ -648,7 +648,7 @@ function initializeSocketIO(httpServer) {
         //
         // Create an entry in our list of connected clients
         let playerNum = findAvailablePlayerNum();
-        if(playerNum != 'No spots available'){
+        // if(playerNum != null){
             let newPlayer = Player.create();
             newPlayer.clientId = socket.id;
     
@@ -681,7 +681,9 @@ function initializeSocketIO(httpServer) {
             });
     
             socket.on('disconnect', function () {
-                playerNumbers[activeClients[socket.id].playerNumber - 1].available = true;
+                if(activeClients[socket.id].playerNumber != null){
+                    playerNumbers[activeClients[socket.id].playerNumber - 1].available = true;
+                }
                 delete activeClients[socket.id];
                 notifyDisconnect(socket.id);
             });
@@ -691,7 +693,7 @@ function initializeSocketIO(httpServer) {
             // });
     
             notifyConnect(socket, newPlayer);
-        }
+        // }
 
     });
 }
@@ -703,7 +705,7 @@ function findAvailablePlayerNum() {
             return playerNumbers[i].num;
         }
     }
-    return 'No spots available';
+    return null;
 }
 
 //------------------------------------------------------------------
