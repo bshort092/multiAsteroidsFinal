@@ -57,6 +57,7 @@ MyGame.screens['game-play'] = (function (game, graphics, renderer, input, compon
         playerSelf.model.maxSpeed = data.maxSpeed;
         playerSelf.model.radius = data.radius;
         playerSelf.model.score = data.score;
+        playerSelf.model.playerNumber = data.playerNumber;
     });
 
     //------------------------------------------------------------------
@@ -75,6 +76,7 @@ MyGame.screens['game-play'] = (function (game, graphics, renderer, input, compon
         model.state.direction = data.direction;
         model.state.lastUpdate = performance.now();
         model.state.score = data.score;
+        model.state.playerNumber = data.playerNumber;
 
         model.goal.position.x = data.position.x;
         model.goal.position.y = data.position.y;
@@ -112,6 +114,7 @@ MyGame.screens['game-play'] = (function (game, graphics, renderer, input, compon
         playerSelf.model.position.y = data.position.y;
         playerSelf.model.direction = data.direction;
         playerSelf.model.score = data.score;
+        playerSelf.model.playerNumber = data.playerNumber;
 
         //
         // Remove messages from the queue up through the last one identified
@@ -250,6 +253,7 @@ MyGame.screens['game-play'] = (function (game, graphics, renderer, input, compon
             model.state.momentum.x = data.momentum.x;
             model.state.momentum.y = data.momentum.y;
             model.state.score = data.score;
+            model.state.playerNumber = data.playerNumber;
 
             model.goal.position.x = data.position.x;
             model.goal.position.y = data.position.y;
@@ -283,6 +287,9 @@ MyGame.screens['game-play'] = (function (game, graphics, renderer, input, compon
     //
     //------------------------------------------------------------------
     function update(elapsedTime) {
+        if(playerSelf.model.playerNumber == null){
+            callEscape();
+        }
         myParticles.updateParticleSystems(elapsedTime);
 
         fireTime += elapsedTime;
@@ -311,20 +318,39 @@ MyGame.screens['game-play'] = (function (game, graphics, renderer, input, compon
         //     multiLasers[i].model.update();
         // }
 
+
         playerSelf.model.update(elapsedTime);
-        document.getElementById("my_score").innerHTML = playerSelf.model.score;
-        // console.log('me: ', playerSelf.model.score);
-        if(playerSelf.model.score >= 1000){
-            document.getElementById("game_status_me").innerHTML = 'You have surpassed a score of 1000'
-        }
+        document.getElementById("my_score").innerHTML = playerSelf.model.playerNumber + ': ' + playerSelf.model.score;
+        updateStatus(playerSelf.model.playerNumber, playerSelf.model.score);
+
         document.getElementById("other_score").innerHTML = '';
         for (let id in playerOthers) {
             playerOthers[id].model.update(elapsedTime);
-            // console.log('other: ', playerOthers[id].model.state.score);
-            document.getElementById("other_score").innerHTML += playerOthers[id].model.state.score + '<br>';
-            if(playerOthers[id].model.state.score >= 1000){
-                document.getElementById("game_status_other").innerHTML = 'Other player has surpassed a score of 1000'
-            }
+            document.getElementById("other_score").innerHTML += playerOthers[id].model.state.playerNumber + ': ' + playerOthers[id].model.state.score + '<br>';
+            updateStatus(playerOthers[id].model.state.playerNumber, playerOthers[id].model.state.score);
+        }
+    }
+    function updateStatus(num, score) {
+        if(score >= 1000){
+            document.getElementById("game_status_" + num).innerHTML = 'Player ' + num + ' has surpassed a score of 1000'
+        }
+        if(score >= 10000){
+            document.getElementById("game_status_" + num).innerHTML = 'Player ' + num + ' has surpassed a score of 10000'
+        }
+        // if(powerup is shield){
+        //     document.getElementById("game_status_" + num).innerHTML = 'Player ' + num + ' has a shield!'
+        // }
+        // if(powerup is multipleLasers){
+        //     document.getElementById("game_status_" + num).innerHTML = 'Player ' + num + ' has multiple missiles!'
+        // }
+        // if(powerup is fastLasers){
+        //     document.getElementById("game_status_" + num).innerHTML = 'Player ' + num + ' has a faster firing speed!'
+        // }
+        // if(powerup is guidedLasers){
+        //     document.getElementById("game_status_" + num).innerHTML = 'Player ' + num + ' has guided missiles!'
+        // }
+        else {
+            document.getElementById("game_status_" + num).innerHTML = '';
         }
     }
 
@@ -393,19 +419,6 @@ MyGame.screens['game-play'] = (function (game, graphics, renderer, input, compon
             model: components.Player(),
             texture: MyGame.assets['player-self']
         };
-        for (let i = 0; i < 20; i++) {
-            multiAsteroids.push({
-                model: components.Asteroid(),
-                texture: MyGame.assets['asteroid']
-            })
-        }
-
-        for (let i = 0; i < 1; i++) {
-            multiUfos.push({
-                model: components.Ufo(),
-                texture: MyGame.assets['ufo']
-            })
-        }
 
         playerOthers = {};
         messageHistory = MyGame.utilities.Queue();

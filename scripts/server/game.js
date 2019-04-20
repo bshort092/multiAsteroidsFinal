@@ -41,6 +41,9 @@ let fireTime = 0;
 let ufoFireDelay = 1000;
 let lastUpdateTime = present();
 
+// let playerNumbers = [{num: 1, available: true}, {num: 2, available: true}, {num: 3, available: true}, {num: 4, available: true}, {num: 5, available: true}, {num: 6, available: true}];
+let playerNumbers = [{num: 1, available: true}];
+
 //------------------------------------------------------------------
 //
 // Process the network inputs we have received since the last time
@@ -176,7 +179,6 @@ function detectCollision(playerShip) {
             else if(asteroids[i].size.width == 74){ playerShip.score -= 100; }
             else if(asteroids[i].size.width == 37){ playerShip.score -= 200; }
             if(playerShip.score < 0) { playerShip.score = 0; }
-            // console.log('-', playerShip.score)
             
             let system = {
                 type: 'asteroidBreakup',
@@ -226,17 +228,13 @@ function detectCollision(playerShip) {
             if (didCollide(asteroids[i], laserArray[j])) {
                 if(asteroids[i].size.width == 148){ 
                     activeClients[laserArray[j].shipId].player.score += 20;
-                    // playerShip.score += 20; 
                 }
                 else if(asteroids[i].size.width == 74){ 
                     activeClients[laserArray[j].shipId].player.score += 50;
-                    // playerShip.score += 50; 
                 }
                 else if(asteroids[i].size.width == 37){ 
                     activeClients[laserArray[j].shipId].player.score += 100;
-                    // playerShip.score += 100; 
                 }
-                // console.log('+', playerShip.score);
 
                 let system = {
                     type: 'asteroidBreakup',
@@ -281,7 +279,6 @@ function detectCollision(playerShip) {
             if(ufos[i].size.width == 101){ playerShip.score -= 1000; }
             else if(ufos[i].size.width == 55){ playerShip.score -= 2000; }
             if(playerShip.score < 0) { playerShip.score = 0; }
-            // console.log('-', playerShip.score);
 
             let system = {
                 type: 'shipDestroyed',
@@ -304,13 +301,10 @@ function detectCollision(playerShip) {
             if (didCollide(laserArray[j], ufos[i])) {
                 if(ufos[i].size.width == 101){ 
                     activeClients[laserArray[j].shipId].player.score += 500;
-                    // playerShip.score += 500; 
                 }
                 else if(ufos[i].size.width == 55){ 
                     activeClients[laserArray[j].shipId].player.score += 1000;
-                    // playerShip.score += 1000; 
                 }
-                // console.log('+', playerShip.score);
                 
                 let system = {
                     type: 'ufoDestroyed',
@@ -329,7 +323,6 @@ function detectCollision(playerShip) {
         if (didCollide(ufoLaserArray[i], playerShip)) {
             playerShip.score -= 5000;
             if(playerShip.score < 0) { playerShip.score = 0; }
-            // console.log('-', playerShip.score);
 
             let system = {
                 type: 'shipDestroyed',
@@ -352,7 +345,6 @@ function update(elapsedTime) {
     for (let clientId in activeClients) {
         activeClients[clientId].player.update(elapsedTime, false);
         detectCollision(activeClients[clientId].player);
-        // console.log('activeClients[' + clientId + '].player.score: ' + activeClients[clientId].player.score)
     }
 
     for (let i = 0; i < asteroids.length; i++) {
@@ -421,6 +413,7 @@ function updateClients(elapsedTime) {
             position: client.player.position,
             momentum: client.player.momentum,
             score: client.player.score,
+            playerNumber: client.playerNumber,
             updateWindow: elapsedTime,
         };
 
@@ -495,6 +488,7 @@ function initializeSocketIO(httpServer) {
                     momentum: newPlayer.momentum,
                     radius: newPlayer.radius,
                     score: newPlayer.score,
+                    playerNumber: newPlayer.playerNumber,
                 });
 
                 //
@@ -510,6 +504,7 @@ function initializeSocketIO(httpServer) {
                     momentum: client.player.momentum,
                     radius: client.player.radius,
                     score: client.player.score,
+                    playerNumber: client.playerNumber,
                 });
             }
         }
@@ -536,40 +531,58 @@ function initializeSocketIO(httpServer) {
         console.log('Connection established: ', socket.id);
         //
         // Create an entry in our list of connected clients
-        let newPlayer = Player.create();
-        newPlayer.clientId = socket.id;
-        activeClients[socket.id] = {
-            socket: socket,
-            player: newPlayer,
-        };
-
-        socket.emit('connect-ack', {
-            momentum: newPlayer.momentum,
-            direction: newPlayer.direction,
-            position: newPlayer.position,
-            size: newPlayer.size,
-            rotateRate: newPlayer.rotateRate,
-            maxSpeed: newPlayer.maxSpeed,
-            thrustRate: newPlayer.thrustRate,
-            radius: newPlayer.radius,
-            score: newPlayer.score,
-        });
-
-        socket.on('input', data => {
-            inputQueue.push({
-                clientId: socket.id,
-                message: data,
-                receiveTime: present()
+        let playerNum = findAvailablePlayerNum();
+        if(playerNum != 'No spots available'){
+            let newPlayer = Player.create();
+            newPlayer.clientId = socket.id;
+    
+            activeClients[socket.id] = {
+                socket: socket,
+                player: newPlayer,
+                playerNumber: playerNum,
+            };
+    
+            socket.emit('connect-ack', {
+                momentum: newPlayer.momentum,
+                direction: newPlayer.direction,
+                position: newPlayer.position,
+                size: newPlayer.size,
+                rotateRate: newPlayer.rotateRate,
+                maxSpeed: newPlayer.maxSpeed,
+                thrustRate: newPlayer.thrustRate,
+                radius: newPlayer.radius,
+                score: newPlayer.score,
+                playerNumber: newPlayer.playerNumber,
             });
-        });
+    
+            socket.on('input', data => {
+                inputQueue.push({
+                    clientId: socket.id,
+                    message: data,
+                    receiveTime: present()
+                });
+            });
+    
+            socket.on('disconnect', function () {
+                playerNumbers[activeClients[socket.id].playerNumber - 1].available = true;
+                delete activeClients[socket.id];
+                notifyDisconnect(socket.id);
+            });
+    
+            notifyConnect(socket, newPlayer);
+        }
 
-        socket.on('disconnect', function () {
-            delete activeClients[socket.id];
-            notifyDisconnect(socket.id);
-        });
-
-        notifyConnect(socket, newPlayer);
     });
+}
+
+function findAvailablePlayerNum() {
+    for (let i = 0; i < playerNumbers.length; i++) {
+        if(playerNumbers[i].available){
+            playerNumbers[i].available = false;
+            return playerNumbers[i].num;
+        }
+    }
+    return 'No spots available';
 }
 
 //------------------------------------------------------------------
