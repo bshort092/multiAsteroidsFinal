@@ -26,6 +26,8 @@ MyGame.screens['game-play'] = (function (game, graphics, renderer, input, compon
         messageId = 1,
         fireTime = 0,
         canFire = true,
+        canUseHyperspace = true,
+        hsTime = 0,
         controls = null,
         thrustKey = null,
         leftKey = null,
@@ -284,7 +286,6 @@ MyGame.screens['game-play'] = (function (game, graphics, renderer, input, compon
         myParticles.updateParticleSystems(elapsedTime);
 
         fireTime += elapsedTime;
-
         if (fireTime >= 250) {
             canFire = true;
             fireTime -= 250;
@@ -476,6 +477,17 @@ MyGame.screens['game-play'] = (function (game, graphics, renderer, input, compon
             }
         },
         controls['Shoot'], true);
+
+        hyperspaceKey = myKeyboard.registerHandler(elapsedTime => {
+            // if (canUseHyperspace) {
+            //     canUseHyperspace = false;
+            //     hsTime = 0;
+            //     socket.emit('input', message);
+            //     messageHistory.enqueue(message);
+            // }
+            // useHyperspace();
+        },
+        controls['Hyperspace'], true);
 
         // game.playSoundBackground('backgroundSound');
         lastTimeStamp = performance.now();

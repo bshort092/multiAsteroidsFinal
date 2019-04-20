@@ -224,9 +224,18 @@ function detectCollision(playerShip) {
     for (let i = 0; i < asteroids.length; i++) {
         for (let j = 0; j < laserArray.length; j++) {
             if (didCollide(asteroids[i], laserArray[j])) {
-                if(asteroids[i].size.width == 148){ playerShip.score += 20; }
-                else if(asteroids[i].size.width == 74){ playerShip.score += 50; }
-                else if(asteroids[i].size.width == 37){ playerShip.score += 100; }
+                if(asteroids[i].size.width == 148){ 
+                    activeClients[laserArray[j].shipId].player.score += 20;
+                    // playerShip.score += 20; 
+                }
+                else if(asteroids[i].size.width == 74){ 
+                    activeClients[laserArray[j].shipId].player.score += 50;
+                    // playerShip.score += 50; 
+                }
+                else if(asteroids[i].size.width == 37){ 
+                    activeClients[laserArray[j].shipId].player.score += 100;
+                    // playerShip.score += 100; 
+                }
                 // console.log('+', playerShip.score);
 
                 let system = {
@@ -293,8 +302,14 @@ function detectCollision(playerShip) {
         }
         for (let j = 0; j < laserArray.length; j++) {
             if (didCollide(laserArray[j], ufos[i])) {
-                if(ufos[i].size.width == 101){ playerShip.score += 500; }
-                else if(ufos[i].size.width == 55){ playerShip.score += 1000; }
+                if(ufos[i].size.width == 101){ 
+                    activeClients[laserArray[j].shipId].player.score += 500;
+                    // playerShip.score += 500; 
+                }
+                else if(ufos[i].size.width == 55){ 
+                    activeClients[laserArray[j].shipId].player.score += 1000;
+                    // playerShip.score += 1000; 
+                }
                 // console.log('+', playerShip.score);
                 
                 let system = {
