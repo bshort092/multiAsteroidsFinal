@@ -18,13 +18,16 @@
             </ul>
         </div>
         <div id = "game-play" class = "screen">
-                <div style = "margin: 10px; text-align: center;">Multiplayer Asteroids</div>
+                <div class="gameTitle">Multiplayer Asteroids</div>
                 <div class="gameboard">
                         <div class="container">
                             <div class="innerLeft">
-                                
+                                <div class="myScore">
+                                    <h5>MyScore:</h5>
+                                    <p id="my_score"></p>
+                                </div>
                                 <div>
-                                    <h4>Other Player Scores:</h4>
+                                    <h6>Other Players:</h6>
                                     <h5 id="other_scores"></h5>
                                 </div>
                             </div>
@@ -32,9 +35,10 @@
                                 <canvas id = "canvas-main" width = "600" height = "600"></canvas>
                             </div>
                             <div class="innerRight">
-                                <div class="myscore">
-                                    <h4>My Score:</h4>
-                                    <h2 id="my_score"></h2>
+                                <div class="gameStatus">
+                                    <div>Game Status:</div>
+                                    <div id="game_status_me">My player messages here</div>
+                                    <div id="game_status_other">Other player messages here</div>
                                 </div>
                                 <div class="miniMapTitle"><p>Mini Map:</p></div>
                                 <div><canvas id = "canvas-world" width = "500" height = "300"></canvas></div>
@@ -42,16 +46,6 @@
                         </div>
                     </div>
             
-        </div>
-        <div id = "game-pause" class = "screen">
-            <h2 class="MainTitle">Paused</h2>
-            <ul class = "menu">
-                <li><button id = "id-resume-game">Resume&nbsp;Game</button></li>
-                <li><button id = "id-game-high-scores">High&nbsp;Scores</button></li>
-                <li><button id = "id-game-help">Controls</button></li>
-                <li><button id = "id-game-about">Credits</button></li>
-                <li><button id = "id-main-back">Quit</button></li>
-            </ul>
         </div>
         <div id = "game-over" class = "screen">
             <h1 class="MainTitle">Game Over</h1>
@@ -70,29 +64,29 @@
         </div>
         <div id = "help" class = "screen" style="text-align: center;">
             <h1>Controls</h1>
-            <div style="display: flex; flex-direction: row;">
-                <form style="margin: 0 auto;">
+            <div class="sameRow">
+                <form class="form">
                     Action:
-                    <select style="font-size: 30px;" id="controlList" onchange="MyGame.screens['help'].run()">
+                    <select id="controlList" onchange="MyGame.screens['help'].run()">
                     <option>Thrust</option>
                     <option>Rotate_Left</option>  
                     <option>Rotate_Right</option>
                     <option>Shoot</option>
                     <option>Hyperspace</option>
                     </select>
-                    <span>Key: <input type="text" id="controlKeys" style="width: 30px; font-size: 30px; margin-left: 10px;" onkeydown="return MyGame.screens['help'].changeValue(event)"></span>
+                    <span>Key: <input type="text" id="controlKeys" onkeydown="return MyGame.screens['help'].changeValue(event)"></span>
                 </form>
             </div>
-            <div style="margin: 50px;">
-                <span style="font-size: 20px;">Or Select an Arrow Key: </span>
-                <button style="margin: 5px;" class="arrowButton" id="ArrowUp" onclick="MyGame.screens['help'].changeArrow('ArrowUp')">Arrow Up</button>
-                <button style="margin: 5px;" class="arrowButton" id="ArrowLeft" onclick="MyGame.screens['help'].changeArrow('ArrowLeft')">Arrow Left</button>
-                <button style="margin: 5px;" class="arrowButton" id="ArrowRight" onclick="MyGame.screens['help'].changeArrow('ArrowRight')">Arrow Right</button>
-                <button style="margin: 5px;" class="arrowButton" id="ArrowDown" onclick="MyGame.screens['help'].changeArrow('ArrowDown')">Arrow Down</button>
+            <div class="controlSpacing">
+                <span class="selectArrow">Or Select an Arrow Key: </span>
+                <button class="arrowButton" id="ArrowUp" onclick="MyGame.screens['help'].changeArrow('ArrowUp')">Arrow Up</button>
+                <button class="arrowButton" id="ArrowLeft" onclick="MyGame.screens['help'].changeArrow('ArrowLeft')">Arrow Left</button>
+                <button class="arrowButton" id="ArrowRight" onclick="MyGame.screens['help'].changeArrow('ArrowRight')">Arrow Right</button>
+                <button class="arrowButton" id="ArrowDown" onclick="MyGame.screens['help'].changeArrow('ArrowDown')">Arrow Down</button>
             </div>
             <div>
-                <span id="controlName" size="20"></span>
-                <span id="controlValue" size="20"></span>
+                <span id="controlName"></span>
+                <span id="controlValue"></span>
                 <button class="saveButton" onclick="MyGame.screens['help'].save()">Save</button>
             </div>
             <ul class = "menu">

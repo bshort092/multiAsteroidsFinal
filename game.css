@@ -12,6 +12,9 @@ html, body {
     height: 600px;
     border: white solid 10px;
 }
+.gameTitle {
+    margin: 10px; text-align: center;
+}
 .innerLeft {
     width: 200px;
 }
@@ -24,9 +27,23 @@ html, body {
     display: flex;
     flex-direction: column;
 }
-.myscore {
+.gameStatus {
     height: 250px;
-    
+    text-align: center;
+    margin: 20px;
+}
+#game_status_me {
+    font-size: 20px; 
+    margin: 10px;
+    color: lightblue;
+}
+#game_status_other {
+    font-size: 20px; 
+    margin: 10px;
+    color: lightgreen;
+}
+.myScore {
+    height: 100px;
 }
 .miniMapTitle {
     border-top: white 3px solid;
@@ -34,7 +51,26 @@ html, body {
     margin-bottom: 10px;
     text-align: center;
 }
+.form {
+    margin: 0 auto;
+}
+#controlList {
+    font-size: 30px;
+}
+#controlKeys {
+    width: 30px; font-size: 30px; margin-left: 10px;
+}
+.controlSpacing {
+    margin: 40px;
+}
+.sameRow {
+    display: flex; flex-direction: row;
+}
+.selectArrow {
+    font-size: 20px;
+}
 .arrowButton {
+    margin: 5px;
     cursor: pointer;
     font-family: Arial, sans-serif;
     font-size: 15px;
