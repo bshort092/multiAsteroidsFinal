@@ -25,6 +25,7 @@ MyGame.screens['help'] = (function(game) {
     }
     
     function run() {
+        document.getElementById("save_status").innerHTML = '';
         let current_controls = localStorage.getItem('MultiAsteroids.controls');
         controls = JSON.parse(current_controls)
         
@@ -41,6 +42,7 @@ MyGame.screens['help'] = (function(game) {
         }
     }
     function changeValue(e) {
+        document.getElementById("save_status").innerHTML = '';
         let myKey = e.key
         let controlList = document.getElementById("controlList");
         let key = controlList.options[controlList.selectedIndex].value
@@ -60,6 +62,7 @@ MyGame.screens['help'] = (function(game) {
         } 
     }
     function changeArrow(arrow) {
+        document.getElementById("save_status").innerHTML = '';
         let controlList = document.getElementById("controlList");
         let key = controlList.options[controlList.selectedIndex].value
         document.getElementById("controlKeys").value = '';
@@ -68,6 +71,7 @@ MyGame.screens['help'] = (function(game) {
         document.getElementById("controlValue").innerHTML = arrow;
     }
     function save() {
+        document.getElementById("save_status").innerHTML = 'Saved!';
         localStorage['MultiAsteroids.controls'] = JSON.stringify(controls);
     }
     

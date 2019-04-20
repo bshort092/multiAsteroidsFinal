@@ -18,34 +18,32 @@
             </ul>
         </div>
         <div id = "game-play" class = "screen">
-                <div class="gameTitle">Multiplayer Asteroids</div>
-                <div class="gameboard">
-                        <div class="container">
-                            <div class="innerLeft">
-                                <div class="myScore">
-                                    <h5>MyScore:</h5>
-                                    <p id="my_score"></p>
-                                </div>
-                                <div>
-                                    <h6>Other Players:</h6>
-                                    <h5 id="other_scores"></h5>
-                                </div>
-                            </div>
-                            <div class="innerMiddle">
-                                <canvas id = "canvas-main" width = "600" height = "600"></canvas>
-                            </div>
-                            <div class="innerRight">
-                                <div class="gameStatus">
-                                    <div>Game Status:</div>
-                                    <div id="game_status_me">My player messages here</div>
-                                    <div id="game_status_other">Other player messages here</div>
-                                </div>
-                                <div class="miniMapTitle"><p>Mini Map:</p></div>
-                                <div><canvas id = "canvas-world" width = "500" height = "300"></canvas></div>
-                            </div>
+            <div class="gameboard">
+                <div class="container">
+                    <div class="innerLeft">
+                        <div class="myScore">
+                            <div>MyScore:</div>
+                            <div id="my_score"></div>
+                        </div>
+                        <div>
+                            <div>Other Players:</div>
+                            <div id="other_scores"></div>
                         </div>
                     </div>
-            
+                    <div class="innerMiddle">
+                        <canvas id = "canvas-main" width = "600" height = "600"></canvas>
+                    </div>
+                    <div class="innerRight">
+                        <div class="gameStatus">
+                            <div>Game Status:</div>
+                            <div id="game_status_me">My player messages here</div>
+                            <div id="game_status_other">Other player messages here</div>
+                        </div>
+                        <div class="miniMapTitle">Mini Map:</div>
+                        <div><canvas id = "canvas-world" width = "400" height = "240"></canvas></div>
+                    </div>
+                </div>
+            </div>
         </div>
         <div id = "game-over" class = "screen">
             <h1 class="MainTitle">Game Over</h1>
@@ -86,11 +84,12 @@
             </div>
             <div>
                 <span id="controlName"></span>
-                <span id="controlValue"></span>
+                <span style="color: lime" id="controlValue"></span>
                 <button class="saveButton" onclick="MyGame.screens['help'].save()">Save</button>
             </div>
+            <div id="save_status"></div>
             <ul class = "menu">
-                <li><button id = "id-help-back">Back</button></li>
+                <li><button style="margin-top: 20px;" id = "id-help-back">Back</button></li>
             </ul>
         </div>
         <div id = "about" class = "screen">

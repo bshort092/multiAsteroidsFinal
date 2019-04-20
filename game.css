@@ -5,12 +5,13 @@ html, body {
     display: flex;
     flex-direction: column;
     align-items: center;
+    font-size: 30px;
 }
 .container {
     display: flex;
     flex-direction: row;
     height: 600px;
-    border: white solid 10px;
+    border: darkgrey solid 5px;
 }
 .gameTitle {
     margin: 10px; text-align: center;
@@ -19,8 +20,8 @@ html, body {
     width: 200px;
 }
 .innerMiddle {
-    border-left: white 3px solid;
-    border-right: white 3px solid;
+    border-left: darkgrey 3px solid;
+    border-right: darkgrey 3px solid;
 }
 .innerRight {
     height: 600px;
@@ -46,22 +47,26 @@ html, body {
     height: 100px;
 }
 .miniMapTitle {
-    border-top: white 3px solid;
+    border-top: darkgrey 3px solid;
     height: 50px;
-    margin-bottom: 10px;
+    padding-top: 20px;
+    font-size: 20px;
     text-align: center;
 }
 .form {
     margin: 0 auto;
 }
+#save_status {
+    margin-left: 20px; font-size: 20px; color: gold;
+}
 #controlList {
-    font-size: 30px;
+    font-size: 20px;
 }
 #controlKeys {
-    width: 30px; font-size: 30px; margin-left: 10px;
+    width: 30px; font-size: 20px; margin-left: 10px;
 }
 .controlSpacing {
-    margin: 40px;
+    margin: 20px;
 }
 .sameRow {
     display: flex; flex-direction: row;
@@ -118,8 +123,7 @@ html, body {
     width: 100%;
     height: 100%;
     color: white;
-    background-color: black;
-    /* background-image: url("https://thumbs.gfycat.com/RingedSpicyKodiakbear-size_restricted.gif"); */
+    background-image: url("https://thumbs.gfycat.com/RingedSpicyKodiakbear-size_restricted.gif");
     font-size: 40px;
     overflow: hidden;
     position: absolute;
@@ -135,8 +139,8 @@ html, body {
 } */
 #canvas-world { 
     background-image: url("assets/outer_space.jpg");
-    background-size: 500px 300px;
-    border-top: white 3px solid;
+    background-size: 400px 240px;
+    border-top: darkgrey 3px solid;
 } 
 
 #game .screen {
