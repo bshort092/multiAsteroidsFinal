@@ -89,7 +89,7 @@ MyGame.game = (function(screens) {
         if(id === 'game-play') {
             gameIsActive = true;
         }
-        if(id === 'main-menu' || id === 'game-over') {
+        if(id === 'main-menu') {
             gameIsActive = false;
         }
 

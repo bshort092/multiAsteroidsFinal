@@ -49,7 +49,7 @@ MyGame.loader = (function () {
             message: 'Systems loaded',
             onComplete: null
         }, {
-            scripts: ['screens/gameplay', 'screens/about', 'screens/gameover', 'screens/help', 'screens/highscores', 'screens/mainmenu',],
+            scripts: ['screens/gameplay', 'screens/about', 'screens/help', 'screens/highscores', 'screens/mainmenu',],
             message: 'Screens loaded',
             onComplete: null,
         },],

@@ -17,6 +17,7 @@ let Laser = require('./laser');
 function createPlayer() {
     let that = {
         score: 0,
+        name: '',
         playerNumber: null,
         position: {
             x: Math.floor(random.nextDouble() * 600),

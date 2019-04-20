@@ -26,13 +26,10 @@ MyGame.screens['game-play'] = (function (game, graphics, renderer, input, compon
         messageId = 1,
         fireTime = 0,
         canFire = true,
-        canUseHyperspace = true,
-        hsTime = 0,
         controls = null,
         thrustKey = null,
         leftKey = null,
         rightKey = null,
-        hyperspaceKey = null,
         shootKey = null;
 
     //------------------------------------------------------------------
@@ -57,6 +54,7 @@ MyGame.screens['game-play'] = (function (game, graphics, renderer, input, compon
         playerSelf.model.maxSpeed = data.maxSpeed;
         playerSelf.model.radius = data.radius;
         playerSelf.model.score = data.score;
+        playerSelf.model.name = data.name;
         playerSelf.model.playerNumber = data.playerNumber;
     });
 
@@ -76,6 +74,7 @@ MyGame.screens['game-play'] = (function (game, graphics, renderer, input, compon
         model.state.direction = data.direction;
         model.state.lastUpdate = performance.now();
         model.state.score = data.score;
+        model.state.name = data.name;
         model.state.playerNumber = data.playerNumber;
 
         model.goal.position.x = data.position.x;
@@ -114,6 +113,7 @@ MyGame.screens['game-play'] = (function (game, graphics, renderer, input, compon
         playerSelf.model.position.y = data.position.y;
         playerSelf.model.direction = data.direction;
         playerSelf.model.score = data.score;
+        playerSelf.model.name = data.name;
         playerSelf.model.playerNumber = data.playerNumber;
 
         //
@@ -229,9 +229,6 @@ MyGame.screens['game-play'] = (function (game, graphics, renderer, input, compon
         if (data.type === "ufoDestroyed") {
             myParticles.createUFOExplosion(data.position.x, data.position.y, particlesArray);
         }
-        if (data.type === "hyperspace") {
-            myParticles.createHyperspace(data.position.x, data.position.y, particlesArray);
-        }
         if (data.type === "powerupPickup") {
             myParticles.createPowerupPickup(data.position.x, data.position.y, particlesArray);
         }
@@ -253,6 +250,7 @@ MyGame.screens['game-play'] = (function (game, graphics, renderer, input, compon
             model.state.momentum.x = data.momentum.x;
             model.state.momentum.y = data.momentum.y;
             model.state.score = data.score;
+            model.state.name = data.name;
             model.state.playerNumber = data.playerNumber;
 
             model.goal.position.x = data.position.x;
@@ -263,12 +261,14 @@ MyGame.screens['game-play'] = (function (game, graphics, renderer, input, compon
 
     function callEscape() {
         // game.pauseSound('backgroundSound');
+
         cancelNextRequest = true;
         myKeyboard.unregisterHandler(controls['Thrust'], thrustKey);
         myKeyboard.unregisterHandler(controls['Rotate_Left'], leftKey);
         myKeyboard.unregisterHandler(controls['Rotate_Right'], rightKey);
-        myKeyboard.unregisterHandler(controls['Hyperspace'], hyperspaceKey);
+        // myKeyboard.unregisterHandler(controls['Hyperspace'], hyperspaceKey);
         myKeyboard.unregisterHandler(controls['Shoot'], shootKey);
+        // socket.emit('quit');
         game.showScreen('main-menu');
     }
 
@@ -318,8 +318,9 @@ MyGame.screens['game-play'] = (function (game, graphics, renderer, input, compon
         //     multiLasers[i].model.update();
         // }
 
-
+        
         playerSelf.model.update(elapsedTime);
+
         document.getElementById("my_score").innerHTML = 'P' + playerSelf.model.playerNumber + ': ' + playerSelf.model.score;
         updateStatus(playerSelf.model.playerNumber, playerSelf.model.score);
 
@@ -331,11 +332,11 @@ MyGame.screens['game-play'] = (function (game, graphics, renderer, input, compon
         }
     }
     function updateStatus(num, score) {
-        if(score >= 1000){
-            document.getElementById("game_status_" + num).innerHTML = 'Player ' + num + ' has surpassed a score of 1000'
-        }
         if(score >= 10000){
             document.getElementById("game_status_" + num).innerHTML = 'Player ' + num + ' has surpassed a score of 10000'
+        }
+        else if(score >= 1000){
+            document.getElementById("game_status_" + num).innerHTML = 'Player ' + num + ' has surpassed a score of 1000'
         }
         // if(powerup is shield){
         //     document.getElementById("game_status_" + num).innerHTML = 'Player ' + num + ' has a shield!'
@@ -490,17 +491,6 @@ MyGame.screens['game-play'] = (function (game, graphics, renderer, input, compon
             }
         },
         controls['Shoot'], true);
-
-        hyperspaceKey = myKeyboard.registerHandler(elapsedTime => {
-            // if (canUseHyperspace) {
-            //     canUseHyperspace = false;
-            //     hsTime = 0;
-            //     socket.emit('input', message);
-            //     messageHistory.enqueue(message);
-            // }
-            // useHyperspace();
-        },
-        controls['Hyperspace'], true);
 
         // game.playSoundBackground('backgroundSound');
         lastTimeStamp = performance.now();

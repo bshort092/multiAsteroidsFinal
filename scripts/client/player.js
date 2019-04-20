@@ -9,6 +9,7 @@ MyGame.components.Player = function () {
     let that = {
         score: 0,
         playerNumber: null,
+        name: '',
 
         position: {
             x: 0,

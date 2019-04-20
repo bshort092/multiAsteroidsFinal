@@ -12,6 +12,7 @@ MyGame.components.PlayerRemote = function () {
     };
     let state = {
         score: 0,
+        name: '',
         playerNumber: null,
         direction: 0,
         position: {
