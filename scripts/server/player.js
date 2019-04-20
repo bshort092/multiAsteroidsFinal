@@ -43,6 +43,7 @@ function createPlayer() {
         reportUpdate: false,        // Indicates if this model was updated during the last update
         lastUpdateDiff: 0,
         radius: 35/2,
+        firingRate: 250,
 
         thrust: function (elapsedTime, updateDiff) {
             that.lastUpdateDiff += updateDiff;
@@ -78,6 +79,10 @@ function createPlayer() {
         rotateLeft: function (elapsedTime) {
             that.reportUpdate = true;
             that.direction -= (that.rotateRate * elapsedTime);
+        },
+
+        increaseFiringRate: function(rateToIncreaseBy){
+            that.firingRate += rateToIncreaseBy;
         },
 
         update: function(elapsedTime, intraUpdate) {

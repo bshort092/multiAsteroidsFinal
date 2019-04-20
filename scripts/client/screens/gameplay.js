@@ -57,6 +57,7 @@ MyGame.screens['game-play'] = (function (game, graphics, renderer, input, compon
         playerSelf.model.maxSpeed = data.maxSpeed;
         playerSelf.model.radius = data.radius;
         playerSelf.model.score = data.score;
+        playerSelf.model.firingRate = data.firingRate;
         playerSelf.model.name = data.name;
         playerSelf.model.playerNumber = data.playerNumber;
     });
@@ -77,6 +78,7 @@ MyGame.screens['game-play'] = (function (game, graphics, renderer, input, compon
         model.state.direction = data.direction;
         model.state.lastUpdate = performance.now();
         model.state.score = data.score;
+        model.state.firingRate = data.firingRate;
         model.state.name = data.name;
         model.state.playerNumber = data.playerNumber;
 
@@ -116,6 +118,7 @@ MyGame.screens['game-play'] = (function (game, graphics, renderer, input, compon
         playerSelf.model.position.y = data.position.y;
         playerSelf.model.direction = data.direction;
         playerSelf.model.score = data.score;
+        playerSelf.model.firingRate = data.firingRate;
         playerSelf.model.name = data.name;
         playerSelf.model.playerNumber = data.playerNumber;
 
@@ -299,6 +302,7 @@ MyGame.screens['game-play'] = (function (game, graphics, renderer, input, compon
             model.state.momentum.x = data.momentum.x;
             model.state.momentum.y = data.momentum.y;
             model.state.score = data.score;
+            model.state.firingRate = data.firingRate;
             model.state.name = data.name;
             model.state.playerNumber = data.playerNumber;
 
@@ -339,9 +343,9 @@ MyGame.screens['game-play'] = (function (game, graphics, renderer, input, compon
         myParticles.updateParticleSystems(elapsedTime);
 
         fireTime += elapsedTime;
-        if (fireTime >= 250) {
+        if (fireTime >= playerSelf.model.firingRate) {
             canFire = true;
-            fireTime -= 250;
+            fireTime -= playerSelf.model.firingRate;
         }
 
         hyperspaceTime += elapsedTime;

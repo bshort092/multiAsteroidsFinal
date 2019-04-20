@@ -31,6 +31,7 @@ MyGame.components.Player = function () {
         thrustRate: 0,
         maxSpeed: 0,
         radius: 0,
+        firingRate: 0,
 
         thrust: function (elapsedTime) {
 

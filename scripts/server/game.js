@@ -435,6 +435,10 @@ function detectCollision(playerShip, elapsedTime, client) {
             for (let clientId in activeClients) {
                 activeClients[clientId].socket.emit('create-particle-system', system);
             }
+
+            if(powerupArray[i].type === 'rate'){
+                playerShip.firingRate += 250;
+            }
             powerupArray.splice(i, 1);
         }
     }
@@ -526,6 +530,7 @@ function updateClients(elapsedTime) {
             position: client.player.position,
             momentum: client.player.momentum,
             score: client.player.score,
+            firingRate: client.player.firingRate,
             name: client.player.name,
             playerNumber: client.playerNumber,
             updateWindow: elapsedTime,
@@ -602,6 +607,7 @@ function initializeSocketIO(httpServer) {
                     momentum: newPlayer.momentum,
                     radius: newPlayer.radius,
                     score: newPlayer.score,
+                    firingRate: newPlayer.firingRate,
                     name: newPlayer.name,
                     playerNumber: newPlayer.playerNumber,
                 });
@@ -619,6 +625,7 @@ function initializeSocketIO(httpServer) {
                     momentum: client.player.momentum,
                     radius: client.player.radius,
                     score: client.player.score,
+                    firingRate: client.player.firingRate,
                     name: client.player.name,
                     playerNumber: client.playerNumber,
                 });
@@ -668,6 +675,7 @@ function initializeSocketIO(httpServer) {
                 thrustRate: newPlayer.thrustRate,
                 radius: newPlayer.radius,
                 score: newPlayer.score,
+                firingRate: newPlayer.firingRate,
                 name: newPlayer.name,
                 playerNumber: newPlayer.playerNumber,
             });
