@@ -176,7 +176,7 @@ function detectCollision(playerShip) {
             else if(asteroids[i].size.width == 74){ playerShip.score -= 100; }
             else if(asteroids[i].size.width == 37){ playerShip.score -= 200; }
             if(playerShip.score < 0) { playerShip.score = 0; }
-            console.log(playerShip.score)
+            // console.log('-', playerShip.score)
             
             let system = {
                 type: 'asteroidBreakup',
@@ -227,7 +227,7 @@ function detectCollision(playerShip) {
                 if(asteroids[i].size.width == 148){ playerShip.score += 20; }
                 else if(asteroids[i].size.width == 74){ playerShip.score += 50; }
                 else if(asteroids[i].size.width == 37){ playerShip.score += 100; }
-                console.log(playerShip.score)
+                // console.log('+', playerShip.score);
 
                 let system = {
                     type: 'asteroidBreakup',
@@ -272,7 +272,7 @@ function detectCollision(playerShip) {
             if(ufos[i].size.width == 101){ playerShip.score -= 1000; }
             else if(ufos[i].size.width == 55){ playerShip.score -= 2000; }
             if(playerShip.score < 0) { playerShip.score = 0; }
-            console.log(playerShip.score)
+            // console.log('-', playerShip.score);
 
             let system = {
                 type: 'shipDestroyed',
@@ -295,7 +295,7 @@ function detectCollision(playerShip) {
             if (didCollide(laserArray[j], ufos[i])) {
                 if(ufos[i].size.width == 101){ playerShip.score += 500; }
                 else if(ufos[i].size.width == 55){ playerShip.score += 1000; }
-                console.log(playerShip.score)
+                // console.log('+', playerShip.score);
                 
                 let system = {
                     type: 'ufoDestroyed',
@@ -314,7 +314,7 @@ function detectCollision(playerShip) {
         if (didCollide(ufoLaserArray[i], playerShip)) {
             playerShip.score -= 5000;
             if(playerShip.score < 0) { playerShip.score = 0; }
-            console.log(playerShip.score)
+            // console.log('-', playerShip.score);
 
             let system = {
                 type: 'shipDestroyed',
@@ -337,6 +337,7 @@ function update(elapsedTime) {
     for (let clientId in activeClients) {
         activeClients[clientId].player.update(elapsedTime, false);
         detectCollision(activeClients[clientId].player);
+        // console.log('activeClients[' + clientId + '].player.score: ' + activeClients[clientId].player.score)
     }
 
     for (let i = 0; i < asteroids.length; i++) {

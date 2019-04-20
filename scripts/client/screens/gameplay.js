@@ -312,15 +312,17 @@ MyGame.screens['game-play'] = (function (game, graphics, renderer, input, compon
 
         playerSelf.model.update(elapsedTime);
         document.getElementById("my_score").innerHTML = playerSelf.model.score;
-        if(playerSelf.model.score >= 100){
-            document.getElementById("game_status_me").innerHTML = 'You have surpassed a score of 100'
+        // console.log('me: ', playerSelf.model.score);
+        if(playerSelf.model.score >= 1000){
+            document.getElementById("game_status_me").innerHTML = 'You have surpassed a score of 1000'
         }
         document.getElementById("other_score").innerHTML = '';
         for (let id in playerOthers) {
             playerOthers[id].model.update(elapsedTime);
+            // console.log('other: ', playerOthers[id].model.state.score);
             document.getElementById("other_score").innerHTML += playerOthers[id].model.state.score + '<br>';
-            if(playerOthers[id].model.state.score >= 100){
-                document.getElementById("game_status_other").innerHTML = 'Other player has surpassed a score of 100'
+            if(playerOthers[id].model.state.score >= 1000){
+                document.getElementById("game_status_other").innerHTML = 'Other player has surpassed a score of 1000'
             }
         }
     }

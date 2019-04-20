@@ -4,7 +4,15 @@ MyGame.screens['main-menu'] = (function(game) {
     function initialize() {
         document.getElementById('id-new-game').addEventListener(
             'click',
-            function() {game.showScreen('game-play'); });
+            function() {
+                if( document.getElementById("username").value !== ''){
+                    document.getElementById("valid_username").innerHTML = '';
+                    game.showScreen('game-play'); 
+                }
+                else {
+                    document.getElementById("valid_username").innerHTML = 'You must provide a name.';
+                }
+            });
         
         document.getElementById('id-high-scores').addEventListener(
             'click',
