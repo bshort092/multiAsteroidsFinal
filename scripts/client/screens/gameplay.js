@@ -16,7 +16,7 @@ MyGame.screens['game-play'] = (function (game, graphics, renderer, input, compon
         multiUfoLasers = [],
         multiUfos = [],
         multiLasers = [],
-        powerupArray = [],
+        multiPowerups = [],
         myParticles = systems.Manager({
             particlesArray: [],
         }),
@@ -25,7 +25,9 @@ MyGame.screens['game-play'] = (function (game, graphics, renderer, input, compon
         messageHistory = MyGame.utilities.Queue(),
         messageId = 1,
         fireTime = 0,
+        hyperspaceTime = 0,
         canFire = true,
+        canHyperspace = true,
         controls = null,
         thrustKey = null,
         leftKey = null,
@@ -185,6 +187,46 @@ MyGame.screens['game-play'] = (function (game, graphics, renderer, input, compon
         }
     });
 
+    socket.on('update-self-powerup', function (data) {
+        multiPowerups = [];
+        for (let i = 0; i < data.powerups.length; i++) {
+            if (data.powerups[i].type === 'rate') {
+                multiPowerups.push({
+                    model: components.Powerup(),
+                    texture: MyGame.assets['copperCoin']
+                })
+            }
+            if (data.powerups[i].type === 'spread') {
+                multiPowerups.push({
+                    model: components.Powerup(),
+                    texture: MyGame.assets['silverCoin']
+                })
+            }
+            if (data.powerups[i].type === 'guided') {
+                multiPowerups.push({
+                    model: components.Powerup(),
+                    texture: MyGame.assets['goldCoin']
+                })
+            }
+            if (data.powerups[i].type === 'shield') {
+                multiPowerups.push({
+                    model: components.Powerup(),
+                    texture: MyGame.assets['blueYellowCoin']
+                })
+            }
+            multiPowerups[i].model.position.x = data.powerups[i].position.x;
+            multiPowerups[i].model.position.y = data.powerups[i].position.y;
+            multiPowerups[i].model.size = data.powerups[i].size;
+            multiPowerups[i].model.radius = data.powerups[i].radius;
+            multiPowerups[i].model.type = data.powerups[i].type;
+            multiPowerups[i].model.spriteCount = data.powerups[i].spriteCount;
+            multiPowerups[i].model.spriteTime = data.powerups[i].spriteTime;
+            multiPowerups[i].model.animationTime = data.powerups[i].animationTime;
+            multiPowerups[i].model.subImageIndex = data.powerups[i].subImageIndex;
+            multiPowerups[i].model.subTextureWidth = data.powerups[i].subTextureWidth;
+        }
+    });
+
     socket.on('update-self-laser', function (data) {
         multiLasers = [];
         for (let i = 0; i < data.lasers.length; i++) {
@@ -235,6 +277,9 @@ MyGame.screens['game-play'] = (function (game, graphics, renderer, input, compon
         if (data.type === "thrust") {
             // myParticles.createThrustParticles(data.position.x, data.position.y, particlesArray);
         }        
+        if (data.type === "sadParticles") {
+            myParticles.createThrustParticles(data.position.x, data.position.y, particlesArray);
+        }
     });
 
     //------------------------------------------------------------------
@@ -298,6 +343,12 @@ MyGame.screens['game-play'] = (function (game, graphics, renderer, input, compon
             fireTime -= 250;
         }
 
+        hyperspaceTime += elapsedTime;
+        if (hyperspaceTime >= 3000) {
+            canHyperspace = true;
+            hyperspaceTime -= 3000;
+        }
+
         for (let i = 0; i < multiAsteroids.length; i++) {
             multiAsteroids[i].model.update();
         }
@@ -314,9 +365,9 @@ MyGame.screens['game-play'] = (function (game, graphics, renderer, input, compon
             laser.model.update(elapsedTime);
         });
 
-        // for (let i = 0; i < multiLasers.length; i++) {
-        //     multiLasers[i].model.update();
-        // }
+        multiPowerups.forEach(powerup => {
+            powerup.model.update(elapsedTime);
+        });
 
         
         playerSelf.model.update(elapsedTime);
@@ -383,6 +434,10 @@ MyGame.screens['game-play'] = (function (game, graphics, renderer, input, compon
             renderer.Laser.render(multiLasers[i].model, multiLasers[i].texture);
         }
 
+        for (let i = 0; i < multiPowerups.length; i++) {
+            renderer.Powerup.render(multiPowerups[i].model, multiPowerups[i].texture);
+        }
+
         renderer.Player.render(playerSelf.model, playerSelf.texture);
         for (let id in playerOthers) {
             let player = playerOthers[id];
@@ -433,12 +488,12 @@ MyGame.screens['game-play'] = (function (game, graphics, renderer, input, compon
 
     function run() {
         // Create the keyboard input handler and register the keyboard commands
-        let defaultControls = {Thrust: 'ArrowUp', Rotate_Left: 'ArrowLeft', Rotate_Right: 'ArrowRight', Shoot : ' ', Hyperspace: 'z'}
+        let defaultControls = { Thrust: 'ArrowUp', Rotate_Left: 'ArrowLeft', Rotate_Right: 'ArrowRight', Shoot: ' ', Hyperspace: 'z' }
         let current_controls = localStorage.getItem('MultiAsteroids.controls');
         controls = JSON.parse(current_controls)
 
-        for(let key in controls){
-            if(controls[key] == ''){controls[key] = [defaultControls[key]]}
+        for (let key in controls) {
+            if (controls[key] == '') { controls[key] = [defaultControls[key]] }
         }
 
         thrustKey = myKeyboard.registerHandler(elapsedTime => {
@@ -451,7 +506,7 @@ MyGame.screens['game-play'] = (function (game, graphics, renderer, input, compon
             messageHistory.enqueue(message);
             playerSelf.model.thrust(elapsedTime);
         },
-        controls['Thrust'], true);
+            controls['Thrust'], true);
 
         rightKey = myKeyboard.registerHandler(elapsedTime => {
             let message = {
@@ -463,7 +518,7 @@ MyGame.screens['game-play'] = (function (game, graphics, renderer, input, compon
             messageHistory.enqueue(message);
             playerSelf.model.rotateRight(elapsedTime);
         },
-        controls['Rotate_Right'], true);
+            controls['Rotate_Right'], true);
 
         leftKey = myKeyboard.registerHandler(elapsedTime => {
             let message = {
@@ -475,7 +530,7 @@ MyGame.screens['game-play'] = (function (game, graphics, renderer, input, compon
             messageHistory.enqueue(message);
             playerSelf.model.rotateLeft(elapsedTime);
         },
-        controls['Rotate_Left'], true);
+            controls['Rotate_Left'], true);
 
         shootKey = myKeyboard.registerHandler(elapsedTime => {
             let message = {
@@ -490,7 +545,22 @@ MyGame.screens['game-play'] = (function (game, graphics, renderer, input, compon
                 messageHistory.enqueue(message);
             }
         },
-        controls['Shoot'], true);
+            controls['Shoot'], true);
+
+        hyperspaceKey = myKeyboard.registerHandler(elapsedTime => {
+            let message = {
+                id: messageId++,
+                elapsedTime: elapsedTime,
+                type: 'hyperspace'
+            };
+            if (canHyperspace) {
+                canHyperspace = false;
+                hyperspaceTime = 0;
+                socket.emit('input', message);
+                messageHistory.enqueue(message);
+            }
+        },
+            controls['Hyperspace'], true);
 
         // game.playSoundBackground('backgroundSound');
         lastTimeStamp = performance.now();

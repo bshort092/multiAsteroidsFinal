@@ -33,7 +33,7 @@ MyGame.loader = (function () {
             message: 'Utilities loaded',
             onComplete: null,
         }, {
-            scripts: ['laser', 'player', 'player-remote', 'asteroid', 'ufo', 'viewport'],
+            scripts: ['laser', 'player', 'player-remote', 'asteroid', 'ufo', 'viewport', 'powerup'],
             message: 'Player and Asteroid models loaded',
             onComplete: null
         }, {
@@ -41,7 +41,7 @@ MyGame.loader = (function () {
             message: 'Graphics loaded',
             onComplete: null
         }, {
-            scripts: ['rendering/player', 'rendering/player-remote', 'rendering/asteroid', 'rendering/laser', 'rendering/ufo', 'rendering/tiles', 'rendering/particle_manager', 'rendering/particle_system'],
+            scripts: ['rendering/player', 'rendering/player-remote', 'rendering/asteroid', 'rendering/laser', 'rendering/ufo', 'rendering/tiles', 'rendering/particle_manager', 'rendering/particle_system', 'rendering/powerup'],
             message: 'Renderers loaded',
             onComplete: null
         }, {
@@ -95,7 +95,19 @@ MyGame.loader = (function () {
         }, {
             key: 'background',
             source: 'assets/outer_space.jpg'
-        }, 
+        }, {
+            key: 'copperCoin',
+            source: 'assets/sprites/coin_copper.png'
+        }, {
+            key: 'silverCoin',
+            source: 'assets/sprites/coin_silver.png'
+        }, {
+            key: 'goldCoin',
+            source: 'assets/sprites/coin_gold.png'
+        }, {
+            key: 'blueYellowCoin',
+            source: 'assets/sprites/coin_blue_yellow.png'
+        },
         // {
         //     key: 'backgroundSound',
         //     source: 'assets/sounds/AsteroidsBackground.mp3'

@@ -98,6 +98,34 @@ MyGame.graphics = (function () {
             localSize.width, localSize.height);
         context.restore();
     }
+
+    function drawSubTexture(image, index, subTextureWidth, position, size) {
+
+        context.save();
+        let localCenter = {
+            x: MyGame.components.Viewport.changeViewX(position.x),
+            y: MyGame.components.Viewport.changeViewY(position.y)
+        };
+        let localSize = {
+            width: size.width,
+            height: size.height
+        };
+
+        context.drawImage(
+            image,
+            subTextureWidth * index, 0,      // Which sub-texture to pick out
+            subTextureWidth, image.height,   // The size of the sub-texture
+            localCenter.x - localSize.width / 2,
+            localCenter.y - localSize.height / 2,
+            localSize.width, localSize.height);
+
+        //
+        // Pick the selected sprite from the sprite sheet to render
+
+
+        context.restore();
+    }
+
     function drawImageMiniMap(texture, center, size, rotation) {
         context_minimap.save();
         let localCenter = {
@@ -119,7 +147,7 @@ MyGame.graphics = (function () {
             localSize.width, localSize.height);
         context_minimap.restore();
     }
-    function outlineShipMiniMap(center, size, color) {
+    function outlineObjectMiniMap(center, size, outlineColor, fillColor, toFill) {
         let localCenter = {
             x: center.x / 1920 * canvas_minimap.width,
             y: center.y / 1152 * canvas_minimap.height
@@ -130,13 +158,15 @@ MyGame.graphics = (function () {
         };
         context_minimap.beginPath();
         // outline
-        context_minimap.strokeStyle = color;
+        context_minimap.strokeStyle = outlineColor;
         context_minimap.lineWidth = 0.4;
         //
         context_minimap.arc(localCenter.x, localCenter.y, localSize.width / 2 + 1, 0, 2 * Math.PI);
         // white fill
-        // context_minimap.fillStyle = 'white'
-        // context_minimap.fill();
+        if (toFill) {
+            context_minimap.fillStyle = fillColor;
+            context_minimap.fill();
+        }
         //
         context_minimap.stroke();
     }
@@ -149,6 +179,7 @@ MyGame.graphics = (function () {
         rotateCanvasMiniMap: rotateCanvasMiniMap,
         drawImage: drawImage,
         drawImageMiniMap: drawImageMiniMap,
-        outlineShipMiniMap: outlineShipMiniMap
+        outlineObjectMiniMap: outlineObjectMiniMap,
+        drawSubTexture: drawSubTexture
     };
 }());
