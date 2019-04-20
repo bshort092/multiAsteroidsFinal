@@ -320,13 +320,13 @@ MyGame.screens['game-play'] = (function (game, graphics, renderer, input, compon
 
 
         playerSelf.model.update(elapsedTime);
-        document.getElementById("my_score").innerHTML = playerSelf.model.playerNumber + ': ' + playerSelf.model.score;
+        document.getElementById("my_score").innerHTML = 'P' + playerSelf.model.playerNumber + ': ' + playerSelf.model.score;
         updateStatus(playerSelf.model.playerNumber, playerSelf.model.score);
 
         document.getElementById("other_score").innerHTML = '';
         for (let id in playerOthers) {
             playerOthers[id].model.update(elapsedTime);
-            document.getElementById("other_score").innerHTML += playerOthers[id].model.state.playerNumber + ': ' + playerOthers[id].model.state.score + '<br>';
+            document.getElementById("other_score").innerHTML += 'P' + playerOthers[id].model.state.playerNumber + ': ' + playerOthers[id].model.state.score + '<br>';
             updateStatus(playerOthers[id].model.state.playerNumber, playerOthers[id].model.state.score);
         }
     }
