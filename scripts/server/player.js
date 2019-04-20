@@ -16,6 +16,7 @@ let Laser = require('./laser');
 //------------------------------------------------------------------
 function createPlayer() {
     let that = {
+        score: 0,
         position: {
             x: Math.floor(random.nextDouble() * 600),
             y: Math.floor(random.nextDouble() * 600)
@@ -78,6 +79,7 @@ function createPlayer() {
         },
 
         update: function(elapsedTime, intraUpdate) {
+            that.reportUpdate = true;
 
             if (intraUpdate === false) {
                 elapsedTime -= that.lastUpdateDiff;
@@ -103,7 +105,6 @@ function createPlayer() {
                 that.position.x = 1920 - (that.size.width/2);
                 that.momentum.x = 0;
             }
-            
         }
     };
 

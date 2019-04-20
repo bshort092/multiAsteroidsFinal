@@ -8,15 +8,18 @@
 let present = require('present');
 let Player = require('./player');
 let Laser = require('./laser');
+let Asteroid = require('./asteroid');
 let MultiAsteroids = require('./multiAsteroids');
+let Ufo = require('./ufo');
 let MultiUfos = require('./multiUFOs');
 
 // TODO: create asteroid manager instead of one asteroid: 
 let asteroids = MultiAsteroids.init({
-    numOfAsteroids: 2,
+    numOfAsteroids: 10,
     asteroidSizes: [37, 74, 148],
     minVelocity: 0.5,
     maxVelocity: 2,
+    position: {x:  Math.random() * 1920, y: Math.random() * 1152}
 })
 
 let ufos = MultiUfos.create({
@@ -144,16 +147,42 @@ function didCollide(obj1, obj2, ) {
     return false;
 }
 
+function addAsteroid() {
+    while(asteroids.length < 10){
+        let eachAsteroid = MultiAsteroids.createRandom({
+            asteroidSizes: [37, 74, 148],
+            minVelocity: 0.5,
+            maxVelocity: 2,
+            position: {x:  Math.random() * 1920, y: Math.random() * 1152}
+        })
+        asteroids.push(Asteroid.create(eachAsteroid))
+    }
+}
+function addUFO() {
+    let eachUFO = MultiUfos.createRandom({
+        UfoSizes: [[101, 60], [55, 30]],
+        minVelocity: 0.5,
+        maxVelocity: 1.5,
+    })
+    ufos.push(Ufo.create(eachUFO))
+}
+
 function detectCollision(playerShip) {
     //for each asteroid detect ship collision
 
     for (let i = 0; i < asteroids.length; i++) {
         if (didCollide(asteroids[i], playerShip)) {
+            if(asteroids[i].size.width == 148){ playerShip.score -= 40; }
+            else if(asteroids[i].size.width == 74){ playerShip.score -= 100; }
+            else if(asteroids[i].size.width == 37){ playerShip.score -= 200; }
+            if(playerShip.score < 0) { playerShip.score = 0; }
+            console.log(playerShip.score)
+            
             let system = {
                 type: 'asteroidBreakup',
                 position: asteroids[i].position,
             }
-            for (let clientId in activeClients) {
+            for (let clientId in activeClients) { // player hits asteroid
                 activeClients[clientId].socket.emit('create-particle-system', system);
             }
             let system1 = {
@@ -166,8 +195,8 @@ function detectCollision(playerShip) {
             if (asteroids[i].size.width === 148) {
                 let createdAsteroids = MultiAsteroids.create({
                     numOfAsteroids: 3,
-                    minVelocity: 0.5,
-                    maxVelocity: 2,
+                    minVelocity: 1,
+                    maxVelocity: 1.5,
                     parentPosition: asteroids[i].position,
                     size: 74,
                 });
@@ -177,7 +206,7 @@ function detectCollision(playerShip) {
             else if (asteroids[i].size.width === 74) {
                 let createdAsteroids = MultiAsteroids.create({
                     numOfAsteroids: 4,
-                    minVelocity: 0.5,
+                    minVelocity: 1.5,
                     maxVelocity: 2,
                     parentPosition: asteroids[i].position,
                     size: 37,
@@ -188,12 +217,18 @@ function detectCollision(playerShip) {
             else {
                 asteroids.splice(i, 1);
             }
+            addAsteroid();
         }
     }
 
     for (let i = 0; i < asteroids.length; i++) {
         for (let j = 0; j < laserArray.length; j++) {
             if (didCollide(asteroids[i], laserArray[j])) {
+                if(asteroids[i].size.width == 148){ playerShip.score += 20; }
+                else if(asteroids[i].size.width == 74){ playerShip.score += 50; }
+                else if(asteroids[i].size.width == 37){ playerShip.score += 100; }
+                console.log(playerShip.score)
+
                 let system = {
                     type: 'asteroidBreakup',
                     position: asteroids[i].position,
@@ -205,8 +240,8 @@ function detectCollision(playerShip) {
                 if (asteroids[i].size.width === 148) {
                     let createdAsteroids = MultiAsteroids.create({
                         numOfAsteroids: 3,
-                        minVelocity: 0.5,
-                        maxVelocity: 2,
+                        minVelocity: 1,
+                        maxVelocity: 1.5,
                         parentPosition: asteroids[i].position,
                         size: 74,
                     });
@@ -216,7 +251,7 @@ function detectCollision(playerShip) {
                 else if (asteroids[i].size.width === 74) {
                     let createdAsteroids = MultiAsteroids.create({
                         numOfAsteroids: 4,
-                        minVelocity: 1,
+                        minVelocity: 1.5,
                         maxVelocity: 2,
                         parentPosition: asteroids[i].position,
                         size: 37,
@@ -227,12 +262,18 @@ function detectCollision(playerShip) {
                 else {
                     asteroids.splice(i, 1);
                 }
+                addAsteroid();
             }
         }
     }
 
     for (let i = 0; i < ufos.length; i++) {
         if (ufos[i] && didCollide(ufos[i], playerShip)) {
+            if(ufos[i].size.width == 101){ playerShip.score -= 1000; }
+            else if(ufos[i].size.width == 55){ playerShip.score -= 2000; }
+            if(playerShip.score < 0) { playerShip.score = 0; }
+            console.log(playerShip.score)
+
             let system = {
                 type: 'shipDestroyed',
                 position: playerShip.position,
@@ -252,6 +293,10 @@ function detectCollision(playerShip) {
         }
         for (let j = 0; j < laserArray.length; j++) {
             if (didCollide(laserArray[j], ufos[i])) {
+                if(ufos[i].size.width == 101){ playerShip.score += 500; }
+                else if(ufos[i].size.width == 55){ playerShip.score += 1000; }
+                console.log(playerShip.score)
+                
                 let system = {
                     type: 'ufoDestroyed',
                     position: ufos[i].position,
@@ -267,6 +312,10 @@ function detectCollision(playerShip) {
 
     for (let i = 0; i < ufoLaserArray.length; i++) {
         if (didCollide(ufoLaserArray[i], playerShip)) {
+            playerShip.score -= 5000;
+            if(playerShip.score < 0) { playerShip.score = 0; }
+            console.log(playerShip.score)
+
             let system = {
                 type: 'shipDestroyed',
                 position: playerShip.position,
@@ -355,6 +404,7 @@ function updateClients(elapsedTime) {
             direction: client.player.direction,
             position: client.player.position,
             momentum: client.player.momentum,
+            score: client.player.score,
             updateWindow: elapsedTime,
         };
 
@@ -428,6 +478,7 @@ function initializeSocketIO(httpServer) {
                     maxSpeed: newPlayer.maxSpeed,
                     momentum: newPlayer.momentum,
                     radius: newPlayer.radius,
+                    score: newPlayer.score,
                 });
 
                 //
@@ -442,6 +493,7 @@ function initializeSocketIO(httpServer) {
                     thrustRate: client.player.thrustRate,
                     momentum: client.player.momentum,
                     radius: client.player.radius,
+                    score: client.player.score,
                 });
             }
         }
@@ -483,8 +535,8 @@ function initializeSocketIO(httpServer) {
             rotateRate: newPlayer.rotateRate,
             maxSpeed: newPlayer.maxSpeed,
             thrustRate: newPlayer.thrustRate,
-            radius: newPlayer.radius
-            // TODO: WORLD SIZE HERE MAYBE?
+            radius: newPlayer.radius,
+            score: newPlayer.score,
         });
 
         socket.on('input', data => {

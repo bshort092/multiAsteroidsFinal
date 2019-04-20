@@ -11,12 +11,12 @@ MyGame.components.PlayerRemote = function () {
         height: 35
     };
     let state = {
+        score: 0,
         direction: 0,
         position: {
             x: 0,
             y: 0
         },
-
         momentum: {
             x: 0,
             y: 0
@@ -64,6 +64,22 @@ MyGame.components.PlayerRemote = function () {
             // Ship is only floating along, only need to update its position
             state.position.x += (state.momentum.x * elapsedTime);
             state.position.y += (state.momentum.y * elapsedTime);
+        }
+        if (state.position.y - (size.height/2) < 0) {
+            state.position.y = (size.height/2);
+            state.momentum.y = 0;
+        }
+        if (state.position.y + (size.height/2) > 1152) {
+            state.position.y = 1152 - (size.height/2);
+            state.momentum.y = 0;
+        }
+        if (state.position.x - (size.width/2) < (0)) {
+            state.position.x = (size.width/2);
+            state.momentum.x = 0;
+        }
+        if (state.position.x + (size.width/2) > 1920) {
+            state.position.x = 1920 - (size.width/2);
+            state.momentum.x = 0;
         }
     };
 

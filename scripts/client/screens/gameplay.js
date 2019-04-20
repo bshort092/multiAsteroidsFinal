@@ -54,6 +54,7 @@ MyGame.screens['game-play'] = (function (game, graphics, renderer, input, compon
         playerSelf.model.thrustRate = data.thrustRate;
         playerSelf.model.maxSpeed = data.maxSpeed;
         playerSelf.model.radius = data.radius;
+        playerSelf.model.score = data.score;
     });
 
     //------------------------------------------------------------------
@@ -71,6 +72,7 @@ MyGame.screens['game-play'] = (function (game, graphics, renderer, input, compon
         model.state.position.y = data.position.y;
         model.state.direction = data.direction;
         model.state.lastUpdate = performance.now();
+        model.state.score = data.score;
 
         model.goal.position.x = data.position.x;
         model.goal.position.y = data.position.y;
@@ -107,6 +109,7 @@ MyGame.screens['game-play'] = (function (game, graphics, renderer, input, compon
         playerSelf.model.position.x = data.position.x;
         playerSelf.model.position.y = data.position.y;
         playerSelf.model.direction = data.direction;
+        playerSelf.model.score = data.score;
 
         //
         // Remove messages from the queue up through the last one identified
@@ -228,7 +231,7 @@ MyGame.screens['game-play'] = (function (game, graphics, renderer, input, compon
             myParticles.createPowerupPickup(data.position.x, data.position.y, particlesArray);
         }
         if (data.type === "thrust") {
-            myParticles.createThrustParticles(data.position.x, data.position.y, particlesArray);
+            // myParticles.createThrustParticles(data.position.x, data.position.y, particlesArray);
         }        
     });
 
@@ -243,7 +246,8 @@ MyGame.screens['game-play'] = (function (game, graphics, renderer, input, compon
             model.goal.updateWindow = data.updateWindow;
 
             model.state.momentum.x = data.momentum.x;
-            model.state.momentum.y = data.momentum.y
+            model.state.momentum.y = data.momentum.y;
+            model.state.score = data.score;
 
             model.goal.position.x = data.position.x;
             model.goal.position.y = data.position.y;
@@ -307,8 +311,17 @@ MyGame.screens['game-play'] = (function (game, graphics, renderer, input, compon
         // }
 
         playerSelf.model.update(elapsedTime);
+        document.getElementById("my_score").innerHTML = playerSelf.model.score;
+        if(playerSelf.model.score >= 100){
+            document.getElementById("game_status_me").innerHTML = 'You have surpassed a score of 100'
+        }
+        document.getElementById("other_score").innerHTML = '';
         for (let id in playerOthers) {
             playerOthers[id].model.update(elapsedTime);
+            document.getElementById("other_score").innerHTML += playerOthers[id].model.state.score + '<br>';
+            if(playerOthers[id].model.state.score >= 100){
+                document.getElementById("game_status_other").innerHTML = 'Other player has surpassed a score of 100'
+            }
         }
     }
 

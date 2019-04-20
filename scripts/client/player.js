@@ -7,6 +7,8 @@
 MyGame.components.Player = function () {
     'use strict';
     let that = {
+        score: 0,
+
         position: {
             x: 0,
             y: 0
