@@ -140,7 +140,6 @@ function fireLaser(playerSpec, elapsedTime, playerId) {
         laserArray.push(Laser.create(laserSpec));
         laserArray.push(Laser.create(laserSpec2));
         laserArray.push(Laser.create(laserSpec3));
-
     }
     else{
         let laserSpec = {
@@ -487,9 +486,11 @@ function detectCollision(playerShip, elapsedTime, client) {
 
             if(powerupArray[i].type === 'rate'){
                 playerShip.firingRate = 100;
+                playerShip.firingRateTime = 10000;
             }
             if(powerupArray[i].type === 'spread'){
                 playerShip.hasWiderSpread = true;
+                playerShip.widerSpreadTime = 10000;
             }
             powerupArray.splice(i, 1);
         }
