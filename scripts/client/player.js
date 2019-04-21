@@ -31,6 +31,14 @@ MyGame.components.Player = function () {
         thrustRate: 0,
         maxSpeed: 0,
         radius: 0,
+        firingRate: 0,
+        firingRateTime: 0,
+        hasWiderSpread: false,
+        widerSpreadTime: 0,
+        hasShield: false,
+        shieldTime: 0,
+        hasGuidedMissles: false,
+        guidedMisslesTime: 0,
 
         thrust: function (elapsedTime) {
 

@@ -107,16 +107,54 @@ function processInput() {
 }
 
 function fireLaser(playerSpec, elapsedTime, playerId) {
-    let laserSpec = {
-        position: {
-            x: playerSpec.position.x,
-            y: playerSpec.position.y,
-        },
-        direction: playerSpec.direction,
-        shipId: playerId,
-        speed: .75
-    };
-    laserArray.push(Laser.create(laserSpec));
+    if(playerSpec.hasWiderSpread){
+        let laserSpec = {
+            position: {
+                x: playerSpec.position.x,
+                y: playerSpec.position.y,
+            },
+            direction: playerSpec.direction,
+            shipId: playerId,
+            speed: .75
+        };
+        
+        let laserSpec2 = {
+            position: {
+                x: playerSpec.position.x,
+                y: playerSpec.position.y,
+            },
+            direction: playerSpec.direction + Math.PI / 12,
+            shipId: playerId,
+            speed: .75
+        };
+        
+        let laserSpec3 = {
+            position: {
+                x: playerSpec.position.x,
+                y: playerSpec.position.y,
+            },
+            direction: playerSpec.direction - Math.PI / 12,
+            shipId: playerId,
+            speed: .75
+        };
+        laserArray.push(Laser.create(laserSpec));
+        laserArray.push(Laser.create(laserSpec2));
+        laserArray.push(Laser.create(laserSpec3));
+
+    }
+    else{
+        let laserSpec = {
+            position: {
+                x: playerSpec.position.x,
+                y: playerSpec.position.y,
+            },
+            direction: playerSpec.direction,
+            shipId: playerId,
+            speed: .75
+        };
+        laserArray.push(Laser.create(laserSpec));
+    }
+
 }
 
 function fireUfoLaser(ufoSpec, elapsedTime) {
@@ -143,7 +181,7 @@ function createPowerup() {
     powerupArray.push(Powerup.create(powerupSpec));
 }
 
-for (let i = 0; i < 4; i++) {
+for (let i = 0; i < 10; i++) {
     createPowerup();
 }
 
@@ -258,6 +296,17 @@ function addUFO() {
     ufos.push(Ufo.create(eachUFO))
 }
 
+function resetPowerups (playerShip){
+    playerShip.firingRate = 250;
+    playerShip.firingRateTime = 10000;
+    playerShip.hasWiderSpread = false;
+    playerShip.widerSpreadTime = 10000;
+    playerShip.hasShield = false;
+    playerShip.shieldTime = 10000;
+    playerShip.hasGuidedMissles = false;
+    playerShip.guidedMisslesTime = 10000;
+}
+
 function detectCollision(playerShip, elapsedTime, client) {
     //for each asteroid detect ship collision
 
@@ -267,7 +316,7 @@ function detectCollision(playerShip, elapsedTime, client) {
             else if(asteroids[i].size.width == 74){ playerShip.score -= 100; }
             else if(asteroids[i].size.width == 37){ playerShip.score -= 200; }
             if(playerShip.score < 0) { playerShip.score = 0; }
-            
+            resetPowerups(playerShip);
             let system = {
                 type: 'asteroidBreakup',
                 position: asteroids[i].position,
@@ -368,7 +417,7 @@ function detectCollision(playerShip, elapsedTime, client) {
             if(ufos[i].size.width == 101){ playerShip.score -= 1000; }
             else if(ufos[i].size.width == 55){ playerShip.score -= 2000; }
             if(playerShip.score < 0) { playerShip.score = 0; }
-
+            resetPowerups(playerShip);
             let system = {
                 type: 'shipDestroyed',
                 position: playerShip.position,
@@ -413,7 +462,7 @@ function detectCollision(playerShip, elapsedTime, client) {
         if (didCollide(ufoLaserArray[i], playerShip)) {
             playerShip.score -= 5000;
             if(playerShip.score < 0) { playerShip.score = 0; }
-
+            resetPowerups(playerShip);
             let system = {
                 type: 'shipDestroyed',
                 position: playerShip.position,
@@ -434,6 +483,13 @@ function detectCollision(playerShip, elapsedTime, client) {
             }
             for (let clientId in activeClients) {
                 activeClients[clientId].socket.emit('create-particle-system', system);
+            }
+
+            if(powerupArray[i].type === 'rate'){
+                playerShip.firingRate = 100;
+            }
+            if(powerupArray[i].type === 'spread'){
+                playerShip.hasWiderSpread = true;
             }
             powerupArray.splice(i, 1);
         }
@@ -526,6 +582,14 @@ function updateClients(elapsedTime) {
             position: client.player.position,
             momentum: client.player.momentum,
             score: client.player.score,
+            firingRate: client.player.firingRate,
+            firingRateTime: client.player.firingRateTime,
+            hasWiderSpread: client.player.hasWiderSpread,
+            widerSpreadTime: client.player.widerSpreadTime,
+            hasShield: client.player.hasShield,
+            shieldTime: client.player.shieldTime,
+            hasGuidedMissles: client.player.hasGuidedMissles,
+            guidedMisslesTime: client.player.guidedMisslesTime,
             name: client.player.name,
             playerNumber: client.playerNumber,
             updateWindow: elapsedTime,
@@ -602,6 +666,14 @@ function initializeSocketIO(httpServer) {
                     momentum: newPlayer.momentum,
                     radius: newPlayer.radius,
                     score: newPlayer.score,
+                    firingRate: newPlayer.firingRate,
+                    firingRateTime: newPlayer.firingRateTime,
+                    hasWiderSpread: newPlayer.hasWiderSpread,
+                    widerSpreadTime: newPlayer.widerSpreadTime,
+                    hasShield: newPlayer.hasShield,
+                    shieldTime: newPlayer.shieldTime,
+                    hasGuidedMissles: newPlayer.hasGuidedMissles,
+                    guidedMisslesTime: newPlayer.guidedMisslesTime,
                     name: newPlayer.name,
                     playerNumber: newPlayer.playerNumber,
                 });
@@ -619,6 +691,14 @@ function initializeSocketIO(httpServer) {
                     momentum: client.player.momentum,
                     radius: client.player.radius,
                     score: client.player.score,
+                    firingRate: client.player.firingRate,
+                    firingRateTime: client.player.firingRateTime,
+                    hasWiderSpread: client.player.hasWiderSpread,
+                    widerSpreadTime: client.player.widerSpreadTime,
+                    hasShield: client.player.hasShield,
+                    shieldTime: client.player.shieldTime,
+                    hasGuidedMissles: client.player.hasGuidedMissles,
+                    guidedMisslesTime: client.player.guidedMisslesTime,
                     name: client.player.name,
                     playerNumber: client.playerNumber,
                 });
@@ -668,6 +748,14 @@ function initializeSocketIO(httpServer) {
                 thrustRate: newPlayer.thrustRate,
                 radius: newPlayer.radius,
                 score: newPlayer.score,
+                firingRate: newPlayer.firingRate,
+                firingRateTime: newPlayer.firingRateTime,
+                hasWiderSpread: newPlayer.hasWiderSpread,
+                widerSpreadTime: newPlayer.widerSpreadTime,
+                hasShield: newPlayer.hasShield,
+                shieldTime: newPlayer.shieldTime,
+                hasGuidedMissles: newPlayer.hasGuidedMissles,
+                guidedMisslesTime: newPlayer.guidedMisslesTime,
                 name: newPlayer.name,
                 playerNumber: newPlayer.playerNumber,
             });
