@@ -170,6 +170,27 @@ MyGame.graphics = (function () {
         //
         context_minimap.stroke();
     }
+    function drawText(position, text, color) {
+        context.save();
+        let localCenter = {
+            x: MyGame.components.Viewport.changeViewX(position.x),
+            y: MyGame.components.Viewport.changeViewY(position.y)
+        };
+
+        context.fillStyle = color;
+        context.font = '11pt Arial';
+        context.strokeStyle = 'black';
+        context.lineWidth = .2;
+        context.textBaseline = 'top';
+
+        context.translate(localCenter.x, localCenter.y);
+        context.translate(-localCenter.x, -localCenter.y);
+
+        context.fillText(text, localCenter.x, localCenter.y);
+        context.strokeText(text, localCenter.x, localCenter.y);
+
+        context.restore();
+    }
 
     return {
         clear: clear,
@@ -180,6 +201,7 @@ MyGame.graphics = (function () {
         drawImage: drawImage,
         drawImageMiniMap: drawImageMiniMap,
         outlineObjectMiniMap: outlineObjectMiniMap,
-        drawSubTexture: drawSubTexture
+        drawSubTexture: drawSubTexture,
+        drawText: drawText,
     };
 }());

@@ -373,22 +373,23 @@ MyGame.screens['game-play'] = (function (game, graphics, renderer, input, compon
         
         playerSelf.model.update(elapsedTime);
 
-        document.getElementById("my_score").innerHTML = 'P' + playerSelf.model.playerNumber + ': ' + playerSelf.model.score;
-        updateStatus(playerSelf.model.playerNumber, playerSelf.model.score);
+        document.getElementById("my_score").innerHTML = playerSelf.model.name + ': ' + playerSelf.model.score;
+       
+        updateStatus(playerSelf.model.playerNumber, playerSelf.model.score, playerSelf.model.name);
 
         document.getElementById("other_score").innerHTML = '';
         for (let id in playerOthers) {
             playerOthers[id].model.update(elapsedTime);
-            document.getElementById("other_score").innerHTML += 'P' + playerOthers[id].model.state.playerNumber + ': ' + playerOthers[id].model.state.score + '<br>';
-            updateStatus(playerOthers[id].model.state.playerNumber, playerOthers[id].model.state.score);
+            document.getElementById("other_score").innerHTML += playerOthers[id].model.state.name + ': ' + playerOthers[id].model.state.score + '<br>';
+            updateStatus(playerOthers[id].model.state.playerNumber, playerOthers[id].model.state.score, playerOthers[id].model.state.name);
         }
     }
-    function updateStatus(num, score) {
+    function updateStatus(num, score, name) {
         if(score >= 10000){
-            document.getElementById("game_status_" + num).innerHTML = 'Player ' + num + ' has surpassed a score of 10000'
+            document.getElementById("game_status_" + num).innerHTML = name +  ' has surpassed a score of 10000'
         }
         else if(score >= 1000){
-            document.getElementById("game_status_" + num).innerHTML = 'Player ' + num + ' has surpassed a score of 1000'
+            document.getElementById("game_status_" + num).innerHTML = name +  ' has surpassed a score of 1000'
         }
         // if(powerup is shield){
         //     document.getElementById("game_status_" + num).innerHTML = 'Player ' + num + ' has a shield!'
@@ -492,6 +493,8 @@ MyGame.screens['game-play'] = (function (game, graphics, renderer, input, compon
             cancelNextRequest = true;
             game.showScreen('main-menu');
         }
+        let username = document.getElementById("username").value;
+        socket.emit('changeName', username);
         // Create the keyboard input handler and register the keyboard commands
         let defaultControls = { Thrust: 'ArrowUp', Rotate_Left: 'ArrowLeft', Rotate_Right: 'ArrowRight', Shoot: ' ', Hyperspace: 'z' }
         let current_controls = localStorage.getItem('MultiAsteroids.controls');

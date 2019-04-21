@@ -20,6 +20,7 @@ MyGame.renderer.Player = (function(graphics) {
         graphics.rotateCanvasMiniMap(model.position, model.direction);
         graphics.drawImageMiniMap(texture, model.position, model.size);
         graphics.restoreContext();
+        graphics.drawText({x: model.position.x - (model.size.width/ 2) - 10, y: model.position.y + (model.size.width / 2) + 10}, model.name, 'lightblue')
     };
 
     return that;

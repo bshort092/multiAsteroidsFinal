@@ -671,6 +671,10 @@ function initializeSocketIO(httpServer) {
                 name: newPlayer.name,
                 playerNumber: newPlayer.playerNumber,
             });
+
+            socket.on('changeName', newName => {
+                activeClients[socket.id].player.name = newName;
+            });
     
             socket.on('input', data => {
                 inputQueue.push({
