@@ -43,7 +43,19 @@ function createPlayer() {
         reportUpdate: false,        // Indicates if this model was updated during the last update
         lastUpdateDiff: 0,
         radius: 35/2,
+    
+        //powerups 
         firingRate: 250,
+        firingRateTime: 10000,
+
+        hasWiderSpread: false,
+        widerSpreadTime: 10000,
+
+        hasShield: false,
+        shieldTime: 10000,
+
+        hasGuidedMissles: false,
+        guidedMisslesTime: 10000,
 
         thrust: function (elapsedTime, updateDiff) {
             that.lastUpdateDiff += updateDiff;
@@ -81,10 +93,6 @@ function createPlayer() {
             that.direction -= (that.rotateRate * elapsedTime);
         },
 
-        increaseFiringRate: function(rateToIncreaseBy){
-            that.firingRate += rateToIncreaseBy;
-        },
-
         update: function(elapsedTime, intraUpdate) {
             that.reportUpdate = true;
 
@@ -111,6 +119,22 @@ function createPlayer() {
             if (that.position.x + (that.size.width/2) > 1920) {
                 that.position.x = 1920 - (that.size.width/2);
                 that.momentum.x = 0;
+            }
+
+            if(that.firingRate === 100){
+                that.firingRateTime -= elapsedTime;
+                if(that.firingRateTime <= 0){
+                    that.firingRateTime = 10000;
+                    that.firingRate = 250;
+                }
+            }
+
+            if(that.hasWiderSpread){
+                that.widerSpreadTime -= elapsedTime;
+                if(that.widerSpreadTime <= 0){
+                    that.widerSpreadTime = 10000;
+                    that.hasWiderSpread = false;
+                }
             }
         }
     };
