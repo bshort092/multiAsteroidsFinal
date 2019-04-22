@@ -37,7 +37,6 @@ MyGame.components.Powerup = function () {
                 // it needs to be accounted for the next sprite animation frame.
                 that.animationTime = that.spriteTime[that.subImageIndex];
                 that.subImageIndex += 1;
-                //console.log(that.subImageIndex);
                 //
                 // Wrap around from the last back to the first sprite as needed
                 that.subImageIndex = that.subImageIndex % that.spriteCount;

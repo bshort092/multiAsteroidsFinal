@@ -14,7 +14,6 @@ let MultiAsteroids = require('./multiAsteroids');
 let Ufo = require('./ufo');
 let MultiUfos = require('./multiUFOs');
 
-// TODO: create asteroid manager instead of one asteroid: 
 let asteroids = MultiAsteroids.init({
     numOfAsteroids: 10,
     asteroidSizes: [148, 74, 37],
@@ -30,6 +29,7 @@ let ufos = MultiUfos.create({
     maxVelocity: 1.5,
 })
 
+let highScores = [{name: '', score: 0}, {name: '', score: 0}, {name: '', score: 0}, {name: '', score: 0}, {name: '', score: 0}];
 let laserArray = [];
 let ufoLaserArray = [];
 let powerupArray = [];
@@ -45,7 +45,6 @@ let powerupAppearanceTime = 0;
 let lastUpdateTime = present();
 
 let playerNumbers = [{ num: 1, available: true }, { num: 2, available: true }, { num: 3, available: true }, { num: 4, available: true }];
-// let playerNumbers = [{num: 1, available: true}];
 
 //------------------------------------------------------------------
 //
@@ -405,12 +404,15 @@ function detectCollision(playerShip, elapsedTime, client) {
             if (didCollide(asteroids[i], laserArray[j])) {
                 if (asteroids[i].size.width == 148) {
                     activeClients[laserArray[j].shipId].player.score += 20;
+                    updateHighScores(activeClients[laserArray[j].shipId].player.score, activeClients[laserArray[j].shipId].player.name, activeClients[laserArray[j].shipId])
                 }
                 else if (asteroids[i].size.width == 74) {
                     activeClients[laserArray[j].shipId].player.score += 50;
+                    updateHighScores(activeClients[laserArray[j].shipId].player.score, activeClients[laserArray[j].shipId].player.name, activeClients[laserArray[j].shipId])
                 }
                 else if (asteroids[i].size.width == 37) {
                     activeClients[laserArray[j].shipId].player.score += 100;
+                    updateHighScores(activeClients[laserArray[j].shipId].player.score, activeClients[laserArray[j].shipId].player.name, activeClients[laserArray[j].shipId])
                 }
 
                 let system = {
@@ -480,9 +482,11 @@ function detectCollision(playerShip, elapsedTime, client) {
             if (didCollide(laserArray[j], ufos[i])) {
                 if (ufos[i].size.width == 101) {
                     activeClients[laserArray[j].shipId].player.score += 500;
+                    updateHighScores(activeClients[laserArray[j].shipId].player.score, activeClients[laserArray[j].shipId].player.name, activeClients[laserArray[j].shipId])
                 }
                 else if (ufos[i].size.width == 55) {
                     activeClients[laserArray[j].shipId].player.score += 1000;
+                    updateHighScores(activeClients[laserArray[j].shipId].player.score, activeClients[laserArray[j].shipId].player.name, activeClients[laserArray[j].shipId])
                 }
 
                 let system = {
@@ -803,8 +807,9 @@ function initializeSocketIO(httpServer) {
 
     io.on('connection', function (socket) {
         console.log('Connection established: ', socket.id);
-        //
-        // Create an entry in our list of connected clients
+
+        socket.emit('highScores', { highScores: highScores, });
+
         let playerNum = findAvailablePlayerNum();
 
         let newPlayer = Player.create();
@@ -863,14 +868,20 @@ function initializeSocketIO(httpServer) {
             delete activeClients[socket.id];
             notifyDisconnect(socket.id);
         });
-
-        // socket.on('quit', function () {
-        //     console.log('terminating game');
-        // });
-
+        
         notifyConnect(socket, newPlayer);
 
     });
+}
+function updateHighScores(player_score, player_name, player) {
+    for(let i = 0; i < 5; i++) {
+        if(player_score >= highScores[i].score){
+            highScores.splice(i, 0, {name: player_name, score: player_score});
+            highScores.pop();
+            break;
+        }
+    }
+    player.socket.emit('highScores', { highScores: highScores, });
 }
 
 function findAvailablePlayerNum() {

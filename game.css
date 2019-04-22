@@ -38,14 +38,15 @@ html, body {
     height: 250px;
     text-align: center;
     margin: 20px;
+
 }
 #game_status_1, #game_status_3 {
-    font-size: 20px; 
+    font-size: 16px; 
     margin: 10px;
     color: lightblue;
 }
 #game_status_2, #game_status_4 {
-    font-size: 20px; 
+    font-size: 16px; 
     margin: 10px;
     color: lightgreen;
 }

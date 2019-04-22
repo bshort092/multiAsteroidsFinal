@@ -25,11 +25,6 @@ MyGame.components.Laser = function () {
 
             that.position.x += (vectorX * that.speed * elapsedTime);
             that.position.y += (vectorY * that.speed * elapsedTime);
-
-            // if (spec.center.x > MyGame.graphics.canvas.width) spec.center.x = 0;
-            // if (spec.center.x < 0) spec.center.x = MyGame.graphics.canvas.width;
-            // if (spec.center.y > MyGame.graphics.canvas.height) spec.center.y = 0;
-            // if (spec.center.y < 0) spec.center.y = MyGame.graphics.canvas.height;
         },
     };
     return that;

@@ -17,8 +17,11 @@ MyGame.screens['high-scores'] = (function(game) {
     function run() {
         let high_scores = document.getElementById('scores');
         high_scores.innerHTML = '';
-        for (let key in game.highScores) {
-            high_scores.innerHTML += (key + ': ' + game.highScores[key] + '<br/>');
+
+        let current_scores = game.highScores;
+        for (let i = 0; i < current_scores.length; i++) {
+            if(current_scores[i].name == ''){current_scores[i].name = i+1}
+            high_scores.innerHTML += (current_scores[i].name + ': ' + current_scores[i].score + '<br/>');
         }
     }
     

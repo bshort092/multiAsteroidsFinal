@@ -163,7 +163,7 @@ MyGame.graphics = (function () {
         context_minimap.lineWidth = 0.4;
         //
         context_minimap.arc(localCenter.x, localCenter.y, localSize.width / 2 + 1, 0, 2 * Math.PI);
-        // white fill
+        // fill
         if (toFill) {
             context_minimap.fillStyle = fillColor;
             context_minimap.fill();

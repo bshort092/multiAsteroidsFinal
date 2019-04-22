@@ -33,7 +33,8 @@ MyGame.screens['game-play'] = (function (game, graphics, renderer, input, compon
         leftKey = null,
         rightKey = null,
         shootKey = null,
-        hyperspaceKey = null;
+        hyperspaceKey = null,
+        current_scores = [{name: '', score: 0}, {name: '', score: 0}, {name: '', score: 0}, {name: '', score: 0}, {name: '', score: 0}];
 
     //------------------------------------------------------------------
     //
@@ -284,6 +285,9 @@ MyGame.screens['game-play'] = (function (game, graphics, renderer, input, compon
             multiUfoLasers[i].model.speed = data.ufoLasers[i].speed;
         }
     });
+    socket.on('highScores', function (data) {
+        game.highScores = data.highScores;
+    });
 
     socket.on('create-particle-system', function (data) {
         //data: 
@@ -382,6 +386,9 @@ MyGame.screens['game-play'] = (function (game, graphics, renderer, input, compon
         // multiUfoLasers.forEach(laser => { laser.model.update(elapsedTime); });
         // multiPowerups.forEach(powerup => { powerup.model.update(elapsedTime); });
 
+        
+
+
         myParticles.updateParticleSystems(elapsedTime);
 
         fireTime += elapsedTime;
@@ -419,19 +426,28 @@ MyGame.screens['game-play'] = (function (game, graphics, renderer, input, compon
     function updateStatus(attribute) {
         let gameStatus = document.getElementById("game_status_" + attribute.playerNumber)
         if(attribute.hasShield || attribute.hasWiderSpread || attribute.firingRate < 250 || attribute.hasGuidedMissles){
-            gameStatus.innerHTML = attribute.name + ' has '
+            gameStatus.innerHTML = attribute.name + ' has: '
             if(attribute.hasShield){
-                gameStatus.innerHTML += ' a shield, '
+                gameStatus.innerHTML += ' a shield <br>'
             }
             if(attribute.hasWiderSpread){
-                gameStatus.innerHTML += ' multiple missiles, '
+                gameStatus.innerHTML += ' multiple missiles <br>'
             }
             if(attribute.firingRate < 250){
-                gameStatus.innerHTML += ' faster firing speed, '
+                gameStatus.innerHTML += ' faster firing speed <br>'
             }
             if(attribute.hasGuidedMissles){
-                gameStatus.innerHTML += ' guided missiles, '
+                gameStatus.innerHTML += ' guided missiles <br>'
             }
+        }
+        else if(attribute.score >= 100000){
+            gameStatus.innerHTML = attribute.name + ' has surpassed a score of 100,000'
+        }
+        else if(attribute.score >= 50000){
+            gameStatus.innerHTML = attribute.name + ' has surpassed a score of 50,000'
+        }
+        else if(attribute.score >= 25000){
+            gameStatus.innerHTML = attribute.name + ' has surpassed a score of 25,000'
         }
         else if(attribute.score >= 10000){
             gameStatus.innerHTML = attribute.name + ' has surpassed a score of 10,000'
@@ -484,7 +500,7 @@ MyGame.screens['game-play'] = (function (game, graphics, renderer, input, compon
 
         ctx.save();
 
-        ctx.fillStyle = '#4d4dff'
+        ctx.fillStyle = 'blue'
         ctx.fillRect(250, 10, hyperspaceTime / 30, 20);
 
         ctx.fillStyle = 'white';
