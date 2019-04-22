@@ -17,9 +17,9 @@ let MultiUfos = require('./multiUFOs');
 // TODO: create asteroid manager instead of one asteroid: 
 let asteroids = MultiAsteroids.init({
     numOfAsteroids: 10,
-    asteroidSizes: [37, 74, 148],
-    minVelocity: 0.5,
-    maxVelocity: 2,
+    asteroidSizes: [148, 74, 37],
+    minVelocity: 0.4,
+    maxVelocity: 1.6,
     position: {x:  Math.random() * 1920, y: Math.random() * 1152}
 })
 
@@ -39,7 +39,9 @@ let quit = false;
 let activeClients = {};
 let inputQueue = [];
 let fireTime = 0;
-let ufoFireDelay = 1000;
+let ufoFireDelay = 0;
+let ufoAppearanceTime = 0;
+let powerupAppearanceTime = 0;
 let lastUpdateTime = present();
 
 let playerNumbers = [{num: 1, available: true}, {num: 2, available: true}, {num: 3, available: true}, {num: 4, available: true}];
@@ -180,8 +182,31 @@ function createPowerup() {
     powerupArray.push(Powerup.create(powerupSpec));
 }
 
-for (let i = 0; i < 10; i++) {
+for (let i = 0; i < 4; i++) {
     createPowerup();
+}
+function startSafe(playerShip) {
+    let randomX;
+    let randomY;
+    while (true) {
+        randomX = Math.floor(Math.random() * 600);
+        randomY = Math.floor(Math.random() * 600);
+
+        let shipSafeZone = {
+            position: { x: randomX, y: randomY },
+            radius: playerShip.radius * 10
+        }
+        let safeSpot = true;
+        asteroids.forEach(asteroid => {
+            if (didCollide(shipSafeZone, asteroid)) { safeSpot = false; }
+        })
+        ufos.forEach(ufo => {
+            if (didCollide(shipSafeZone, ufo)) { safeSpot = false; }
+        })
+        if (safeSpot) { break; }
+    }
+    playerShip.position.x = randomX;
+    playerShip.position.y = randomY;
 }
 
 function moveSafe(playerShip, elapsedTime, client, hyperspace) {
@@ -279,8 +304,8 @@ function addAsteroid() {
     while(asteroids.length < 10){
         let eachAsteroid = MultiAsteroids.createRandom({
             asteroidSizes: [37, 74, 148],
-            minVelocity: 0.5,
-            maxVelocity: 2,
+            minVelocity: 0.4,
+            maxVelocity: 1.6,
             position: {x:  Math.random() * 1920, y: Math.random() * 1152}
         })
         asteroids.push(Asteroid.create(eachAsteroid))
@@ -336,8 +361,8 @@ function detectCollision(playerShip, elapsedTime, client) {
                 if (asteroids[i].size.width === 148) {
                     let createdAsteroids = MultiAsteroids.create({
                         numOfAsteroids: 3,
-                        minVelocity: 1,
-                        maxVelocity: 1.5,
+                        minVelocity: 0.8,
+                        maxVelocity: 1.2,
                         parentPosition: asteroids[i].position,
                         size: 74,
                     });
@@ -347,8 +372,8 @@ function detectCollision(playerShip, elapsedTime, client) {
                 else if (asteroids[i].size.width === 74) {
                     let createdAsteroids = MultiAsteroids.create({
                         numOfAsteroids: 4,
-                        minVelocity: 1.5,
-                        maxVelocity: 2,
+                        minVelocity: 1.2,
+                        maxVelocity: 1.6,
                         parentPosition: asteroids[i].position,
                         size: 37,
                     });
@@ -513,6 +538,23 @@ function detectCollision(playerShip, elapsedTime, client) {
 //
 //------------------------------------------------------------------
 function update(elapsedTime) {
+    let players = false;
+    for (let clientId in activeClients) {
+        if(activeClients[clientId].player.name != '') { players = true; } 
+    }
+    if(players){
+        ufoAppearanceTime += elapsedTime;
+        if(ufoAppearanceTime > 20000) {
+            addUFO();
+            ufoAppearanceTime = 0;
+        }
+        powerupAppearanceTime += elapsedTime;
+        if(powerupAppearanceTime > 7500) {
+            createPowerup();
+            powerupAppearanceTime = 0;
+        }
+    }
+
     for (let clientId in activeClients) {
         activeClients[clientId].player.update(elapsedTime, false);
         detectCollision(activeClients[clientId].player, elapsedTime, activeClients[clientId]);
@@ -524,10 +566,10 @@ function update(elapsedTime) {
 
     for (let i = 0; i < ufos.length; i++) {
         ufos[i].update();
-        ufoFireDelay -= elapsedTime;
-        if (ufoFireDelay <= 1000) {
+        ufos[i].shootTime += elapsedTime;
+        if (ufos[i].shootTime > 1000) {
             fireUfoLaser(ufos[i], elapsedTime);
-            ufoFireDelay += 1000;
+            ufos[i].shootTime = 0;
         }
     }
 
@@ -633,6 +675,7 @@ function updateClients(elapsedTime) {
 //
 //------------------------------------------------------------------
 function gameLoop(currentTime, elapsedTime) {
+
     processInput();
     update(elapsedTime);
     updateClients(elapsedTime);
@@ -777,6 +820,10 @@ function initializeSocketIO(httpServer) {
 
             socket.on('changeName', newName => {
                 activeClients[socket.id].player.name = newName;
+            });
+
+            socket.on('startSafe', data => {
+                startSafe(data)
             });
     
             socket.on('input', data => {

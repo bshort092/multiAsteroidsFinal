@@ -7,9 +7,9 @@ function createRandomAsteroid(spec) {
     let minSpeed = 0; let maxSpeed = 0;
     let randomSize = Math.floor(Math.random() * 3)
     let size = spec.asteroidSizes[randomSize];
-    if(randomSize == 0){minSpeed = spec.minVelocity, maxSpeed = spec.minVelocity + 0.5}
-    else if(randomSize == 1){minSpeed = spec.minVelocity + 0.5 , maxSpeed = spec.maxVelocity - 0.5}
-    else if(randomSize == 2){minSpeed = spec.maxVelocity - 0.5, maxSpeed = spec.maxVelocity}
+    if(randomSize == 0){minSpeed = spec.minVelocity, maxSpeed = spec.minVelocity + 0.4}
+    else if(randomSize == 1){minSpeed = spec.minVelocity + 0.4 , maxSpeed = spec.maxVelocity - 0.4}
+    else if(randomSize == 2){minSpeed = spec.maxVelocity - 0.4, maxSpeed = spec.maxVelocity}
 
     let eachAsteroid = ({
         position: { x: 0, y: 0 },

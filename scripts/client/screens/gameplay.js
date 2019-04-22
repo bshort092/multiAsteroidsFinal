@@ -344,7 +344,7 @@ MyGame.screens['game-play'] = (function (game, graphics, renderer, input, compon
 
     function callEscape() {
         // game.pauseSound('backgroundSound');
-
+        socket.emit('changeName', '');
         cancelNextRequest = true;
         myKeyboard.unregisterHandler(controls['Thrust'], thrustKey);
         myKeyboard.unregisterHandler(controls['Rotate_Left'], leftKey);
@@ -370,6 +370,12 @@ MyGame.screens['game-play'] = (function (game, graphics, renderer, input, compon
     //
     //------------------------------------------------------------------
     function update(elapsedTime) {
+        // for (let i = 0; i < multiAsteroids.length; i++) { multiAsteroids[i].model.update(); }
+        // for (let i = 0; i < multiUfos.length; i++) { multiUfos[i].model.update(); }
+        // multiLasers.forEach(laser => { laser.model.update(elapsedTime); });
+        // multiUfoLasers.forEach(laser => { laser.model.update(elapsedTime); });
+        // multiPowerups.forEach(powerup => { powerup.model.update(elapsedTime); });
+
         myParticles.updateParticleSystems(elapsedTime);
 
         fireTime += elapsedTime;
@@ -384,38 +390,18 @@ MyGame.screens['game-play'] = (function (game, graphics, renderer, input, compon
             hyperspaceTime -= 3000;
         }
 
-        // for (let i = 0; i < multiAsteroids.length; i++) {
-        //     multiAsteroids[i].model.update();
-        // }
-
-        // for (let i = 0; i < multiUfos.length; i++) {
-        //     multiUfos[i].model.update();
-        // }
-
-        // multiLasers.forEach(laser => {
-        //     laser.model.update(elapsedTime);
-        // });
-
-        // multiUfoLasers.forEach(laser => {
-        //     laser.model.update(elapsedTime);
-        // });
-
-        // multiPowerups.forEach(powerup => {
-        //     powerup.model.update(elapsedTime);
-        // });
-
-        
         playerSelf.model.update(elapsedTime);
-
+        
         document.getElementById("my_score").innerHTML = playerSelf.model.name + ': ' + playerSelf.model.score;
         updateStatus(playerSelf.model);
-
+        
         document.getElementById("other_score").innerHTML = '';
         for (let id in playerOthers) {
             playerOthers[id].model.update(elapsedTime);
             document.getElementById("other_score").innerHTML += playerOthers[id].model.state.name + ': ' + playerOthers[id].model.state.score + '<br>';
             updateStatus(playerOthers[id].model.state);
         }
+        
     }
     function updateStatus(attribute) {
         let gameStatus = document.getElementById("game_status_" + attribute.playerNumber)
@@ -491,9 +477,11 @@ MyGame.screens['game-play'] = (function (game, graphics, renderer, input, compon
         let elapsedTime = time - lastTimeStamp;
         lastTimeStamp = time;
 
-        processInput(elapsedTime);
-        update(elapsedTime);
-        render();
+        if(playerSelf.model.name != '') {
+            processInput(elapsedTime);
+            update(elapsedTime);
+            render();
+        }
 
         requestAnimationFrame(gameLoop);
     }
@@ -523,6 +511,10 @@ MyGame.screens['game-play'] = (function (game, graphics, renderer, input, compon
     }
 
     function run() {
+        // start in a safe location:
+        socket.emit('startSafe', playerSelf.model);
+        //
+        
         if(playerSelf.model.playerNumber == null){
             cancelNextRequest = true;
             game.showScreen('main-menu');

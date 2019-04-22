@@ -13,6 +13,7 @@ function createUfo(spec) {
         speed: spec.speed, // unit distance per millisecond
         reportUpdate: false, // Indicates if this model was updated during the last update 
         radius: spec.size.width / 2,
+        shootTime: 0,
 
         update: function() {
             

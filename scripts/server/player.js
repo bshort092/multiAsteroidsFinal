@@ -21,7 +21,7 @@ function createPlayer() {
         playerNumber: null,
         position: {
             x: Math.floor(random.nextDouble() * 600),
-            y: Math.floor(random.nextDouble() * 600)
+            y: Math.floor(random.nextDouble() * 600),
         },
 
         momentum: {

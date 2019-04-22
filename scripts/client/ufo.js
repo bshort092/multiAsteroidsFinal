@@ -8,6 +8,8 @@ MyGame.components.Ufo = function() {
         rotation: 0,
         speed: 0,
         radius: 0,
+        shootTime: 0,
+        
         update: function() {
             let vectorX = Math.cos(that.direction);
             let vectorY = Math.sin(that.direction);
