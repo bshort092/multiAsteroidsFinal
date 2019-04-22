@@ -53,6 +53,7 @@ function createPlayer() {
 
         hasShield: false,
         shieldTime: 10000,
+        blinking: false,
 
         hasGuidedMissles: false,
         guidedMisslesTime: 10000,
@@ -134,6 +135,25 @@ function createPlayer() {
                 if(that.widerSpreadTime <= 0){
                     that.widerSpreadTime = 10000;
                     that.hasWiderSpread = false;
+                }
+            }
+
+            if(that.hasShield){
+                that.shieldTime -= elapsedTime;
+                if(that.shieldTime >= 900 && that.shieldTime < 1000){ that.blinking = true; }
+                if(that.shieldTime >= 800 && that.shieldTime < 900){ that.blinking = false; }
+                if(that.shieldTime >= 700 && that.shieldTime < 800){ that.blinking = true; }
+                if(that.shieldTime >= 600 && that.shieldTime < 700){ that.blinking = false; }
+                if(that.shieldTime >= 500 && that.shieldTime < 600){ that.blinking = true; }
+                if(that.shieldTime >= 400 && that.shieldTime < 500){ that.blinking = false; }
+                if(that.shieldTime >= 300 && that.shieldTime < 400){ that.blinking = true; }
+                if(that.shieldTime >= 200 && that.shieldTime < 300){ that.blinking = false; }
+                if(that.shieldTime >= 100 && that.shieldTime < 200){ that.blinking = true; }
+                if(that.shieldTime > 0 && that.shieldTime < 100){ that.blinking = false; }
+                if(that.shieldTime <= 0){
+                    that.shieldTime = 10000;
+                    that.hasShield = false;
+                    that.blinking = false;
                 }
             }
         }

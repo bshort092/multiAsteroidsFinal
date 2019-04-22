@@ -13,6 +13,17 @@ MyGame.components.PlayerRemote = function () {
     let state = {
         score: 0,
         name: '',
+
+        firingRate: 0,
+        firingRateTime: 0,
+        hasWiderSpread: false,
+        widerSpreadTime: 0,
+        hasShield: false,
+        shieldTime: 0,
+        blinking: false,
+        hasGuidedMissles: false,
+        guidedMisslesTime: 0,
+
         playerNumber: null,
         direction: 0,
         position: {

@@ -148,6 +148,7 @@ MyGame.graphics = (function () {
         context_minimap.restore();
     }
     function outlineObjectMiniMap(center, size, outlineColor, fillColor, toFill) {
+        context.save();
         let localCenter = {
             x: center.x / 1920 * canvas_minimap.width,
             y: center.y / 1152 * canvas_minimap.height
@@ -169,6 +170,7 @@ MyGame.graphics = (function () {
         }
         //
         context_minimap.stroke();
+        context.restore();
     }
     function drawText(position, text, color) {
         context.save();
@@ -191,6 +193,27 @@ MyGame.graphics = (function () {
 
         context.restore();
     }
+    function outlineObject(position, size, outlineColor) {
+        context.save();
+        let localCenter = {
+            x: MyGame.components.Viewport.changeViewX(position.x),
+            y: MyGame.components.Viewport.changeViewY(position.y)
+        };
+        let localSize = {
+            width: size.width,
+            height: size.height
+        };
+        context.beginPath();
+        context.strokeStyle = outlineColor;
+        context.lineWidth = 3;
+        context.arc(localCenter.x, localCenter.y, localSize.width/2 + 10, 0, 2 * Math.PI);
+        
+        context.translate(localCenter.x, localCenter.y);
+        context.translate(-localCenter.x, -localCenter.y);
+
+        context.stroke();
+        context.restore();
+    }
 
     return {
         clear: clear,
@@ -200,6 +223,7 @@ MyGame.graphics = (function () {
         rotateCanvasMiniMap: rotateCanvasMiniMap,
         drawImage: drawImage,
         drawImageMiniMap: drawImageMiniMap,
+        outlineObject: outlineObject,
         outlineObjectMiniMap: outlineObjectMiniMap,
         drawSubTexture: drawSubTexture,
         drawText: drawText,

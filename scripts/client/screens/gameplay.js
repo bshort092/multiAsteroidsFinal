@@ -62,6 +62,7 @@ MyGame.screens['game-play'] = (function (game, graphics, renderer, input, compon
         playerSelf.model.hasWiderSpread = data.hasWiderSpread,
         playerSelf.model.widerSpreadTime = data.widerSpreadTime,
         playerSelf.model.hasShield = data.hasShield,
+        playerSelf.model.blinking = data.blinking,
         playerSelf.model.shieldTime = data.shieldTime,
         playerSelf.model.hasGuidedMissles = data.hasGuidedMissles,
         playerSelf.model.guidedMisslesTime = data.guidedMisslesTime,
@@ -137,6 +138,7 @@ MyGame.screens['game-play'] = (function (game, graphics, renderer, input, compon
         playerSelf.model.hasWiderSpread = data.hasWiderSpread,
         playerSelf.model.widerSpreadTime = data.widerSpreadTime,
         playerSelf.model.hasShield = data.hasShield,
+        playerSelf.model.blinking = data.blinking,
         playerSelf.model.shieldTime = data.shieldTime,
         playerSelf.model.hasGuidedMissles = data.hasGuidedMissles,
         playerSelf.model.guidedMisslesTime = data.guidedMisslesTime,
@@ -406,38 +408,38 @@ MyGame.screens['game-play'] = (function (game, graphics, renderer, input, compon
         playerSelf.model.update(elapsedTime);
 
         document.getElementById("my_score").innerHTML = playerSelf.model.name + ': ' + playerSelf.model.score;
-       
-        updateStatus(playerSelf.model.playerNumber, playerSelf.model.score, playerSelf.model.name);
+        updateStatus(playerSelf.model);
 
         document.getElementById("other_score").innerHTML = '';
         for (let id in playerOthers) {
             playerOthers[id].model.update(elapsedTime);
             document.getElementById("other_score").innerHTML += playerOthers[id].model.state.name + ': ' + playerOthers[id].model.state.score + '<br>';
-            updateStatus(playerOthers[id].model.state.playerNumber, playerOthers[id].model.state.score, playerOthers[id].model.state.name);
+            updateStatus(playerOthers[id].model.state);
         }
     }
-    function updateStatus(num, score, name) {
-        if(score >= 10000){
-            document.getElementById("game_status_" + num).innerHTML = name +  ' has surpassed a score of 10000'
+    function updateStatus(attribute) {
+        let gameStatus = document.getElementById("game_status_" + attribute.playerNumber)
+        if(attribute.hasShield || attribute.hasWiderSpread || attribute.firingRate < 250 || attribute.hasGuidedMissles){
+            gameStatus.innerHTML = attribute.name + ' has '
+            if(attribute.hasShield){
+                gameStatus.innerHTML += ' a shield, '
+            }
+            if(attribute.hasWiderSpread){
+                gameStatus.innerHTML += ' multiple missiles, '
+            }
+            if(attribute.firingRate < 250){
+                gameStatus.innerHTML += ' faster firing speed, '
+            }
+            if(attribute.hasGuidedMissles){
+                gameStatus.innerHTML += ' guided missiles, '
+            }
         }
-        else if(score >= 1000){
-            document.getElementById("game_status_" + num).innerHTML = name +  ' has surpassed a score of 1000'
+        else if(attribute.score >= 10000){
+            gameStatus.innerHTML = attribute.name + ' has surpassed a score of 10,000'
         }
-        // if(powerup is shield){
-        //     document.getElementById("game_status_" + num).innerHTML = 'Player ' + num + ' has a shield!'
-        // }
-        // if(powerup is multipleLasers){
-        //     document.getElementById("game_status_" + num).innerHTML = 'Player ' + num + ' has multiple missiles!'
-        // }
-        // if(powerup is fastLasers){
-        //     document.getElementById("game_status_" + num).innerHTML = 'Player ' + num + ' has a faster firing speed!'
-        // }
-        // if(powerup is guidedLasers){
-        //     document.getElementById("game_status_" + num).innerHTML = 'Player ' + num + ' has guided missiles!'
-        // }
-        // else {
-        //     document.getElementById("game_status_" + num).innerHTML = '';
-        // }
+        else if (attribute.score < 10000) {
+            document.getElementById("game_status_" + attribute.playerNumber).innerHTML = '';
+        }
     }
 
     //------------------------------------------------------------------

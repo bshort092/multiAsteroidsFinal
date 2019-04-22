@@ -20,7 +20,10 @@ MyGame.renderer.PlayerRemote = (function(graphics) {
         graphics.rotateCanvasMiniMap(model.state.position, model.state.direction);
         graphics.drawImageMiniMap(texture, model.state.position, model.size);
         graphics.restoreContext();
-        graphics.drawText({x: model.state.position.x - (model.size.width/ 2) - 10, y: model.state.position.y + (model.size.width / 2) + 10}, model.state.name, 'lightgreen')
+        if(model.state.hasShield){
+            graphics.outlineObject(model.state.position, model.size, 'white')
+        }
+        graphics.drawText({x: model.state.position.x - (model.size.width/ 2) - 7, y: model.state.position.y + (model.size.width / 2) + 10}, model.state.name, 'lightgreen')
     };
 
     return that;
