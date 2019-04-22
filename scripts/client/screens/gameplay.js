@@ -491,7 +491,7 @@ MyGame.screens['game-play'] = (function (game, graphics, renderer, input, compon
         ctx.font = '12pt Arial';
         ctx.lineWidth = .2;
         ctx.textBaseline = 'top';
-        ctx.fillText("Hyperspace", 2, 12);
+        ctx.fillText("Hyperspace", 260, 12);
         ctx.restore();
     }
 
