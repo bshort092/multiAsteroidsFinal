@@ -108,10 +108,10 @@ MyGame.loader = (function () {
             key: 'blueYellowCoin',
             source: 'assets/sprites/coin_blue_yellow.png'
         },
-        {
-            key: 'backgroundSound',
-            source: 'assets/sounds/AsteroidsBackground.mp3'
-        }, 
+        // {
+        //     key: 'backgroundSound',
+        //     source: 'assets/sounds/AsteroidsBackground.mp3'
+        // }, 
         // {
         //     key: 'shipBullet',
         //     source: 'assets/sounds/shipBullet.wav'

@@ -194,9 +194,9 @@ function createPowerup() {
     powerupArray.push(Powerup.create(powerupSpec));
 }
 
-for (let i = 0; i < 4; i++) {
-    createPowerup();
-}
+// start with 1 powerup
+createPowerup();
+
 function startSafe(playerShip) {
     let randomX;
     let randomY;
@@ -568,7 +568,7 @@ function update(elapsedTime) {
             ufoAppearanceTime = 0;
         }
         powerupAppearanceTime += elapsedTime;
-        if (powerupAppearanceTime > 7500) {
+        if (powerupAppearanceTime > 5000) {
             createPowerup();
             powerupAppearanceTime = 0;
         }
@@ -806,9 +806,39 @@ function initializeSocketIO(httpServer) {
         //
         // Create an entry in our list of connected clients
         let playerNum = findAvailablePlayerNum();
-        // if(playerNum != null){
+
         let newPlayer = Player.create();
         newPlayer.clientId = socket.id;
+
+        activeClients[socket.id] = {
+            socket: socket,
+            player: newPlayer,
+            playerNumber: playerNum,
+        };
+
+        socket.emit('connect-ack', {
+            momentum: newPlayer.momentum,
+            direction: newPlayer.direction,
+            position: newPlayer.position,
+            size: newPlayer.size,
+            rotateRate: newPlayer.rotateRate,
+            maxSpeed: newPlayer.maxSpeed,
+            thrustRate: newPlayer.thrustRate,
+            radius: newPlayer.radius,
+            score: newPlayer.score,
+            firingRate: newPlayer.firingRate,
+            firingRateTime: newPlayer.firingRateTime,
+            hasWiderSpread: newPlayer.hasWiderSpread,
+            widerSpreadTime: newPlayer.widerSpreadTime,
+            hasShield: newPlayer.hasShield,
+            blinking: newPlayer.blinking,
+            shieldTime: newPlayer.shieldTime,
+            hasGuidedMissles: newPlayer.hasGuidedMissles,
+            guidedMisslesTime: newPlayer.guidedMisslesTime,
+            name: newPlayer.name,
+            playerNumber: newPlayer.playerNumber,
+
+        });
 
         socket.on('changeName', newName => {
             activeClients[socket.id].player.name = newName;
@@ -839,7 +869,6 @@ function initializeSocketIO(httpServer) {
         // });
 
         notifyConnect(socket, newPlayer);
-        // }
 
     });
 }

@@ -600,7 +600,7 @@ MyGame.screens['game-play'] = (function (game, graphics, renderer, input, compon
         lastTimeStamp = performance.now();
         cancelNextRequest = false;
         requestAnimationFrame(gameLoop);
-        MyGame.assets['backgroundSound'].play();
+        // MyGame.assets['backgroundSound'].play();
         // if(game.pastScreen === 'main-menu' || game.pastScreen === 'game-play') {
         //     initialize();
         // }
