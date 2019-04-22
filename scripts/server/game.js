@@ -16,7 +16,7 @@ let MultiUfos = require('./multiUFOs');
 
 // TODO: create asteroid manager instead of one asteroid: 
 let asteroids = MultiAsteroids.init({
-    numOfAsteroids: 20,
+    numOfAsteroids: 10,
     asteroidSizes: [37, 74, 148],
     minVelocity: 0.5,
     maxVelocity: 2,
@@ -187,13 +187,12 @@ function createPowerup() {
             x: Math.random() * 1820 + 50,
             y: Math.random() * 1052 + 50
         },
-        // type: powerupTypes[Math.floor(Math.random() * 4)],
-        type: powerupTypes[3],
+        type: powerupTypes[Math.floor(Math.random() * 4)],
     };
     powerupArray.push(Powerup.create(powerupSpec));
 }
 
-for (let i = 0; i < 20; i++) {
+for (let i = 0; i < 10; i++) {
     createPowerup();
 }
 
@@ -289,7 +288,7 @@ function didCollide(obj1, obj2) {
 }
 
 function addAsteroid() {
-    while (asteroids.length < 20) {
+    while (asteroids.length < 10) {
         let eachAsteroid = MultiAsteroids.createRandom({
             asteroidSizes: [37, 74, 148],
             minVelocity: 0.5,
@@ -504,7 +503,7 @@ function detectCollision(playerShip, elapsedTime, client) {
             }
 
             if (powerupArray[i].type === 'guided') {
-                playerShip.hasGuidedMissles = 100;
+                playerShip.hasGuidedMissles = true;
                 playerShip.guidedMisslesTime = 10000;
             }
 

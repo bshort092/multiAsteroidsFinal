@@ -138,13 +138,13 @@ function createPlayer() {
                 }
             }
 
-            // if(that.hasGuidedMissles){
-            //     that.guidedMisslesTime -= elapsedTime;
-            //     if(that.guidedMisslesTime <= 0){
-            //         that.guidedMisslesTime = 10000;
-            //         that.hasGuidedMissles = false;
-            //     }
-            // }
+            if(that.hasGuidedMissles){
+                that.guidedMisslesTime -= elapsedTime;
+                if(that.guidedMisslesTime <= 0){
+                    that.guidedMisslesTime = 10000;
+                    that.hasGuidedMissles = false;
+                }
+            }
 
             if(that.hasShield){
                 that.shieldTime -= elapsedTime;
