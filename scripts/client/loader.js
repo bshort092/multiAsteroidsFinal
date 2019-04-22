@@ -108,29 +108,29 @@ MyGame.loader = (function () {
             key: 'blueYellowCoin',
             source: 'assets/sprites/coin_blue_yellow.png'
         },
-        // {
-        //     key: 'backgroundSound',
-        //     source: 'assets/sounds/AsteroidsBackground.mp3'
-        // }, 
-        // {
-        //     key: 'shipBullet',
-        //     source: 'assets/sounds/shipBullet.wav'
-        // }, {
-        //     key: 'shipBulletHitsAsteroid',
-        //     source: 'assets/sounds/shipBulletHitsAsteroid.wav'
-        // }, {
-        //     key: 'shipBulletHitsUfo',
-        //     source: 'assets/sounds/shipBulletHitsUfo.wav'
-        // }, {
-        //     key: 'shipHitsObject',
-        //     source: 'assets/sounds/shipHitsObject.wav'
-        // }, {
-        //     key: 'ufoBullet',
-        //     source: 'assets/sounds/ufoBullet.wav'
-        // }, {
-        //     key: 'ufoBulletHitsShip',
-        //     source: 'assets/sounds/ufoBulletHitsShip.wav'
-        // },
+        {
+            key: 'backgroundSound',
+            source: 'assets/sounds/background.mp3'
+        }, 
+        {
+            key: 'laserSound',
+            source: 'assets/sounds/laserSound.mp3'
+        }, {
+            key: 'shipBulletHitsAsteroid',
+            source: 'assets/sounds/explosion.mp3'
+        }, {
+            key: 'shipBulletHitsUfo',
+            source: 'assets/sounds/alienShipDeath.mp3'
+        }, {
+            key: 'shipHitsObject',
+            source: 'assets/sounds/shipExplosion.mp3'
+        }, {
+            key: 'ufoBullet',
+            source: 'assets/sounds/ufoBullet.mp3'
+        }, {
+            key: 'hyperspace',
+            source: 'assets/sounds/hyperspace.mp3'
+        }
     ];
     
     function numberPad(n, p, c) {

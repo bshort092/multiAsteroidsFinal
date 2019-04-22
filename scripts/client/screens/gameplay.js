@@ -25,7 +25,7 @@ MyGame.screens['game-play'] = (function (game, graphics, renderer, input, compon
         messageHistory = MyGame.utilities.Queue(),
         messageId = 1,
         fireTime = 0,
-        hyperspaceTime = 0,
+        hyperspaceTime = 3000,
         canFire = true,
         canHyperspace = true,
         controls = null,
@@ -291,15 +291,19 @@ MyGame.screens['game-play'] = (function (game, graphics, renderer, input, compon
         //postion of system
         if (data.type === "asteroidBreakup") {
             myParticles.createAsteroidBreakup(data.position.x, data.position.y, particlesArray);
+            MyGame.assets['shipBulletHitsAsteroid'].play();
         }
         if (data.type === "shipDestroyed") {
             myParticles.createShipExplosion(data.position.x, data.position.y, particlesArray);
+            MyGame.assets['shipHitsObject'].play();
         }
         if (data.type === "ufoDestroyed") {
             myParticles.createUFOExplosion(data.position.x, data.position.y, particlesArray);
+            MyGame.assets['shipBulletHitsUfo'].play();
         }
         if (data.type === "powerupPickup") {
             myParticles.createPowerupPickup(data.position.x, data.position.y, particlesArray);
+            MyGame.assets['ufoBullet'].play();
         }
         if (data.type === "thrust") {
             // myParticles.createThrustParticles(data.position.x, data.position.y, particlesArray);
@@ -309,6 +313,7 @@ MyGame.screens['game-play'] = (function (game, graphics, renderer, input, compon
         }
         if (data.type === "hyperspace") {
             myParticles.createHyperspace(data.position.x, data.position.y, particlesArray);
+            MyGame.assets['hyperspace'].play();
         }
     });
 
@@ -388,7 +393,7 @@ MyGame.screens['game-play'] = (function (game, graphics, renderer, input, compon
         hyperspaceTime += elapsedTime;
         if (hyperspaceTime >= 3000) {
             canHyperspace = true;
-            hyperspaceTime -= 3000;
+            hyperspaceTime = 3000;
         }
 
         playerSelf.model.update(elapsedTime);
@@ -473,6 +478,21 @@ MyGame.screens['game-play'] = (function (game, graphics, renderer, input, compon
             }
         }
         renderer.Player.render(playerSelf.model, playerSelf.texture);
+
+        var c = document.getElementById("canvas-main");
+        var ctx = c.getContext("2d");
+
+        ctx.save();
+
+        ctx.fillStyle = '#4d4dff'
+        ctx.fillRect(250, 10, hyperspaceTime / 30, 20);
+
+        ctx.fillStyle = 'white';
+        ctx.font = '12pt Arial';
+        ctx.lineWidth = .2;
+        ctx.textBaseline = 'top';
+        ctx.fillText("Hyperspace", 2, 12);
+        ctx.restore();
     }
 
     //------------------------------------------------------------------
@@ -584,6 +604,7 @@ MyGame.screens['game-play'] = (function (game, graphics, renderer, input, compon
                 fireTime = 0;
                 socket.emit('input', message);
                 messageHistory.enqueue(message);
+                MyGame.assets['laserSound'].play();
             }
         },
             controls['Shoot'], true);
@@ -607,7 +628,7 @@ MyGame.screens['game-play'] = (function (game, graphics, renderer, input, compon
         lastTimeStamp = performance.now();
         cancelNextRequest = false;
         requestAnimationFrame(gameLoop);
-        // MyGame.assets['backgroundSound'].play();
+        MyGame.assets['backgroundSound'].play();
         // if(game.pastScreen === 'main-menu' || game.pastScreen === 'game-play') {
         //     initialize();
         // }
