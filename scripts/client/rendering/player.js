@@ -20,7 +20,12 @@ MyGame.renderer.Player = (function(graphics) {
         graphics.rotateCanvasMiniMap(model.position, model.direction);
         graphics.drawImageMiniMap(texture, model.position, model.size);
         graphics.restoreContext();
-        graphics.drawText({x: model.position.x - (model.size.width/ 2) - 10, y: model.position.y + (model.size.width / 2) + 10}, model.name, 'lightblue')
+        if(model.hasShield){
+            let color = 'white'
+            if(model.blinking) { color = 'black' }
+            graphics.outlineObject(model.position, model.size, color)
+        }
+        graphics.drawText({x: model.position.x - (model.size.width/ 2) - 7, y: model.position.y + (model.size.width / 2) + 10}, model.name, 'lightblue');
     };
 
     return that;

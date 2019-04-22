@@ -301,6 +301,7 @@ function resetPowerups (playerShip){
     playerShip.hasWiderSpread = false;
     playerShip.widerSpreadTime = 10000;
     playerShip.hasShield = false;
+    playerShip.blinking = false;
     playerShip.shieldTime = 10000;
     playerShip.hasGuidedMissles = false;
     playerShip.guidedMisslesTime = 10000;
@@ -309,54 +310,56 @@ function resetPowerups (playerShip){
 function detectCollision(playerShip, elapsedTime, client) {
     //for each asteroid detect ship collision
 
-    for (let i = 0; i < asteroids.length; i++) {
-        if (didCollide(asteroids[i], playerShip)) {
-            if(asteroids[i].size.width == 148){ playerShip.score -= 40; }
-            else if(asteroids[i].size.width == 74){ playerShip.score -= 100; }
-            else if(asteroids[i].size.width == 37){ playerShip.score -= 200; }
-            if(playerShip.score < 0) { playerShip.score = 0; }
-            resetPowerups(playerShip);
-            let system = {
-                type: 'asteroidBreakup',
-                position: asteroids[i].position,
+    if(!playerShip.hasShield) {
+        for (let i = 0; i < asteroids.length; i++) {
+            if (didCollide(asteroids[i], playerShip)) {
+                if(asteroids[i].size.width == 148){ playerShip.score -= 40; }
+                else if(asteroids[i].size.width == 74){ playerShip.score -= 100; }
+                else if(asteroids[i].size.width == 37){ playerShip.score -= 200; }
+                if(playerShip.score < 0) { playerShip.score = 0; }
+                resetPowerups(playerShip);
+                let system = {
+                    type: 'asteroidBreakup',
+                    position: asteroids[i].position,
+                }
+                for (let clientId in activeClients) { // player hits asteroid
+                    activeClients[clientId].socket.emit('create-particle-system', system);
+                }
+                let system1 = {
+                    type: 'shipDestroyed',
+                    position: playerShip.position,
+                }
+                for (let clientId in activeClients) {
+                    activeClients[clientId].socket.emit('create-particle-system', system1);
+                }
+                moveSafe(playerShip, elapsedTime, client, false);
+                if (asteroids[i].size.width === 148) {
+                    let createdAsteroids = MultiAsteroids.create({
+                        numOfAsteroids: 3,
+                        minVelocity: 1,
+                        maxVelocity: 1.5,
+                        parentPosition: asteroids[i].position,
+                        size: 74,
+                    });
+                    asteroids.splice(i, 1);
+                    asteroids = asteroids.concat(createdAsteroids);
+                }
+                else if (asteroids[i].size.width === 74) {
+                    let createdAsteroids = MultiAsteroids.create({
+                        numOfAsteroids: 4,
+                        minVelocity: 1.5,
+                        maxVelocity: 2,
+                        parentPosition: asteroids[i].position,
+                        size: 37,
+                    });
+                    asteroids.splice(i, 1);
+                    asteroids = asteroids.concat(createdAsteroids);
+                }
+                else {
+                    asteroids.splice(i, 1);
+                }
+                addAsteroid();
             }
-            for (let clientId in activeClients) { // player hits asteroid
-                activeClients[clientId].socket.emit('create-particle-system', system);
-            }
-            let system1 = {
-                type: 'shipDestroyed',
-                position: playerShip.position,
-            }
-            for (let clientId in activeClients) {
-                activeClients[clientId].socket.emit('create-particle-system', system1);
-            }
-            moveSafe(playerShip, elapsedTime, client, false);
-            if (asteroids[i].size.width === 148) {
-                let createdAsteroids = MultiAsteroids.create({
-                    numOfAsteroids: 3,
-                    minVelocity: 1,
-                    maxVelocity: 1.5,
-                    parentPosition: asteroids[i].position,
-                    size: 74,
-                });
-                asteroids.splice(i, 1);
-                asteroids = asteroids.concat(createdAsteroids);
-            }
-            else if (asteroids[i].size.width === 74) {
-                let createdAsteroids = MultiAsteroids.create({
-                    numOfAsteroids: 4,
-                    minVelocity: 1.5,
-                    maxVelocity: 2,
-                    parentPosition: asteroids[i].position,
-                    size: 37,
-                });
-                asteroids.splice(i, 1);
-                asteroids = asteroids.concat(createdAsteroids);
-            }
-            else {
-                asteroids.splice(i, 1);
-            }
-            addAsteroid();
         }
     }
 
@@ -410,30 +413,31 @@ function detectCollision(playerShip, elapsedTime, client) {
             }
         }
     }
-
     for (let i = 0; i < ufos.length; i++) {
-        if (ufos[i] && didCollide(ufos[i], playerShip)) {
-            if(ufos[i].size.width == 101){ playerShip.score -= 1000; }
-            else if(ufos[i].size.width == 55){ playerShip.score -= 2000; }
-            if(playerShip.score < 0) { playerShip.score = 0; }
-            resetPowerups(playerShip);
-            let system = {
-                type: 'shipDestroyed',
-                position: playerShip.position,
+        if(!playerShip.hasShield) {
+            if (ufos[i] && didCollide(ufos[i], playerShip)) {
+                if(ufos[i].size.width == 101){ playerShip.score -= 1000; }
+                else if(ufos[i].size.width == 55){ playerShip.score -= 2000; }
+                if(playerShip.score < 0) { playerShip.score = 0; }
+                resetPowerups(playerShip);
+                let system = {
+                    type: 'shipDestroyed',
+                    position: playerShip.position,
+                }
+                for (let clientId in activeClients) {
+                    activeClients[clientId].socket.emit('create-particle-system', system);
+                }
+                let system1 = {
+                    type: 'ufoDestroyed',
+                    position: ufos[i].position,
+                }
+                for (let clientId in activeClients) {
+                    activeClients[clientId].socket.emit('create-particle-system', system1);
+                }
+                moveSafe(playerShip, elapsedTime, client, false);
+                ufos.splice(i, 1);
+                break;
             }
-            for (let clientId in activeClients) {
-                activeClients[clientId].socket.emit('create-particle-system', system);
-            }
-            let system1 = {
-                type: 'ufoDestroyed',
-                position: ufos[i].position,
-            }
-            for (let clientId in activeClients) {
-                activeClients[clientId].socket.emit('create-particle-system', system1);
-            }
-            moveSafe(playerShip, elapsedTime, client, false);
-            ufos.splice(i, 1);
-            break;
         }
         for (let j = 0; j < laserArray.length; j++) {
             if (didCollide(laserArray[j], ufos[i])) {
@@ -457,20 +461,22 @@ function detectCollision(playerShip, elapsedTime, client) {
         }
     }
 
-    for (let i = 0; i < ufoLaserArray.length; i++) {
-        if (didCollide(ufoLaserArray[i], playerShip)) {
-            playerShip.score -= 5000;
-            if(playerShip.score < 0) { playerShip.score = 0; }
-            resetPowerups(playerShip);
-            let system = {
-                type: 'shipDestroyed',
-                position: playerShip.position,
+    if(!playerShip.hasShield) {
+        for (let i = 0; i < ufoLaserArray.length; i++) {
+            if (didCollide(ufoLaserArray[i], playerShip)) {
+                playerShip.score -= 5000;
+                if(playerShip.score < 0) { playerShip.score = 0; }
+                resetPowerups(playerShip);
+                let system = {
+                    type: 'shipDestroyed',
+                    position: playerShip.position,
+                }
+                for (let clientId in activeClients) {
+                    activeClients[clientId].socket.emit('create-particle-system', system);
+                }
+                moveSafe(playerShip, elapsedTime, client, false);
+                ufoLaserArray.splice(i, 1);
             }
-            for (let clientId in activeClients) {
-                activeClients[clientId].socket.emit('create-particle-system', system);
-            }
-            moveSafe(playerShip, elapsedTime, client, false);
-            ufoLaserArray.splice(i, 1);
         }
     }
 
@@ -491,6 +497,10 @@ function detectCollision(playerShip, elapsedTime, client) {
             if(powerupArray[i].type === 'spread'){
                 playerShip.hasWiderSpread = true;
                 playerShip.widerSpreadTime = 10000;
+            }
+            if(powerupArray[i].type === 'shield'){
+                playerShip.hasShield = true;
+                playerShip.shieldTime = 10000;
             }
             powerupArray.splice(i, 1);
         }
@@ -588,6 +598,7 @@ function updateClients(elapsedTime) {
             hasWiderSpread: client.player.hasWiderSpread,
             widerSpreadTime: client.player.widerSpreadTime,
             hasShield: client.player.hasShield,
+            blinking: client.player.blinking,
             shieldTime: client.player.shieldTime,
             hasGuidedMissles: client.player.hasGuidedMissles,
             guidedMisslesTime: client.player.guidedMisslesTime,
@@ -672,6 +683,7 @@ function initializeSocketIO(httpServer) {
                     hasWiderSpread: newPlayer.hasWiderSpread,
                     widerSpreadTime: newPlayer.widerSpreadTime,
                     hasShield: newPlayer.hasShield,
+                    blinking: newPlayer.blinking,
                     shieldTime: newPlayer.shieldTime,
                     hasGuidedMissles: newPlayer.hasGuidedMissles,
                     guidedMisslesTime: newPlayer.guidedMisslesTime,
@@ -697,6 +709,7 @@ function initializeSocketIO(httpServer) {
                     hasWiderSpread: client.player.hasWiderSpread,
                     widerSpreadTime: client.player.widerSpreadTime,
                     hasShield: client.player.hasShield,
+                    blinking: client.player.blinking,
                     shieldTime: client.player.shieldTime,
                     hasGuidedMissles: client.player.hasGuidedMissles,
                     guidedMisslesTime: client.player.guidedMisslesTime,
@@ -754,6 +767,7 @@ function initializeSocketIO(httpServer) {
                 hasWiderSpread: newPlayer.hasWiderSpread,
                 widerSpreadTime: newPlayer.widerSpreadTime,
                 hasShield: newPlayer.hasShield,
+                blinking: newPlayer.blinking,
                 shieldTime: newPlayer.shieldTime,
                 hasGuidedMissles: newPlayer.hasGuidedMissles,
                 guidedMisslesTime: newPlayer.guidedMisslesTime,

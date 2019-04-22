@@ -37,6 +37,7 @@ MyGame.components.Player = function () {
         widerSpreadTime: 0,
         hasShield: false,
         shieldTime: 0,
+        blinking: false,
         hasGuidedMissles: false,
         guidedMisslesTime: 0,
 

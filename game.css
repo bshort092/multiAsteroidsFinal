@@ -39,18 +39,24 @@ html, body {
     text-align: center;
     margin: 20px;
 }
-#game_status_1 {
+#game_status_1, #game_status_3 {
     font-size: 20px; 
     margin: 10px;
     color: lightblue;
 }
-#game_status_2, #game_status_3, #game_status_4, #game_status_5, #game_status_6{
+#game_status_2, #game_status_4 {
     font-size: 20px; 
     margin: 10px;
     color: lightgreen;
 }
 .myScore {
-    height: 100px;
+    height: 200px;
+    margin-top: 20px;
+}
+.score {
+    text-align: right; 
+    margin-right: 20px;  
+    font-size: 30px; 
 }
 .miniMapTitle {
     border-top: darkgrey 3px solid;
