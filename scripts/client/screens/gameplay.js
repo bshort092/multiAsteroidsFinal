@@ -345,6 +345,7 @@ MyGame.screens['game-play'] = (function (game, graphics, renderer, input, compon
     function callEscape() {
         // game.pauseSound('backgroundSound');
         socket.emit('changeName', '');
+        socket.emit('disconnect');
         cancelNextRequest = true;
         myKeyboard.unregisterHandler(controls['Thrust'], thrustKey);
         myKeyboard.unregisterHandler(controls['Rotate_Left'], leftKey);
@@ -399,12 +400,14 @@ MyGame.screens['game-play'] = (function (game, graphics, renderer, input, compon
         
         document.getElementById("my_score").innerHTML = playerSelf.model.name + ': ' + playerSelf.model.score;
         updateStatus(playerSelf.model);
-        
+
         document.getElementById("other_score").innerHTML = '';
         for (let id in playerOthers) {
-            playerOthers[id].model.update(elapsedTime);
-            document.getElementById("other_score").innerHTML += playerOthers[id].model.state.name + ': ' + playerOthers[id].model.state.score + '<br>';
-            updateStatus(playerOthers[id].model.state);
+            if(playerOthers[id].model.state.name != '' && playerOthers[id].model.state.name != undefined && playerOthers[id].model.state.playerNumber != null) {
+                playerOthers[id].model.update(elapsedTime);
+                document.getElementById("other_score").innerHTML += playerOthers[id].model.state.name + ': ' + playerOthers[id].model.state.score + '<br>';
+                updateStatus(playerOthers[id].model.state);
+            }
         }
         
     }
@@ -465,7 +468,9 @@ MyGame.screens['game-play'] = (function (game, graphics, renderer, input, compon
         renderer.Player.render(playerSelf.model, playerSelf.texture);
         for (let id in playerOthers) {
             let player = playerOthers[id];
-            renderer.PlayerRemote.render(player.model, player.texture);
+            if(player.model.state.name != '' && player.model.state.name != undefined && player.model.state.playerNumber != null) {
+                renderer.PlayerRemote.render(player.model, player.texture);
+            }
         }
         renderer.Player.render(playerSelf.model, playerSelf.texture);
     }
@@ -479,7 +484,7 @@ MyGame.screens['game-play'] = (function (game, graphics, renderer, input, compon
         let elapsedTime = time - lastTimeStamp;
         lastTimeStamp = time;
 
-        if(playerSelf.model.name != '') {
+        if(playerSelf.model.name != '' && playerSelf.model.name != undefined && playerSelf.model.playerNumber != null) {
             processInput(elapsedTime);
             update(elapsedTime);
             render();
