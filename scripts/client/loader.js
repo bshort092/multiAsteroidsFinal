@@ -72,6 +72,9 @@ MyGame.loader = (function () {
             key: 'blue',
             source: 'assets/particles/blueLight.png'
         }, {
+            key: 'black',
+            source: 'assets/particles/blackLight.png'
+        }, {
             key: 'fire',
             source: 'assets/particles/fire.png'
         }, {

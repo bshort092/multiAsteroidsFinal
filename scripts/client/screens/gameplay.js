@@ -313,7 +313,7 @@ MyGame.screens['game-play'] = (function (game, graphics, renderer, input, compon
             // myParticles.createThrustParticles(data.position.x, data.position.y, particlesArray);
         }        
         if (data.type === "sadParticles") {
-            myParticles.createThrustParticles(data.position.x, data.position.y, particlesArray);
+            myParticles.createSadParticles(data.position.x, data.position.y, particlesArray);
         }
         if (data.type === "hyperspace") {
             myParticles.createHyperspace(data.position.x, data.position.y, particlesArray);
@@ -500,10 +500,10 @@ MyGame.screens['game-play'] = (function (game, graphics, renderer, input, compon
 
         ctx.save();
 
-        ctx.fillStyle = 'blue'
+        ctx.fillStyle = 'lightblue'
         ctx.fillRect(250, 10, hyperspaceTime / 30, 20);
 
-        ctx.fillStyle = 'white';
+        ctx.fillStyle = 'black';
         ctx.font = '12pt Arial';
         ctx.lineWidth = .2;
         ctx.textBaseline = 'top';
