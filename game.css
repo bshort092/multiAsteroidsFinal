@@ -27,6 +27,7 @@ html, body {
     border-right: darkgrey 3px solid;
 }
 .innerRight {
+    width: 400px;
     height: 600px;
     display: flex;
     flex-direction: column;
@@ -40,13 +41,13 @@ html, body {
     margin: 20px;
 
 }
-#game_status_1, #game_status_3 {
-    font-size: 16px; 
+#game_status_2, #game_status_4 {
+    font-size: 20px; 
     margin: 10px;
     color: lightblue;
 }
-#game_status_2, #game_status_4 {
-    font-size: 16px; 
+#game_status_1, #game_status_3 {
+    font-size: 20px; 
     margin: 10px;
     color: lightgreen;
 }

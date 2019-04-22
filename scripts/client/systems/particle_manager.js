@@ -140,27 +140,27 @@ MyGame.systems.Manager = function(spec) {
             center: { x: centerX, y: centerY },
             size: { mean: 20, stdev: 1 },
             speed: { mean: 150, stdev: 50 },
-            lifetime: { mean: .5, stdev: .1 }
+            lifetime: { mean: 1, stdev: .1 }
         });
         let particlesSmoke = systems.ParticleSystem({
             center: { x: centerX, y: centerY },
             size: { mean: 20, stdev: 5 },
-            speed: { mean: 150, stdev: 50 },
-            lifetime: { mean: .5, stdev: .1 }
+            speed: { mean: 100, stdev: 50 },
+            lifetime: { mean: 1, stdev: .1 }
         });
-        let particlesBlue = systems.ParticleSystem({
+        let particlesSmokeLight = systems.ParticleSystem({
             center: { x: centerX, y: centerY },
             size: { mean: 20, stdev: 5 },
-            speed: { mean: 150, stdev: 50 },
-            lifetime: { mean: .5, stdev: .1 }
+            speed: { mean: 100, stdev: 50 },
+            lifetime: { mean: 1, stdev: .1 }
         });
         let blackRenderer = renderer.ParticleSystem(particlesBlack, graphics, assets['black']);
         let smokeRenderer = renderer.ParticleSystem(particlesSmoke, graphics, assets['smoke']);
-        let blueRenderer = renderer.ParticleSystem(particlesBlue, graphics, assets['blue']);
+        let smokeLightRenderer = renderer.ParticleSystem(particlesSmokeLight, graphics, assets['lighter_smoke']);
 
-        spec.particlesArray.push({system: particlesBlue, renderer: blueRenderer});
         spec.particlesArray.push({system: particlesBlack, renderer: blackRenderer});
         spec.particlesArray.push({system: particlesSmoke, renderer: smokeRenderer});
+        spec.particlesArray.push({system: particlesSmoke, renderer: smokeLightRenderer});
     }
 
 

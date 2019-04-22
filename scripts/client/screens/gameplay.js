@@ -295,19 +295,29 @@ MyGame.screens['game-play'] = (function (game, graphics, renderer, input, compon
         //postion of system
         if (data.type === "asteroidBreakup") {
             myParticles.createAsteroidBreakup(data.position.x, data.position.y, particlesArray);
-            MyGame.assets['shipBulletHitsAsteroid'].play();
+            MyGame.assets['shipBulletHitsAsteroid'].pause();
+            if(game.gameIsActive){
+                MyGame.assets['shipBulletHitsAsteroid'].play();
+            }
         }
         if (data.type === "shipDestroyed") {
             myParticles.createShipExplosion(data.position.x, data.position.y, particlesArray);
-            MyGame.assets['shipHitsObject'].play();
+            if(game.gameIsActive){
+                MyGame.assets['shipHitsObject'].play();
+            }
         }
         if (data.type === "ufoDestroyed") {
             myParticles.createUFOExplosion(data.position.x, data.position.y, particlesArray);
-            MyGame.assets['shipBulletHitsUfo'].play();
+            if(game.gameIsActive){
+                MyGame.assets['shipBulletHitsUfo'].play();
+            }
         }
         if (data.type === "powerupPickup") {
             myParticles.createPowerupPickup(data.position.x, data.position.y, particlesArray);
-            MyGame.assets['ufoBullet'].play();
+            if(game.gameIsActive){
+                MyGame.assets['coin'].volume = .3;
+                MyGame.assets['coin'].play();
+            }
         }
         if (data.type === "thrust") {
             // myParticles.createThrustParticles(data.position.x, data.position.y, particlesArray);
@@ -317,7 +327,9 @@ MyGame.screens['game-play'] = (function (game, graphics, renderer, input, compon
         }
         if (data.type === "hyperspace") {
             myParticles.createHyperspace(data.position.x, data.position.y, particlesArray);
-            MyGame.assets['hyperspace'].play();
+            if(game.gameIsActive) {
+                MyGame.assets['hyperspace'].play();
+            }
         }
     });
 
@@ -426,18 +438,18 @@ MyGame.screens['game-play'] = (function (game, graphics, renderer, input, compon
     function updateStatus(attribute) {
         let gameStatus = document.getElementById("game_status_" + attribute.playerNumber)
         if(attribute.hasShield || attribute.hasWiderSpread || attribute.firingRate < 250 || attribute.hasGuidedMissles){
-            gameStatus.innerHTML = attribute.name + ' has: '
+            gameStatus.innerHTML = attribute.name + ' has '
             if(attribute.hasShield){
-                gameStatus.innerHTML += ' a shield <br>'
+                gameStatus.innerHTML += ' a shield, '
             }
             if(attribute.hasWiderSpread){
-                gameStatus.innerHTML += ' multiple missiles <br>'
+                gameStatus.innerHTML += ' multiple missiles, '
             }
             if(attribute.firingRate < 250){
-                gameStatus.innerHTML += ' faster firing speed <br>'
+                gameStatus.innerHTML += ' faster firing speed, '
             }
             if(attribute.hasGuidedMissles){
-                gameStatus.innerHTML += ' guided missiles <br>'
+                gameStatus.innerHTML += ' guided missiles, '
             }
         }
         else if(attribute.score >= 100000){
@@ -620,7 +632,10 @@ MyGame.screens['game-play'] = (function (game, graphics, renderer, input, compon
                 fireTime = 0;
                 socket.emit('input', message);
                 messageHistory.enqueue(message);
-                MyGame.assets['laserSound'].play();
+                if(game.gameIsActive){
+                    MyGame.assets['laserSound'].volume = .3;
+                    MyGame.assets['laserSound'].play();
+                }
             }
         },
             controls['Shoot'], true);
@@ -640,14 +655,15 @@ MyGame.screens['game-play'] = (function (game, graphics, renderer, input, compon
         },
             controls['Hyperspace'], true);
 
-        // game.playSoundBackground('backgroundSound');
         lastTimeStamp = performance.now();
         cancelNextRequest = false;
         requestAnimationFrame(gameLoop);
-        MyGame.assets['backgroundSound'].play();
-        // if(game.pastScreen === 'main-menu' || game.pastScreen === 'game-play') {
-        //     initialize();
-        // }
+        if(game.gameIsActive){
+            MyGame.assets['backgroundSound'].play();
+        }
+        else {
+            MyGame.assets['backgroundSound'].pause();
+        }
     }
 
     return {

@@ -87,6 +87,9 @@ MyGame.loader = (function () {
             key: 'smoke',
             source: 'assets/particles/smoke-2.png'
         }, {
+            key: 'lighter_smoke',
+            source: 'assets/particles/smokeLight.png'
+        }, {
             key: 'white',
             source: 'assets/particles/whiteLight.png'
         }, {
@@ -110,17 +113,15 @@ MyGame.loader = (function () {
         }, {
             key: 'blueYellowCoin',
             source: 'assets/sprites/coin_blue_yellow.png'
-        },
-        {
+        }, {
             key: 'backgroundSound',
-            source: 'assets/sounds/background.mp3'
-        }, 
-        {
+            source: 'assets/sounds/AsteroidsBackground.mp3'
+        }, {
             key: 'laserSound',
             source: 'assets/sounds/laserSound.mp3'
         }, {
             key: 'shipBulletHitsAsteroid',
-            source: 'assets/sounds/explosion.mp3'
+            source: 'assets/sounds/shipBulletHitsAsteroid.mp3'
         }, {
             key: 'shipBulletHitsUfo',
             source: 'assets/sounds/alienShipDeath.mp3'
@@ -128,8 +129,8 @@ MyGame.loader = (function () {
             key: 'shipHitsObject',
             source: 'assets/sounds/shipExplosion.mp3'
         }, {
-            key: 'ufoBullet',
-            source: 'assets/sounds/ufoBullet.mp3'
+            key: 'coin',
+            source: 'assets/sounds/coin.mp3'
         }, {
             key: 'hyperspace',
             source: 'assets/sounds/hyperspace.mp3'
