@@ -568,7 +568,7 @@ function update(elapsedTime) {
             ufoAppearanceTime = 0;
         }
         powerupAppearanceTime += elapsedTime;
-        if (powerupAppearanceTime > 5000) {
+        if (powerupAppearanceTime > 7500) {
             createPowerup();
             powerupAppearanceTime = 0;
         }

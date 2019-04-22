@@ -391,6 +391,11 @@ MyGame.screens['game-play'] = (function (game, graphics, renderer, input, compon
         }
 
         playerSelf.model.update(elapsedTime);
+
+        document.getElementById("game_status_1").innerHTML = '';
+        document.getElementById("game_status_2").innerHTML = '';
+        document.getElementById("game_status_3").innerHTML = '';
+        document.getElementById("game_status_4").innerHTML = '';
         
         document.getElementById("my_score").innerHTML = playerSelf.model.name + ': ' + playerSelf.model.score;
         updateStatus(playerSelf.model);
@@ -422,9 +427,6 @@ MyGame.screens['game-play'] = (function (game, graphics, renderer, input, compon
         }
         else if(attribute.score >= 10000){
             gameStatus.innerHTML = attribute.name + ' has surpassed a score of 10,000'
-        }
-        else if (attribute.score < 10000) {
-            document.getElementById("game_status_" + attribute.playerNumber).innerHTML = '';
         }
     }
 
