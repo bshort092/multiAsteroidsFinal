@@ -138,6 +138,14 @@ function createPlayer() {
                 }
             }
 
+            if(that.hasGuidedMissles){
+                that.guidedMisslesTime -= elapsedTime;
+                if(that.guidedMisslesTime <= 0){
+                    that.guidedMisslesTime = 10000;
+                    that.hasGuidedMissles = false;
+                }
+            }
+
             if(that.hasShield){
                 that.shieldTime -= elapsedTime;
                 if(that.shieldTime >= 900 && that.shieldTime < 1000){ that.blinking = true; }
