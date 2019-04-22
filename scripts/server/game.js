@@ -484,14 +484,21 @@ function detectCollision(playerShip, elapsedTime, client) {
                 activeClients[clientId].socket.emit('create-particle-system', system);
             }
 
+            if(powerupArray[i].type === 'guided'){
+                playerShip.hasGuidedMissles = 100;
+                playerShip.guidedMisslesTime = 10000;
+            }
+            
             if(powerupArray[i].type === 'rate'){
                 playerShip.firingRate = 100;
                 playerShip.firingRateTime = 10000;
             }
+
             if(powerupArray[i].type === 'spread'){
                 playerShip.hasWiderSpread = true;
                 playerShip.widerSpreadTime = 10000;
             }
+
             powerupArray.splice(i, 1);
         }
     }
