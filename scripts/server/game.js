@@ -142,42 +142,14 @@ function fireLaser(playerSpec, elapsedTime, playerId) {
         laserArray.push(Laser.create(laserSpec3));
     }
     if (playerSpec.hasGuidedMissles) {
-        let minimumDistance = 1000000;
-        let minimumPosition = 0;
-        let laserDirection = 0;
-
-        for (let i = 0; i < asteroids.length; i++) {
-            let dx = playerSpec.position.x - asteroids[i].position.x;
-            let dy = playerSpec.position.y - asteroids[i].position.y;
-            let distance = Math.sqrt(dx * dx + dy * dy);
-
-            if (distance < minimumDistance) {
-                minimumDistance = distance;
-                minimumPosition = i;
-            }
-        }
-
-        var p1 = {
-            x: playerSpec.position.x,
-            y: playerSpec.position.y
-        };
-
-        var p2 = {
-            x: asteroids[minimumPosition].position.x,
-            y: asteroids[minimumPosition].position.y
-        };
-
-        // angle in radians
-        laserDirection = Math.atan2(p2.y - p1.y, p2.x - p1.x);
-
         let laserSpec = {
             position: {
                 x: playerSpec.position.x,
                 y: playerSpec.position.y,
             },
-            direction: laserDirection,
+            direction: playerSpec.direction,
             shipId: playerId,
-            speed: 1.5
+            speed: .75
         };
         laserArray.push(Laser.create(laserSpec, true));
     }
@@ -579,9 +551,11 @@ function update(elapsedTime) {
         }
     }
 
+    let flyingObjects = asteroids.concat(ufos);
+
     for (let i = 0; i < laserArray.length; i++) {
         laserArray[i].lifetime -= elapsedTime;
-        laserArray[i].update(elapsedTime);
+        laserArray[i].update(elapsedTime, flyingObjects);
         if (laserArray[i].lifetime <= 0) {
             laserArray.splice(i, 1);
         }
