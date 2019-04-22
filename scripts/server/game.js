@@ -16,11 +16,11 @@ let MultiUfos = require('./multiUFOs');
 
 // TODO: create asteroid manager instead of one asteroid: 
 let asteroids = MultiAsteroids.init({
-    numOfAsteroids: 10,
+    numOfAsteroids: 20,
     asteroidSizes: [37, 74, 148],
     minVelocity: 0.5,
     maxVelocity: 2,
-    position: {x:  Math.random() * 1920, y: Math.random() * 1152}
+    position: { x: Math.random() * 1920, y: Math.random() * 1152 }
 })
 
 let ufos = MultiUfos.create({
@@ -42,7 +42,7 @@ let fireTime = 0;
 let ufoFireDelay = 1000;
 let lastUpdateTime = present();
 
-let playerNumbers = [{num: 1, available: true}, {num: 2, available: true}, {num: 3, available: true}, {num: 4, available: true}];
+let playerNumbers = [{ num: 1, available: true }, { num: 2, available: true }, { num: 3, available: true }, { num: 4, available: true }];
 // let playerNumbers = [{num: 1, available: true}];
 
 //------------------------------------------------------------------
@@ -107,7 +107,7 @@ function processInput() {
 }
 
 function fireLaser(playerSpec, elapsedTime, playerId) {
-    if(playerSpec.hasWiderSpread){
+    if (playerSpec.hasWiderSpread) {
         let laserSpec = {
             position: {
                 x: playerSpec.position.x,
@@ -117,7 +117,7 @@ function fireLaser(playerSpec, elapsedTime, playerId) {
             shipId: playerId,
             speed: .75
         };
-        
+
         let laserSpec2 = {
             position: {
                 x: playerSpec.position.x,
@@ -127,7 +127,7 @@ function fireLaser(playerSpec, elapsedTime, playerId) {
             shipId: playerId,
             speed: .75
         };
-        
+
         let laserSpec3 = {
             position: {
                 x: playerSpec.position.x,
@@ -141,7 +141,47 @@ function fireLaser(playerSpec, elapsedTime, playerId) {
         laserArray.push(Laser.create(laserSpec2));
         laserArray.push(Laser.create(laserSpec3));
     }
-    else{
+    if (playerSpec.hasGuidedMissles) {
+        let minimumDistance = 1000000;
+        let minimumPosition = 0;
+        let laserDirection = 0;
+
+        for (let i = 0; i < asteroids.length; i++) {
+            let dx = playerSpec.position.x - asteroids[i].position.x;
+            let dy = playerSpec.position.y - asteroids[i].position.y;
+            let distance = Math.sqrt(dx * dx + dy * dy);
+
+            if (distance < minimumDistance) {
+                minimumDistance = distance;
+                minimumPosition = i;
+            }
+        }
+
+        var p1 = {
+            x: playerSpec.position.x,
+            y: playerSpec.position.y
+        };
+
+        var p2 = {
+            x: asteroids[minimumPosition].position.x,
+            y: asteroids[minimumPosition].position.y
+        };
+
+        // angle in radians
+        laserDirection = Math.atan2(p2.y - p1.y, p2.x - p1.x);
+
+        let laserSpec = {
+            position: {
+                x: playerSpec.position.x,
+                y: playerSpec.position.y,
+            },
+            direction: laserDirection,
+            shipId: playerId,
+            speed: 1.5
+        };
+        laserArray.push(Laser.create(laserSpec, true));
+    }
+    else {
         let laserSpec = {
             position: {
                 x: playerSpec.position.x,
@@ -175,12 +215,13 @@ function createPowerup() {
             x: Math.random() * 1820 + 50,
             y: Math.random() * 1052 + 50
         },
-        type: powerupTypes[Math.floor(Math.random() * 4)],
+        // type: powerupTypes[Math.floor(Math.random() * 4)],
+        type: powerupTypes[3],
     };
     powerupArray.push(Powerup.create(powerupSpec));
 }
 
-for (let i = 0; i < 10; i++) {
+for (let i = 0; i < 20; i++) {
     createPowerup();
 }
 
@@ -276,12 +317,12 @@ function didCollide(obj1, obj2) {
 }
 
 function addAsteroid() {
-    while(asteroids.length < 10){
+    while (asteroids.length < 20) {
         let eachAsteroid = MultiAsteroids.createRandom({
             asteroidSizes: [37, 74, 148],
             minVelocity: 0.5,
             maxVelocity: 2,
-            position: {x:  Math.random() * 1920, y: Math.random() * 1152}
+            position: { x: Math.random() * 1920, y: Math.random() * 1152 }
         })
         asteroids.push(Asteroid.create(eachAsteroid))
     }
@@ -295,7 +336,7 @@ function addUFO() {
     ufos.push(Ufo.create(eachUFO))
 }
 
-function resetPowerups (playerShip){
+function resetPowerups(playerShip) {
     playerShip.firingRate = 250;
     playerShip.firingRateTime = 10000;
     playerShip.hasWiderSpread = false;
@@ -310,13 +351,13 @@ function resetPowerups (playerShip){
 function detectCollision(playerShip, elapsedTime, client) {
     //for each asteroid detect ship collision
 
-    if(!playerShip.hasShield) {
+    if (!playerShip.hasShield) {
         for (let i = 0; i < asteroids.length; i++) {
             if (didCollide(asteroids[i], playerShip)) {
-                if(asteroids[i].size.width == 148){ playerShip.score -= 40; }
-                else if(asteroids[i].size.width == 74){ playerShip.score -= 100; }
-                else if(asteroids[i].size.width == 37){ playerShip.score -= 200; }
-                if(playerShip.score < 0) { playerShip.score = 0; }
+                if (asteroids[i].size.width == 148) { playerShip.score -= 40; }
+                else if (asteroids[i].size.width == 74) { playerShip.score -= 100; }
+                else if (asteroids[i].size.width == 37) { playerShip.score -= 200; }
+                if (playerShip.score < 0) { playerShip.score = 0; }
                 resetPowerups(playerShip);
                 let system = {
                     type: 'asteroidBreakup',
@@ -366,13 +407,13 @@ function detectCollision(playerShip, elapsedTime, client) {
     for (let i = 0; i < asteroids.length; i++) {
         for (let j = 0; j < laserArray.length; j++) {
             if (didCollide(asteroids[i], laserArray[j])) {
-                if(asteroids[i].size.width == 148){ 
+                if (asteroids[i].size.width == 148) {
                     activeClients[laserArray[j].shipId].player.score += 20;
                 }
-                else if(asteroids[i].size.width == 74){ 
+                else if (asteroids[i].size.width == 74) {
                     activeClients[laserArray[j].shipId].player.score += 50;
                 }
-                else if(asteroids[i].size.width == 37){ 
+                else if (asteroids[i].size.width == 37) {
                     activeClients[laserArray[j].shipId].player.score += 100;
                 }
 
@@ -414,11 +455,11 @@ function detectCollision(playerShip, elapsedTime, client) {
         }
     }
     for (let i = 0; i < ufos.length; i++) {
-        if(!playerShip.hasShield) {
+        if (!playerShip.hasShield) {
             if (ufos[i] && didCollide(ufos[i], playerShip)) {
-                if(ufos[i].size.width == 101){ playerShip.score -= 1000; }
-                else if(ufos[i].size.width == 55){ playerShip.score -= 2000; }
-                if(playerShip.score < 0) { playerShip.score = 0; }
+                if (ufos[i].size.width == 101) { playerShip.score -= 1000; }
+                else if (ufos[i].size.width == 55) { playerShip.score -= 2000; }
+                if (playerShip.score < 0) { playerShip.score = 0; }
                 resetPowerups(playerShip);
                 let system = {
                     type: 'shipDestroyed',
@@ -441,13 +482,13 @@ function detectCollision(playerShip, elapsedTime, client) {
         }
         for (let j = 0; j < laserArray.length; j++) {
             if (didCollide(laserArray[j], ufos[i])) {
-                if(ufos[i].size.width == 101){ 
+                if (ufos[i].size.width == 101) {
                     activeClients[laserArray[j].shipId].player.score += 500;
                 }
-                else if(ufos[i].size.width == 55){ 
+                else if (ufos[i].size.width == 55) {
                     activeClients[laserArray[j].shipId].player.score += 1000;
                 }
-                
+
                 let system = {
                     type: 'ufoDestroyed',
                     position: ufos[i].position,
@@ -461,11 +502,11 @@ function detectCollision(playerShip, elapsedTime, client) {
         }
     }
 
-    if(!playerShip.hasShield) {
+    if (!playerShip.hasShield) {
         for (let i = 0; i < ufoLaserArray.length; i++) {
             if (didCollide(ufoLaserArray[i], playerShip)) {
                 playerShip.score -= 5000;
-                if(playerShip.score < 0) { playerShip.score = 0; }
+                if (playerShip.score < 0) { playerShip.score = 0; }
                 resetPowerups(playerShip);
                 let system = {
                     type: 'shipDestroyed',
@@ -490,22 +531,22 @@ function detectCollision(playerShip, elapsedTime, client) {
                 activeClients[clientId].socket.emit('create-particle-system', system);
             }
 
-            if(powerupArray[i].type === 'guided'){
+            if (powerupArray[i].type === 'guided') {
                 playerShip.hasGuidedMissles = 100;
                 playerShip.guidedMisslesTime = 10000;
             }
-            
-            if(powerupArray[i].type === 'rate'){
+
+            if (powerupArray[i].type === 'rate') {
                 playerShip.firingRate = 100;
                 playerShip.firingRateTime = 10000;
             }
 
-            if(powerupArray[i].type === 'spread'){
+            if (powerupArray[i].type === 'spread') {
                 playerShip.hasWiderSpread = true;
                 playerShip.widerSpreadTime = 10000;
             }
-            
-            if(powerupArray[i].type === 'shield'){
+
+            if (powerupArray[i].type === 'shield') {
                 playerShip.hasShield = true;
                 playerShip.shieldTime = 10000;
             }
@@ -750,63 +791,63 @@ function initializeSocketIO(httpServer) {
         // Create an entry in our list of connected clients
         let playerNum = findAvailablePlayerNum();
         // if(playerNum != null){
-            let newPlayer = Player.create();
-            newPlayer.clientId = socket.id;
-    
-            activeClients[socket.id] = {
-                socket: socket,
-                player: newPlayer,
-                playerNumber: playerNum,
-            };
-    
-            socket.emit('connect-ack', {
-                momentum: newPlayer.momentum,
-                direction: newPlayer.direction,
-                position: newPlayer.position,
-                size: newPlayer.size,
-                rotateRate: newPlayer.rotateRate,
-                maxSpeed: newPlayer.maxSpeed,
-                thrustRate: newPlayer.thrustRate,
-                radius: newPlayer.radius,
-                score: newPlayer.score,
-                firingRate: newPlayer.firingRate,
-                firingRateTime: newPlayer.firingRateTime,
-                hasWiderSpread: newPlayer.hasWiderSpread,
-                widerSpreadTime: newPlayer.widerSpreadTime,
-                hasShield: newPlayer.hasShield,
-                blinking: newPlayer.blinking,
-                shieldTime: newPlayer.shieldTime,
-                hasGuidedMissles: newPlayer.hasGuidedMissles,
-                guidedMisslesTime: newPlayer.guidedMisslesTime,
-                name: newPlayer.name,
-                playerNumber: newPlayer.playerNumber,
-            });
+        let newPlayer = Player.create();
+        newPlayer.clientId = socket.id;
 
-            socket.on('changeName', newName => {
-                activeClients[socket.id].player.name = newName;
-            });
-    
-            socket.on('input', data => {
-                inputQueue.push({
-                    clientId: socket.id,
-                    message: data,
-                    receiveTime: present()
-                });
-            });
-    
-            socket.on('disconnect', function () {
-                if(activeClients[socket.id].playerNumber != null){
-                    playerNumbers[activeClients[socket.id].playerNumber - 1].available = true;
-                }
-                delete activeClients[socket.id];
-                notifyDisconnect(socket.id);
-            });
+        activeClients[socket.id] = {
+            socket: socket,
+            player: newPlayer,
+            playerNumber: playerNum,
+        };
 
-            // socket.on('quit', function () {
-            //     console.log('terminating game');
-            // });
-    
-            notifyConnect(socket, newPlayer);
+        socket.emit('connect-ack', {
+            momentum: newPlayer.momentum,
+            direction: newPlayer.direction,
+            position: newPlayer.position,
+            size: newPlayer.size,
+            rotateRate: newPlayer.rotateRate,
+            maxSpeed: newPlayer.maxSpeed,
+            thrustRate: newPlayer.thrustRate,
+            radius: newPlayer.radius,
+            score: newPlayer.score,
+            firingRate: newPlayer.firingRate,
+            firingRateTime: newPlayer.firingRateTime,
+            hasWiderSpread: newPlayer.hasWiderSpread,
+            widerSpreadTime: newPlayer.widerSpreadTime,
+            hasShield: newPlayer.hasShield,
+            blinking: newPlayer.blinking,
+            shieldTime: newPlayer.shieldTime,
+            hasGuidedMissles: newPlayer.hasGuidedMissles,
+            guidedMisslesTime: newPlayer.guidedMisslesTime,
+            name: newPlayer.name,
+            playerNumber: newPlayer.playerNumber,
+        });
+
+        socket.on('changeName', newName => {
+            activeClients[socket.id].player.name = newName;
+        });
+
+        socket.on('input', data => {
+            inputQueue.push({
+                clientId: socket.id,
+                message: data,
+                receiveTime: present()
+            });
+        });
+
+        socket.on('disconnect', function () {
+            if (activeClients[socket.id].playerNumber != null) {
+                playerNumbers[activeClients[socket.id].playerNumber - 1].available = true;
+            }
+            delete activeClients[socket.id];
+            notifyDisconnect(socket.id);
+        });
+
+        // socket.on('quit', function () {
+        //     console.log('terminating game');
+        // });
+
+        notifyConnect(socket, newPlayer);
         // }
 
     });
@@ -814,7 +855,7 @@ function initializeSocketIO(httpServer) {
 
 function findAvailablePlayerNum() {
     for (let i = 0; i < playerNumbers.length; i++) {
-        if(playerNumbers[i].available){
+        if (playerNumbers[i].available) {
             playerNumbers[i].available = false;
             return playerNumbers[i].num;
         }
